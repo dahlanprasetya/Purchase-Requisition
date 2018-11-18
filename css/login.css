@@ -1,0 +1,53 @@
+body {
+    background-color: lightslategrey;
+    font-family: 'Ubuntu', sans-serif;
+}
+
+#welcome{
+    margin-top: 100px;
+}
+
+#login-section {
+    margin-top: 30px;
+    background-color: white;
+    padding: 20px;
+    width: 600px;
+    border: 2px solid transparent;
+    border-radius: 15px;
+}
+
+#email {
+    border-radius: 10px;
+    box-sizing: border-box;
+    border: 2px solid lightslategrey;
+    text-align: center;
+    margin-top: 10px;
+    width: 340px;
+    height:35px;
+}
+
+#password {
+    border-radius: 10px;
+    box-sizing: border-box;
+    border: 2px solid lightslategrey;
+    text-align: center;
+    margin-top: 10px;
+    width: 340px;
+    height:35px;
+}
+
+#checkbox {
+    text-align: left;
+    margin-top: 7px;
+}
+
+#login-button {
+    margin-top: 10px;
+    border-radius: 10px;
+    border: 2px solid transparent;
+    background-color: lightslategrey; 
+    color: white;
+    width: 100px;
+    height: 40px;
+}
+
