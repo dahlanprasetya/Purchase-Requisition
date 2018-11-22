@@ -59,7 +59,6 @@ header nav {
 }
 
 /* Bar-Kanan */
-
 #nav-bar-search img {
     width: 20%;
     height: 20px;
@@ -120,79 +119,84 @@ header nav {
 /********** 
 **Section***
 ***********/
+section {
+    background-color: whitesmoke;
+}
 
-/* Atas */
-#home {
+#welcome {
+    margin: 60px 0px 30px 0px;
+    padding-top: 30px;
+}
+
+/* Requester Info */
+
+#requester_info legend {
     background-color: lightslategrey;
     color: white;
-    padding-top: 120px;
+    padding: 0px 12px 0px 12px;
+    border-radius: 3px;
 }
 
-#home button {
-    border: transparent;
-    background-color: skyblue;
+#requester_info #all {
+    padding: 12px 12px 0px 12px;
+}
+
+/* Header Info */
+
+#header_info legend {
+    background-color: lightslategrey;
     color: white;
+    padding: 0px 12px 0px 12px;
+    border-radius: 3px;
 }
 
-#home button:hover {
-    border: transparent;
-    background-color: cornflowerblue;
-    color: white;
+#header_info #all {
+    padding: 0px 0px 0px 0px;
 }
 
-/* List Approval */
+#header_info label {
+    padding-left: 30px
+} 
+
+/* Item */
 thead {
     background-color: lightslategrey;
     color: white;
 }
 
-#table-action {
-    text-align: center;
-}
-
-#see-details-button {
-    border-radius: 10px;
-    border: 2px solid transparent;
-    background-color: lightslategrey; 
-    color: white;
-    width: 100px;
-    height: 30px;
-}
-
-#see-details-button:hover {
-    background-color: skyblue;
-}
-
-
-/********** 
-**Footer***
-***********/
-
-footer {
-    margin-top: 50px;
+#item legend {
     background-color: lightslategrey;
     color: white;
+    padding: 0px 12px 0px 12px;
+    border-radius: 3px;
 }
 
-#icon-ig {
-    color: yellow;
-    font-size: 30px;
+#item #all {
+    padding: 12px 0px 0px 0px;
 }
 
-#icon-twitter {
-    color: skyblue;
-    font-size: 30px;
+#item label {
+    padding-left: 30px;
 }
 
-#about-us {
-    padding-top: 30px;
+#item #description {
+    padding: 0px;
 }
 
-#contact-us {
-    padding-top: 17px;
-}
-
-#contact-us a {
-    text-decoration: none;
+/* Comment History */
+#comment_history legend{
+    background-color: lightslategrey;
     color: white;
+    padding: 0px 12px 0px 12px;
+    border-radius: 3px;
 }
+
+#table_comment_history {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+#tableDataComment {
+    text-align: left;
+}
+

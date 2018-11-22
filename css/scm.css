@@ -116,34 +116,19 @@ header nav {
 
 /* Change the background color of the dropdown button when the dropdown content is shown */
 .dropdown:hover .dropbtn {background-color: lightslategrey;}
-
 /********** 
 **Section***
 ***********/
 
 /* Atas */
-#home {
-    background-color: lightslategrey;
-    color: white;
-    padding-top: 120px;
-}
 
-#home button {
-    border: transparent;
-    background-color: skyblue;
-    color: white;
-}
-
-#home button:hover {
-    border: transparent;
-    background-color: cornflowerblue;
-    color: white;
-}
-
-/* List Approval */
 thead {
     background-color: lightslategrey;
     color: white;
+}
+
+#request-list {
+    margin-top: 80px;
 }
 
 #table-action {
@@ -163,6 +148,12 @@ thead {
     background-color: skyblue;
 }
 
+/* Approval list */
+#approval-list {
+    border-top: 2px solid gray;
+    margin-top: 30px;
+    padding-top: 20px;
+}
 
 /********** 
 **Footer***

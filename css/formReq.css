@@ -13,14 +13,13 @@ header {
 }
 
 header nav {
-    display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
-    grid-template-areas: 
-    'a b c';
     background-color: lightslategrey;
 }
 
-
+#navbar-container {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+}
 
 
 /* Bar kiri */
@@ -47,15 +46,16 @@ header nav {
 
 /* Bar-Tengah */
 
-#nav-bar-middle a {
+#nav-bar-middle{
     text-decoration: none;
-    grid-area: b;
     text-align: center;
-    
+    margin: 0px auto;
+    padding: 0px;
 }
 
-#nav-bar-middle p {
-    font-size: 18px;
+#navbar-container p{
+    text-align: center;
+    margin-bottom: 0px;
 }
 
 /* Bar-Kanan */
@@ -72,8 +72,9 @@ header nav {
     padding-top: 10px;
     margin-left: 0px;
     list-style: none;
-    
+    text-align: right;
 }
+
 
 #dropdown i {
     color: skyblue;
@@ -84,8 +85,8 @@ header nav {
 }
 
 .dropdown {
-    position: relative;
-    display: inline-block;
+    display: flex;
+    justify-content: flex-end;
 }
 
 /* Dropdown Content (Hidden by Default) */
@@ -111,7 +112,7 @@ header nav {
 .dropdown-content a:hover {background-color: lightslategrey;}
 
 /* Show the dropdown menu on hover */
-.dropdown:hover .dropdown-content {display: block;}
+.dropdown__user:hover .dropdown-content {display: block;}
 
 /* Change the background color of the dropdown button when the dropdown content is shown */
 .dropdown:hover .dropbtn {background-color: lightslategrey;}
@@ -124,7 +125,7 @@ section {
 }
 
 #welcome {
-    margin: 80px 0px 30px 0px;
+    margin: 60px 0px 30px 0px;
     padding-top: 30px;
 }
 
@@ -141,6 +142,29 @@ section {
     padding: 12px 12px 0px 12px;
 }
 
+input {
+    border-radius: 3px;
+    border: 1px solid lightslategrey;
+    padding-left: 4px;
+}
+
+select {
+    border-radius: 3px;
+    border: 1px solid lightslategrey;
+}
+
+option {
+    border-radius: 3px;
+}
+
+textarea {
+    border-radius: 3px;
+    border: 1px solid lightslategrey;
+}
+
+#material_picture {
+    border: 0px;
+}
 /* Header Info */
 
 #header_info legend {
@@ -160,6 +184,10 @@ section {
 } 
 
 /* Item */
+thead {
+    background-color: lightslategrey;
+    color: white;
+}
 
 #item legend {
     background-color: lightslategrey;
@@ -180,14 +208,37 @@ section {
     padding: 0px;
 }
 
-.table-bordered td, .table-bordered th {
-    border: 1px solid  lightslategrey;
-    
+
+#table-action {
+    text-align: center;
 }
 
-.table thead th {
-    border-bottom: 1px solid lightslategrey;
+#edit-button {
+    border-radius: 10px;
+    border: 2px solid transparent;
+    background-color: orange; 
+    color: white;
+    width: 50px;
+    height: 30px;
 }
+
+#edit-button:hover {
+    background-color: skyblue;
+}
+
+#delete-button {
+    border-radius: 10px;
+    border: 2px solid transparent;
+    background-color: red; 
+    color: white;
+    width: 50px;
+    height: 30px;
+}
+
+#delete-button:hover {
+    background-color: skyblue;
+}
+
 
 /* button item */
 
