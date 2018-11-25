@@ -8,6 +8,7 @@ select * from public.position;
 select * from public.employee;
 select * from public.material;
 select * from request;
+select * from tweets;
 
 -- add data to position
 insert into position(name) values ('Owner');

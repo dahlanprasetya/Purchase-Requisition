@@ -78,7 +78,7 @@ def login():
             "id": dataUser.id,
             "secretcode": "kumiskucing"
         }
-        encoded = jwt.encode(payload, jwtSecretKey, algorithm='HS256')
+        encoded = jwt.encode(payload, jwtSecretKey, algorithm='HS256').decode('utf-8')
         json_format = {
         "token" : encoded,
         "position" : dataUser.position
@@ -154,25 +154,27 @@ def getProfile():
             "fullname" : userDB.fullname,
             "email" : userDB.email,
             "position" :  postition_name.name,
-            "photoprofile" : userDB.photoprofile
+            "photoprofile" : userDB.photoprofile,
+            "payroll": userDB.payroll_number,
+            "id" : userDB.id
         }
         profile_json = json.dumps(json_format) 
         return profile_json, 201
     else:
         return "gagal",404
 
-@app.route('/getMaterial')
-def getMaterial():
+@app.route('/getAllMaterial')
+def getAllMaterial():
     materials = Material.query.all()
-    material_arr = []
+    arr_material = []
     for material in materials:
         json_format = {
-            "id": material.id,
             "code" : material.code,
-            "name" : material.name
+            "name" : material.name,
+            "id_material" : material.id
         }
-        material_arr.append(json_format)
-    material_json = json.dumps(material_arr)
+        arr_material.append(json_format)
+    material_json = json.dumps(arr_material)
     return material_json,201
 
 @app.route('/getPosition')
@@ -267,6 +269,32 @@ def getRequest():
     }
     req_json = json.dumps(json_format)
     return req_json, 201
+
+@app.route('/sendRequest',methods=["POST"])
+def sendRequest():
+    request_data = request.get_json()
+    data_db = Request(
+        person_id= request_data['id'],
+        budget_type= request_data['budget_type'],
+        currency= request_data['currency'],
+        expected_date= request_data['expected_date'],
+        location= request_data['location'],
+        budget_source= request_data['budget_source'],
+        justification= request_data['justification'],
+        material= request_data['materials'],
+        description= request_data['description'],
+        quatity= request_data['quantity'],
+        unit_measurement= request_data['unit_measurement'],
+        material_picture= request_data['material_picture']
+    )
+    db.session.add(data_db)
+    db.session.commit()
+    db.session.flush() # fungsinya ketika data telah dimasukan kita mau pakai lagi datanya
+
+    if data_db.id:
+        return str(data_db.id),201
+    else:
+        return 'gagal',400
 
 # =====================================================================
 

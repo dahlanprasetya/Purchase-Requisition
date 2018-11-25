@@ -27,7 +27,7 @@ function removeCookie() {
 function login() {
   $.ajax({
     method: "POST",
-    url: "http://localhost:5000/login",
+    url: "http://localhost:9000/login",
     beforeSend: function(req) {
       req.setRequestHeader('Content-Type', 'application/json')
     },
@@ -45,7 +45,7 @@ function login() {
       alert("Login Success");
       document.cookie = `token=${data.token}`
       document.cookie = `requester=${isRequest}`
-      if (isRequest == 'true'){
+      if (isRequest == true){
         window.location = "/employee.html"
       }else{
         window.location = "/scm.html"
@@ -58,6 +58,166 @@ function login() {
   })
 }
 
+function getProfile() {
+  $.ajax({
+    method : 'GET',
+    url: "http://localhost:9000/getProfile",
+    beforeSend: function(req) {
+      req.setRequestHeader('Content-Type', 'application/json'),
+      req.setRequestHeader('Authorization', getCookie('token'))
+    },
+    success : function(res) {
+      data = JSON.parse(res)
+      console.log(data)
+      document.getElementById('dropdown').insertAdjacentHTML("afterbegin", `<div class="dropdown__user">
+      <img class="dropbtn" href="#" src="${data.photoprofile}" alt="orang" />
+      <a id="profile-name" href="profile.html"> ${data.fullname}</a>
+      <div class="dropdown-content">
+          <a href="edit.html"><i class="fas fa-cogs"></i> Setting and Privacy</a>
+          <a href="#"><i class="far fa-question-circle"></i> Help Center</a>
+          <a onclick="removeCookie()" href="Login.html" id="logout-button"><i class="fas fa-power-off"></i> Log Out</a>
+      </div>
+  </div>`)
+    },
+    error : function(err) {
+      console.log(err)
+    }
+  })
+}
+
+function getRequestInfo() {
+  $.ajax({
+    method : 'GET',
+    url: "http://localhost:9000/getProfile",
+    beforeSend: function(req) {
+      req.setRequestHeader('Content-Type', 'application/json'),
+      req.setRequestHeader('Authorization', getCookie('token'))
+    },
+    success : function(res) {
+      data = JSON.parse(res)
+      // console.log(data)
+      document.getElementById('requester_info').insertAdjacentHTML("afterbegin", `<legend><i class="far fa-id-card"></i> Request Information</legend>
+                    
+      <!-- Bagian Kiri -->
+      <div id="all" class="row">
+          <div id="left" class="col-md-6">
+              <label class="col-md-4" for="fullname">Fullname</label>
+              <span id="fullame" name="fullname">${data.fullname}</span>
+              <p></p>
+              <label class="col-md-4" for="email">Email</label>
+              <span id="email" name="email">${data.email}</span>
+              <p></p>
+              <label class="col-md-4" for="position">Position</label>
+              <span id="position" name="position">${data.position}</span>
+              <p></p>
+              <label class="col-md-4" for="id">ID Number</label>
+              <span id="id_employee" name="id_employee">${data.id}</span>
+              <p></p>
+              <label class="col-md-4" for="company">Company</label>
+              <span id="company" name="company"></span>
+              <p></p>
+              <label class="col-md-4" for="plant">Plant</label>
+              <span id="plant" name="plant"></span>
+              <p></p>
+          </div>
+
+          <!-- Bagian Kanan -->
+          <div id="right" class="col-md-6">
+              <label class="col-md-4" for="payroll">Payroll Number</label>
+              <span id="payroll" name="payroll">${data.payroll}</span>
+              <p></p>
+              <label class="col-md-4" for="budget_type">Budget Type</label>
+              <select id="budget_type" name="budget_type" />
+                  <option selected>Project</option>
+                  <option>Maintenance Order</option>
+              </select>
+              <p></p>
+              <label class="col-md-4" for="currency">Currency</label>
+              <select id="currency" name="currency" />
+                  <option selected>USD</option>
+                  <option>IDR</option>
+                  <option>EUR</option>
+                  <option>YEN</option>
+              </select>
+              <p></p>
+              <label class="col-md-4" for="location">Receiving Location</label>
+              <select id="location" name="location" />
+                  <option selected>Jakarta</option>
+                  <option>Bandung</option>
+                  <option>Cikarang</option>
+                  <option>Surabaya</option>
+              </select>
+              <p></p>
+              <label class="col-md-4" for="budget_source">Budget Source</label>
+              <select id="budget_source" name="budget_source" />
+                  <option selected>Cost center</option>
+                  <option>Foreign loans</option>
+                  <option>Others</option>
+              </select>
+              <p></p>
+              <label class="col-md-4" for="expected_date">Expected Date</label>
+              <input type="date" id="expected_date" name="expected_date" />
+          </div>
+      </div>`)
+    },
+    error : function(err) {
+      console.log(err)
+    }
+  })
+}
+
+function getMaterial(){
+  $.ajax({
+    method : 'GET',
+    url: "http://localhost:9000/getAllMaterial",
+    beforeSend: function(req) {
+      req.setRequestHeader('Content-Type', 'application/json'),
+      req.setRequestHeader('Authorization', getCookie('token'))
+    },
+    success : function(res) {
+      JSON.parse(res).forEach(function(data){
+        // console.log(data)
+        document.getElementById('materials').insertAdjacentHTML("beforeend", `
+        <option id="${data.id}">${data.code} ${data.name}</option>
+        `)
+      })
+    },
+    error : function(err) {
+      console.log(err)
+    }
+  })
+}
+
+function sendRequest(){
+  $.ajax({
+    method: 'POST',
+    url: 'http://localhost:9000/sendRequest',
+    beforeSend : function(req){
+      req.setRequestHeader('Content-Type', 'application/json')
+      req.setRequestHeader('Authorization', getCookie('token'))
+    },
+    data : JSON.stringify({
+      "fullname" : document.getElementById('fullname').value,
+      "budget_type" : document.getElementById('budget_type').value,
+      "currency": document.getElementById('currenct').value,
+      "expected_date": document.getElementById('expected_date').value,
+      "location" : document.getElementById('location').value,
+      "budget_source" : document.getElementById('budget_source').value,
+      "justification" : document.getElementById('justification').value,
+      "materials" : document.getElementById('materials').value,
+      "description" : document.getElementById('description').value,
+      "quantity" : document.getElementById('quantity').value,
+      "unit_measurement" : document.getElementById('unit_measurement').value,
+      "material_picture" : document.getElementById('material_picture').value
+    }),
+    success: function(res){    
+      alert('berhasil')
+  },
+    error: function(err){
+      alert('gagal')
+    }
+  })
+}
 
 function form1() {
   // debugger
