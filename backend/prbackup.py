@@ -295,7 +295,7 @@ def submitRequest():
             record_id = result['data']['id']
 
             #submit si flow pake record id dan token
-            submit_request_result = submit_request(record_id,user_token)
+            submit_request_result = submit_request(record_id,user_token,'requester_pr@makersinstitute.id')
             process_id = submit_request_result['data']['process_id']
 
             # gerakin flow dari requester ke manager
@@ -311,12 +311,12 @@ def submitRequest():
             return "token not found",404
 
 # fungsi untuk submit record dan gerakin flow ke requester
-def submit_request(record_id,user_token):
+def submit_request(record_id,user_token,email_requester):
     # data template untuk submit record
     record_instance = {
         "data": {
             "form_data": {
-                "pVRequester": "requester_pr@makersinstitute.id",
+                "pVRequester": email_requester,
                 "pVSCM": "scm_pr@makersinstitute.id"
             },
             "comment": "Initiated"
@@ -332,11 +332,11 @@ def submit_request(record_id,user_token):
     return result
 
 # fungsi untuk gerakin flow dari requester ke manager
-def sent_task(req_comment,user_token,process_id):
+def sent_task(req_comment,user_token,process_id,task_name):
 
     def recursive():
         # get task id and pVApprover name
-        query = "folder=app:task:all&filter[name]=%s&filter[state]=active&filter[definition_id]=%s&filter[process_id]=%s" % ('Submit Request',
+        query = "folder=app:task:all&filter[name]=%s&filter[state]=active&filter[definition_id]=%s&filter[process_id]=%s" % (task_name,
             os.getenv("DEFINITION_ID"),process_id)
         url = os.getenv("BASE_URL_TASK")+"?"+quote(query, safe="&=")
         r = requests.get(url,headers={
