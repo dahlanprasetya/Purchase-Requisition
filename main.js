@@ -27,7 +27,7 @@ function removeCookie() {
 function login() {
   $.ajax({
     method: "POST",
-    url: "http://localhost:5000/login",
+    url: "http://localhost:9000/login",
     beforeSend: function(req) {
       req.setRequestHeader('Content-Type', 'application/json')
     },
@@ -45,7 +45,7 @@ function login() {
       alert("Login Success");
       document.cookie = `token=${data.token}`
       document.cookie = `requester=${isRequest}`
-      if (isRequest == 'true'){
+      if (isRequest == true){
         window.location = "/employee.html"
       }else{
         window.location = "/scm.html"
