@@ -58,12 +58,6 @@ function login() {
   })
 }
 
-function getProfile() {
-
-}
-
-
-
 
 function form1() {
   // debugger
