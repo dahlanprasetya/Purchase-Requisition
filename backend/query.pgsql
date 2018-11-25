@@ -1,6 +1,7 @@
 DROP DATABASE pr_makers;
 CREATE DATABASE pr_makers;
 DELETE from material;
+SELECT * from kelas;
 
 -- View data
 select * from public.position;
@@ -9,10 +10,10 @@ select * from public.material;
 select * from request;
 
 -- add data to position
-insert into public.position(name) values ('Owner');
-insert into public.position(name) values ('Manager');
-insert into public.position(name) values ('SCM');
-insert into public.position(name) values ('Employee');
+insert into position(name) values ('Owner');
+insert into position(name) values ('Manager');
+insert into position(name) values ('SCM');
+insert into position(name) values ('Employee');
 
 -- add data to employee
 

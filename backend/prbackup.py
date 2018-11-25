@@ -10,7 +10,7 @@ from requests.utils import quote
 
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] =  'postgresql://postgres:kumiskucing@localhost:5432/pr_makers'
+app.config['SQLALCHEMY_DATABASE_URI'] =  'postgresql://postgres:Sembilantujuh97@localhost:5432/pr_makers'
 CORS(app, support_credentials=True)
 app.config['SECRET_KEY'] = os.urandom(24)
 db = SQLAlchemy(app)
@@ -79,7 +79,13 @@ def login():
             "secretcode": "kumiskucing"
         }
         encoded = jwt.encode(payload, jwtSecretKey, algorithm='HS256')
-        return encoded, 200
+        json_format = {
+        "token" : encoded,
+        "position" : dataUser.position
+        }
+        user_json = json.dumps(json_format)
+
+        return user_json, 200
     else:
         return 'gagal', 404
 

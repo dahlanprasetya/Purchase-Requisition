@@ -1,37 +1,6 @@
 // untuk login
 const axios = require('axios')
 
-function login() {
-   // debugger
-  email = document.getElementById("email").value;
-  password = document.getElementById("password").value;
-
-  var xmlRequest = new XMLHttpRequest();
-  xmlRequest.open("POST", "http://localhost:5000/login");
-  xmlRequest.setRequestHeader("Content-Type", "application/json");
-  xmlRequest.send(
-    JSON.stringify({
-      email: email,
-      password: password
-    })
-  );
-  xmlRequest.onreadystatechange = function () {
-    // alert(this.response)
-    if (this.readyState == 4 && this.status == 200) {
-      let data = JSON.parse(this.response)
-      debugger
-      // alert(this.response)
-      document.cookie = "email=" + data.token;
-      if(data.position == '4'){
-        window.location = "/employee.html"
-      }else window.location = "/scm.html"
-    } else if (this.readyState == 4) {
-      alert("SignIn gagal dengan status code :" + this.status);
-    }
-  };
-}
-
-
 //   untuk cookienya
 function getCookie(cname) {
   var name = cname + "=";
@@ -48,6 +17,51 @@ function getCookie(cname) {
   }
   return "";
 }
+
+function removeCookie() {
+  document.cookie = 'token=;expires=Thu, 01 Jan 1970 00:00:01 GMT;';
+  document.cookie = 'requester=;expires=Thu, 01 Jan 1970 00:00:01 GMT;';
+  window.location = '/login.html';
+}
+
+function login() {
+  $.ajax({
+    method: "POST",
+    url: "http://localhost:5000/login",
+    beforeSend: function(req) {
+      req.setRequestHeader('Content-Type', 'application/json')
+    },
+    data: JSON.stringify ({
+      "email" : document.getElementById('email').value,
+      "password" : document.getElementById('password').value
+    }),
+    success : function(res) {
+      data = JSON.parse(res)
+      if (data.position == 4) {
+        var isRequest = true
+      } else {
+        var isRequest = false
+      }
+      alert("Login Success");
+      document.cookie = `token=${data.token}`
+      document.cookie = `requester=${isRequest}`
+      if (isRequest == 'true'){
+        window.location = "/employee.html"
+      }else{
+        window.location = "/scm.html"
+      }
+    },
+    error : function(err) {
+      alert ("email atau password salah: "+this.status);
+      console.log(err)
+    }
+  })
+}
+
+function getProfile() {
+
+}
+
 
 
 
