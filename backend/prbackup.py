@@ -10,7 +10,7 @@ from requests.utils import quote
 
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] =  'postgresql://postgres:Sembilantujuh97@localhost:5432/pr_makers'
+app.config['SQLALCHEMY_DATABASE_URI'] =  'postgresql://postgres:kumiskucing@localhost:5432/pr_makers'
 CORS(app, support_credentials=True)
 app.config['SECRET_KEY'] = os.urandom(24)
 db = SQLAlchemy(app)
@@ -38,7 +38,8 @@ class Employee(db.Model):
 
 class Request(db.Model):
     id = db.Column(db.Integer,primary_key=True)
-    person_id = db.Column(db.Integer,db.ForeignKey('employee.id'))
+    person_id = db.Column(db.Integ
+    er,db.ForeignKey('employee.id'))
     plant = db.Column(db.String())
     budget_type = db.Column(db.String())
     currency = db.Column(db.String())
@@ -268,16 +269,56 @@ def getRequest():
     req_json = json.dumps(json_format)
     return req_json, 201
 
+@app.route('/getAllMaterial')
+def getAllMaterial():
+    materials = Material.query.all()
+    arr_material = []
+    for material in materials:
+        json_format = {
+            "code" : material.code,
+            "name" : material.name
+        }
+        arr_material.append(json_format)
+    material_json = json.dumps(arr_material)
+    return material_json,201
+
+@app.route('/sendRequest')
+def sendRequest():
+    request_data = request.get_json()
+    data_db = Request(
+        person_name= request_data['fullname'],
+        plant= request_data['plant'],
+        budget_type= request_data['budget_type'],
+        currency= request_data['currency'],
+        expected_date= request_data['expected_date'],
+        location= request_data['location'],
+        budget_source= request_data['budget_source'],
+        justification= request_data['justification'],
+        material= request_data['materials'],
+        description= request_data['description'],
+        quatity= request_data['quantity'],
+        unit_measurement= request_data['unit_measurement'],
+        material_picture= request_data['material_picture']
+    )
+    db.session.add(data_db)
+    db.session.commit()
+    db.session.flush() # fungsinya ketika data telah dimasukan kita mau pakai lagi datanya
+
+    if data_db.id:
+        return str(data_db.id),201
+    else:
+        return 'gagal',400
+
 # =====================================================================
 
 @app.route('/submitrequest',methods=['POST'])
 def submitRequest():
+    decoded = jwt.decode(request.headers["Authorization"], jwtSecretKey, algorithm='HS256')
+    userDB = Employee.query.filter_by(id=decoded["id"]).first()
     if request.method == 'POST':
         request_data = request.get_json()
-        req_email = request_data['email']
-        req_comment = request_data['comment']
-
-        userDB = Employee.query.filter_by(email=req_email).first()
+        req_email = userDB.email
+        req_comment = "test"
         if userDB:
             user_token = userDB.token
             # data template untuk create record
@@ -295,14 +336,16 @@ def submitRequest():
             record_id = result['data']['id']
 
             #submit si flow pake record id dan token
-            submit_request_result = submit_request(record_id,user_token,'requester_pr@makersinstitute.id')
+            submit_request_result = submit_request(record_id,user_token,req_email)
             process_id = submit_request_result['data']['process_id']
 
             # gerakin flow dari requester ke manager
-            sent_task(req_comment,user_token,process_id)
+            position = Position.query.filter_by(id=userDB.position)
+            task_name = position.name
+            sent_task(req_comment,user_token,process_id,task_name)
 
             # submit ke DB
-            # data_db = submit_to_database(record_id,process_instance["data"]["process_id"])
+            data_db = submit_to_database(record_id,process_instance["data"]["process_id"],userDB.id)
 
             # return berupa id dan status
             return 'ok',201
@@ -369,25 +412,24 @@ def sent_task(req_comment,user_token,process_id,task_name):
     return "OK"
 
 # submit data ke DB
-def submit_to_database(record_id,process_id):
+def submit_to_database(record_id,process_id,employee_id):
     request_data = request.get_json()
-    req_code = request_data['code']
-    req_price = request_data['price']
+    userDB = Employee.query.filter_by(id=employee_id).first()
     # buat data template ke DB
     data_db = Request(
-        person_name= employee.fullname,
-        plant= request.plant,
-        budget_type= request.budget_type,
-        currency= request.currency,
-        expected_date= request.expected_date,
-        location= request.location,
-        budget_source= request.budget_source,
-        justification= request.justification,
-        material= request.material,
-        description= request.description,
-        quatity= request.quatity,
-        unit_measurement= request.unit_measurement,
-        material_picture= request.material_picture,
+        person_name= userDB.fullname,
+        plant= request_data['plant'],
+        budget_type= request_data['budget_type'],
+        currency= request_data['currency'],
+        expected_date= request_data['expected_date'],
+        location= request_data['location'],
+        budget_source= request_data['budget_source'],
+        justification= request_data['justification'],
+        material= request_data['material'],
+        description= request_data['description'],
+        quatity= request_data['quatity'],
+        unit_measurement= request_data['unit_measurement'],
+        material_picture= request_data['material_picture'],
         process_id = process_id,
         record_id = record_id
     )
@@ -400,6 +442,17 @@ def submit_to_database(record_id,process_id):
     else:
         return None
 
+def get_tasklist(task_name,process_id,user_token):
+    query = "folder=app:task:all&filter[name]=%s&filter[state]=active&filter[definition_id]=%s&filter[process_id]=%s" % (task_name,
+            os.getenv("DEFINITION_ID"),process_id)
+    url = os.getenv("BASE_URL_TASK")+"?"+quote(query, safe="&=")
+    r = requests.get(url,headers={
+        "Content-Type": "application/json","Authorization": "Bearer %s" %user_token
+    })
+    print(r.text)
+    result = json.loads(r.text)
+    return result,201
 
+# def acc
 if __name__ == '__main__':
     app.run(debug=os.getenv("DEBUG"), host=os.getenv("HOST"), port=os.getenv("PORT"))
