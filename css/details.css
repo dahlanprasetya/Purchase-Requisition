@@ -59,9 +59,9 @@ header nav {
 }
 
 /* Bar-Kanan */
-#nav-bar-search img {
-    width: 20%;
-    height: 20px;
+#dropdown img {
+    width: 45px;
+    height: 45px;
     padding-left: 0px;
     border-radius: 50%;
     margin-left: 0px;
@@ -169,6 +169,10 @@ thead {
     color: white;
     padding: 0px 12px 0px 12px;
     border-radius: 3px;
+}
+
+.table th, .table td{
+    padding: 4px;
 }
 
 #item #all {

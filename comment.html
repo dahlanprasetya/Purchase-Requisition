@@ -32,7 +32,7 @@
 
                 <!--Bar kanan-->
                 <div id="dropdown" class="dropdown">
-                    <div class="dropdown__user">
+                    <!-- <div class="dropdown__user">
                         <img class="dropbtn" href="#" src="assets/user32.png" alt="orang" />
                         <a id="profile-name" href="profile.html"> John Pantau</a>
                         <div class="dropdown-content">
@@ -40,7 +40,7 @@
                             <a href="#"><i class="far fa-question-circle"></i> Help Center</a>
                             <a href="Login.html" id="logout-button"><i class="fas fa-power-off"></i> Log Out</a>
                         </div>
-                    </div>
+                    </div> -->
                 </div>
             </div>
         </nav>
@@ -127,24 +127,26 @@
                 <table class="table table-bordered table-hover container">
                     <thead class="thead">
                         <tr>
-                            <th scope="col">No.</th>
-                            <th scope="col">Item Detail</th>
-                            <th scope="col">Est. Price</th>
-                            <th scope="col">Qty</th>
-                            <th scope="col">Unit</th>
-                            <th scope="col">Sub Total</th>
+                            <th scope="col" class="col-md-1">No.</th>
+                            <th scope="col" class="col-md-3">Item Detail</th>
+                            <th scope="col" class="col-md-3">Description</th>
+                            <th scope="col" class="col-md-1">Est. Price</th>
+                            <th scope="col" class="col-md-1">Qty</th>
+                            <th scope="col" class="col-md-1">Unit</th>
+                            <th scope="col" class="col-md-1">Sub Total</th>
+                            <!-- <th scope="col" class="col-md-1"id="table-action">Action</th> -->
                             <!-- <th scope="col">Action</th> -->
                         </tr>
                     </thead>
                     <tbody>
                         <tr>
-                            <td scope="row">1</td>
-                            <td id="tableDataItemDetail">Electrical equipment</td>
+                            <th scope="row">1</th>
+                            <td id="tableDataItemDetail" >Electrical equipment</td>
+                            <td id="tableDataDescription"> Kabel roll 3M</td>
                             <td id="tableDataEstimatedPrice">50</td>
                             <td id="tableDataQuantity">5</td>
-                            <td id="tableDataUnit">2</td>
+                            <td id="tableDataUnit">Piece</td>
                             <td id="tableDataSubTotal">250</td>
-                            <!-- <td id="tableDataAction">Not yet uploaded</td> -->
                         </tr>
                     </tbody>
                 </table>
@@ -216,6 +218,10 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy"
         crossorigin="anonymous"></script>
     <link rel="stylesheet" type="text/css" media="screen" href="css/comment.css" />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="/main.js"></script>
+    <script>
+    getProfile()
+    </script>
 </body>
-
 </html>

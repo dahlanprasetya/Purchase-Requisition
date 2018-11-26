@@ -68,6 +68,7 @@ header nav {
     margin-left: 0px;
 }
 
+
 #dropdown {
     padding-top: 10px;
     margin-left: 0px;
@@ -120,138 +121,68 @@ header nav {
 /********** 
 **Section***
 ***********/
-section {
-    background-color: whitesmoke;
+#edit_profile {
+    margin-top: 40px;
 }
 
-#welcome {
-    margin: 60px 0px 30px 0px;
-    padding-top: 30px;
+#edit_profile legend {
+    margin-top: 40px;
+    margin-bottom: 40px;
+    font-size: 32px;
 }
-
-/* Requester Info */
-
-#requester_info legend {
-    background-color: lightslategrey;
-    color: white;
-    padding: 0px 12px 0px 12px;
-    border-radius: 3px;
-}
-
-#requester_info #all {
-    padding: 12px 12px 0px 12px;
-}
-
 input {
     border-radius: 3px;
     border: 1px solid lightslategrey;
     padding-left: 4px;
 }
 
-select {
-    border-radius: 3px;
-    border: 1px solid lightslategrey;
-}
-
-option {
-    border-radius: 3px;
-}
-
-textarea {
-    border-radius: 3px;
-    border: 1px solid lightslategrey;
-}
-
-#material_picture {
+#profile_picture {
     border: 0px;
 }
-/* Header Info */
 
-#header_info legend {
-    background-color: lightslategrey;
-    color: white;
-    padding: 0px 12px 0px 12px;
-    border-radius: 3px;
-}
-
-#header_info #all {
-    padding: 12px 0px 0px 0px;
-}
-
-#header_info label {
-    top: -80px;
-    padding-left: 30px
-} 
-
-/* Item */
-thead {
-    background-color: lightslategrey;
-    color: white;
-}
-
-#item legend {
-    background-color: lightslategrey;
-    color: white;
-    padding: 0px 12px 0px 12px;
-    border-radius: 3px;
-}
-
-#item #all {
-    padding: 12px 0px 0px 0px;
-}
-
-#item label {
-    padding-left: 30px;
-}
-
-#item #description {
-    padding: 0px;
-}
-
-.table th, .table td{
-    padding: 4px;
-}
-
-#table-action {
-    text-align: center;
-}
-
-#edit-button {
+#save-button {
+    margin-top: 20px;
     border-radius: 10px;
     border: 2px solid transparent;
-    background-color: orange; 
+    background-color: lightslategrey; 
     color: white;
-    width: 50px;
+    width: 130px;
     height: 30px;
 }
 
-#edit-button:hover {
+#save-button:hover {
     background-color: skyblue;
 }
 
-#delete-button {
-    border-radius: 10px;
-    border: 2px solid transparent;
-    background-color: red; 
+/********** 
+**Footer***
+***********/
+
+footer {
+    margin-top: 20px;
+    background-color: lightslategrey;
     color: white;
-    width: 50px;
-    height: 30px;
 }
 
-#delete-button:hover {
-    background-color: skyblue;
+#icon-ig {
+    color: yellow;
+    font-size: 30px;
 }
 
-
-/* button item */
-
-#button button {
-  margin: 10px;
+#icon-twitter {
+    color: skyblue;
+    font-size: 30px;
 }
 
-/* button send req */
-
-#send_req {
-    margin: 10px 0px 10px 20px;
+#about-us {
+    padding-top: 20px;
 }
 
+#contact-us {
+    padding-top: 17px;
+}
+
+#contact-us a {
+    text-decoration: none;
+    color: white;
+}
