@@ -35,34 +35,37 @@ class Employee(db.Model):
     photoprofile = db.Column(db.String())
     payroll_number = db.Column(db.Integer())
     token = db.Column(db.String())
+    company = db.Column(db.String())
+    plant = db.Column(db.String())
 
 class Request(db.Model):
     id = db.Column(db.Integer,primary_key=True)
-    person_id = db.Column(db.Integ
-    er,db.ForeignKey('employee.id'))
-    plant = db.Column(db.String())
+    person_id = db.Column(db.Integer,db.ForeignKey('employee.id'))
     budget_type = db.Column(db.String())
     currency = db.Column(db.String())
-    expected_date = db.Column(db.DateTime())
+    expected_date = db.Column(db.String())
     location = db.Column(db.String())
     budget_source = db.Column(db.String())
     justification = db.Column(db.String())
     acc_scm = db.Column(db.Integer())
     acc_manager = db.Column(db.Integer())
     acc_owner = db.Column(db.Integer())
-    material = db.Column(db.Integer, db.ForeignKey('material.id'))
-    description = db.Column(db.String())
-    quatity = db.Column(db.Integer())
-    unit_measurement = db.Column(db.String())
-    material_picture = db.Column(db.String())
     record_id = db.Column(db.String())
     process_id = db.Column(db.String())
+    item_id = db.relationship('Request', backref='owner')
 
-# class Comment(db.Model):
-#     id = db.Column(db.Integer,primary_key=True)
-#     comment_content = db.Column(db.String())
-#     id_user = db.Column(db.Integer, db.ForeignKey('employee.id'))
-#     record_id = db.Column(db.String())
+class Items(db.Model):
+    id = db.Column(db.Integer,primary_key=True)
+    material_id = db.Column(db.Integer,db.ForeignKey('material.id'))
+    quantity = db.Column(db.Integer())
+    unit_measurement = db.Column(db.String())
+    material_picture = db.Column(db.String())
+    description = db.Column(db.String())
+    estimate_price = db.Column(db.Integer())
+    total = db.Column(db.Integer())
+
+
+
 
 @app.route('/')
 def get():
@@ -79,7 +82,7 @@ def login():
             "id": dataUser.id,
             "secretcode": "kumiskucing"
         }
-        encoded = jwt.encode(payload, jwtSecretKey, algorithm='HS256')
+        encoded = jwt.encode(payload, jwtSecretKey, algorithm='HS256').decode('utf-8')
         json_format = {
         "token" : encoded,
         "position" : dataUser.position
@@ -96,11 +99,11 @@ def getAccRequest():
     requests = Request.filter_by(acc_scm=1, acc_manager=1, acc_owner=1).first()
     req = []
     for request in requests:
-        employee = Employee.filter_by(id=request.id).first()
+        employee = Employee.filter_by(id=request.person_id).first()
         json_format = {
             "id" : request.id,
             "person_name": employee.fullname,
-            "plant": request.plant,
+            "plant": employee.plant,
             "budget_type": request.budget_type,
             "currency": request.currency,
             "expected_date": request.expected_date,
@@ -155,25 +158,27 @@ def getProfile():
             "fullname" : userDB.fullname,
             "email" : userDB.email,
             "position" :  postition_name.name,
-            "photoprofile" : userDB.photoprofile
+            "photoprofile" : userDB.photoprofile,
+            "payroll": userDB.payroll_number,
+            "id" : userDB.id
         }
         profile_json = json.dumps(json_format) 
         return profile_json, 201
     else:
         return "gagal",404
 
-@app.route('/getMaterial')
-def getMaterial():
+@app.route('/getAllMaterial')
+def getAllMaterial():
     materials = Material.query.all()
-    material_arr = []
+    arr_material = []
     for material in materials:
         json_format = {
-            "id": material.id,
             "code" : material.code,
-            "name" : material.name
+            "name" : material.name,
+            "id_material" : material.id
         }
-        material_arr.append(json_format)
-    material_json = json.dumps(material_arr)
+        arr_material.append(json_format)
+    material_json = json.dumps(arr_material)
     return material_json,201
 
 @app.route('/getPosition')
@@ -269,36 +274,20 @@ def getRequest():
     req_json = json.dumps(json_format)
     return req_json, 201
 
-@app.route('/getAllMaterial')
-def getAllMaterial():
-    materials = Material.query.all()
-    arr_material = []
-    for material in materials:
-        json_format = {
-            "code" : material.code,
-            "name" : material.name
-        }
-        arr_material.append(json_format)
-    material_json = json.dumps(arr_material)
-    return material_json,201
-
 @app.route('/sendRequest')
 def sendRequest():
+    decoded = jwt.decode(Request.headers["Authorization"], jwtSecretKey, algorithm='HS256')
+    userDB = Employee.query.filter_by(id = decoded['id']).first()
     request_data = request.get_json()
     data_db = Request(
-        person_name= request_data['fullname'],
-        plant= request_data['plant'],
+        person_name= userDB.fullname,
+        plant= userDB.plant,
         budget_type= request_data['budget_type'],
         currency= request_data['currency'],
         expected_date= request_data['expected_date'],
         location= request_data['location'],
         budget_source= request_data['budget_source'],
-        justification= request_data['justification'],
-        material= request_data['materials'],
-        description= request_data['description'],
-        quatity= request_data['quantity'],
-        unit_measurement= request_data['unit_measurement'],
-        material_picture= request_data['material_picture']
+        justification= request_data['justification']
     )
     db.session.add(data_db)
     db.session.commit()
@@ -309,6 +298,20 @@ def sendRequest():
     else:
         return 'gagal',400
 
+def addMaterial(arr_material,data_id):
+    request_data = request.get_json()
+    data_db = Items(
+        material_id = request_data['material_id'],
+        quantity = request_data['quantity'],
+        unit_measurement = request_data['unit_measurement'],
+        material_picture = request_data['material_picture'],
+        description = request_data['description']
+        estimate_price = request_data['estimate_price'],
+        total = request_data['quantity'] * request_data['estimate_price'],
+        request_id = data_id
+    )
+    arr_material.append(data_db)
+    return arr_material
 # =====================================================================
 
 @app.route('/submitrequest',methods=['POST'])
@@ -416,26 +419,33 @@ def submit_to_database(record_id,process_id,employee_id):
     request_data = request.get_json()
     userDB = Employee.query.filter_by(id=employee_id).first()
     # buat data template ke DB
+    arr_material = []
     data_db = Request(
-        person_name= userDB.fullname,
-        plant= request_data['plant'],
+        person_id = employee_id,
         budget_type= request_data['budget_type'],
         currency= request_data['currency'],
         expected_date= request_data['expected_date'],
         location= request_data['location'],
         budget_source= request_data['budget_source'],
-        justification= request_data['justification'],
-        material= request_data['material'],
-        description= request_data['description'],
-        quatity= request_data['quatity'],
-        unit_measurement= request_data['unit_measurement'],
-        material_picture= request_data['material_picture'],
+        justification= request_data['justification']
         process_id = process_id,
-        record_id = record_id
+        record_id = record_id,
+        acc_scm = 0,
+        acc_manager = 0,
+        acc_owner = 0
     )
     db.session.add(data_db)
     db.session.commit()
     db.session.flush() # fungsinya ketika data telah dimasukan kita mau pakai lagi datanya
+    request = Request.query.filter_by(id=data_db.id).first()
+    if request is not None:
+        
+    
+    addMaterial(arr_material,data_db.id)
+    for material in arr_material:
+        db.session.add(data_db)
+        db.session.commit()
+        db.session.flush() # f
 
     if data_db.id:
         return str(data_db.id)

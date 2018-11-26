@@ -28,7 +28,7 @@
 
                 <!--Bar kanan-->
                 <div id="dropdown" class="dropdown">
-                    <div class="dropdown__user">
+                    <!-- <div class="dropdown__user">
                         <img class="dropbtn" href="#" src="assets/user32.png" alt="orang" />
                         <a id="profile-name" href="profile.html"> John Pantau</a>
                         <div class="dropdown-content">
@@ -36,7 +36,7 @@
                             <a href="#"><i class="far fa-question-circle"></i> Help Center</a>
                             <a href="Login.html" id="logout-button"><i class="fas fa-power-off"></i> Log Out</a>
                         </div>
-                    </div>
+                    </div> -->
                 </div>
             </div>
         </nav>
@@ -44,40 +44,40 @@
 
     <!-- Form Request -->
     <section>
-        <form>
+        <form onsubmit="event.preventDefault(); sendRequest()" method="POST">
             <div class="container">
                 <h2 id="welcome" class="text-center">General Material Purchase Request</h2>
 
                 <fieldset id="requester_info">
-                    <legend><i class="far fa-id-card"></i> Request Information</legend>
+                    <!-- <legend><i class="far fa-id-card"></i> Request Information</legend> -->
                     
                     <!-- Bagian Kiri -->
-                    <div id="all" class="row">
+                    <!-- <div id="all" class="row">
                         <div id="left" class="col-md-6">
                             <label class="col-md-4" for="fullname">Fullname</label>
-                            <input type="text" id="fullame" name="fullname" />
+                            <span id="fullame" name="fullname"></span>
                             <p></p>
                             <label class="col-md-4" for="email">Email</label>
-                            <input type="email" id="email" name="email" />
+                            <span id="email" name="email"></span>
                             <p></p>
                             <label class="col-md-4" for="position">Postion</label>
-                            <input type="text" id="position" name="position" />
+                            <span id="position" name="position"></span>
                             <p></p>
                             <label class="col-md-4" for="id">ID Number</label>
-                            <input type="text" id="id_employee" name="id_employee" />
+                            <span id="id_employee" name="id_employee"></span>
                             <p></p>
                             <label class="col-md-4" for="company">Company</label>
-                            <input type="text" id="company" name="company" />
+                            <span id="company" name="company"></span>
                             <p></p>
                             <label class="col-md-4" for="plant">Plant</label>
-                            <input type="text" id="plant" name="plant" />
+                            <span id="plant" name="plant"></span>
                             <p></p>
-                        </div>
+                        </div> -->
 
                         <!-- Bagian Kanan -->
-                        <div id="right" class="col-md-6">
+                        <!-- <div id="right" class="col-md-6">
                             <label class="col-md-4" for="payroll">Payroll Number</label>
-                            <input type="text" id="payroll" name="payroll" />
+                            <span id="payroll" name="payroll"></span>
                             <p></p>
                             <label class="col-md-4" for="budget_type">Budget Type</label>
                             <select id="budget_type" name="budget_type" />
@@ -111,7 +111,7 @@
                             <label class="col-md-4" for="expected_date">Expected Date</label>
                             <input type="date" id="expected_date" name="expected_date" />
                         </div>
-                    </div>
+                    </div> -->
                 </fieldset>
 
                 <fieldset id="header_info">
@@ -131,13 +131,13 @@
                     <div id="all" class="row">
                             <div id="left" class="col-md-12">
                                 <label class="col-md-2" for="material">Material</label>
-                                <select id="currency" name="materials" />
+                                <select  id="materials" name="materials" />
                                     <option selected>Choose...</option>
-                                    <option>001 - Computer pheriperals</option>
+                                    <!--<option>001 - Computer pheriperals</option>
                                     <option>002 - Electrical equipment and part</option>
                                     <option>003 - Office stationery and tools</option>
                                     <option>004 - Transportation equipment and part</option>
-                                    <option>005 - Heavy equipment and part</option>
+                                    <option>005 - Heavy equipment and part</option> -->
                                 </select>
                                 <p></p>
                                 <label class="col-md-2" for="description">Description</label>
@@ -147,7 +147,7 @@
                                 <input type="number" id="quantity" name="quantity" />
                                 <p></p>
                                 <label class="col-md-2" for="unit_measurement">Unit Measurement</label>
-                                <select id="currency" name="unit_measurement" />
+                                <select id="unit_measurement" name="unit_measurement" />
                                     <option selected>Piece</option>
                                     <option>Meter</option>
                                     <option>Set</option>
@@ -221,5 +221,12 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
     <link rel="stylesheet" type="text/css" media="screen" href="css/formReq.css" />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="/main.js"></script>
+    <script>
+    getMaterial()
+    getRequestInfo()
+    getProfile()
+    </script>
 </body>
 </html>
