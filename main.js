@@ -24,6 +24,11 @@ function removeCookie() {
   window.location = '/login.html';
 }
 
+function home(){
+  var a= getCookie('requester')
+  a == "true" ? window.location = "/employee.html" : window.location = "/scm.html"
+}
+
 function login() {
   $.ajax({
     method: "POST",
@@ -45,7 +50,7 @@ function login() {
       alert("Login Success");
       document.cookie = `token=${data.token}`
       document.cookie = `requester=${isRequest}`
-      if (isRequest == true){
+      if (isRequest){
         window.location = "/employee.html"
       }else{
         window.location = "/scm.html"
@@ -78,6 +83,27 @@ function getProfile() {
           <a onclick="removeCookie()" href="Login.html" id="logout-button"><i class="fas fa-power-off"></i> Log Out</a>
       </div>
   </div>`)
+    },
+    error : function(err) {
+      console.log(err)
+    }
+  })
+}
+
+function welcome() {
+  $.ajax({
+    method : 'GET',
+    url: "http://localhost:9000/getProfile",
+    beforeSend: function(req) {
+      req.setRequestHeader('Content-Type', 'application/json'),
+      req.setRequestHeader('Authorization', getCookie('token'))
+    },
+    success : function(res) {
+      data = JSON.parse(res)
+      console.log(data)
+      document.getElementById('home').insertAdjacentHTML("afterbegin", `<p class="lead text-center display-4">Hello, ${data.fullname}</p>
+      <p class="lead text-center mb-5 display-4">Make a form request now ?</p>
+      <button onclick="window.location = '/formReq.html'" type="button" class="btn btn-lg col-2 offset-5">Request </button>`)
     },
     error : function(err) {
       console.log(err)
@@ -218,6 +244,69 @@ function sendRequest(){
     }
   })
 }
+
+// FUNGSI BIKINAN NAUFAL
+function getAllData() {
+  
+  // //////////////////////////////// Request ////////////////////////////////////////
+  // autoComplete
+  var obj = new Object(),
+      autoComplete = $('#right select').get()
+      // autoComplete = document.querySelectorAll('.parent .child1');
+
+  for (let i = 0; i < autoComplete.length; i++) {
+    var id = $(autoComplete).eq(i).attr("id"),
+        val = $(autoComplete).eq(i).val()
+    console.log(val)
+    obj[`${id}`] = val
+  }
+  // input (date)
+  var date = $('#expected_date').val()
+  obj['expected_date'] = date
+  // justification
+  var just = $('#justification').val()
+  obj['justification'] = just
+
+
+  // //////////////////////////////// Item ////////////////////////////////////////
+  var array = new Array(),
+      rows = $('table.table tbody tr').get()
+  rows.forEach(row => {
+    var tds = $(row).find('td').get(),
+        item_obj = new Object()
+    tds.forEach(td => {
+      var id = $(td).attr("id"),
+          text = $(td).text()
+      item_obj[`${id}`] = text
+    })
+    array.push(item_obj)
+  })  
+
+  // ///////////////////////////////// Data to send to Backend ///////////////////////////////////////
+  var obj_data = new Object()
+  obj_data["request_data"] = obj
+  obj_data["array_item"] = array
+
+  // /////////////////////////////// Kirim pake Ajax //////////////////////////////////////
+  $.ajak({
+    method: 'POST',
+    url: 'http://localhost:9000/sendRequest',
+    beforeSend : function(req){
+      req.('Content-Type', 'application/json')
+      req.setRequestHeader('Authorization', getCookie('token'))
+    },
+    data : obj_data,
+    success: function(res){
+      alert('berhasil')
+    },
+    error: function(res){
+      alert('gagal')
+    }
+  })
+}
+
+
+
 
 function form1() {
   // debugger

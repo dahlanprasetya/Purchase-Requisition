@@ -1,5 +1,6 @@
 <!doctype html>
 <html lang="en">
+
 <head>
     <!-- Required meta tags -->
     <meta charset="utf-8">
@@ -8,11 +9,14 @@
     <!-- Bootstrap CSS -->
     <link href="https://fonts.googleapis.com/css?family=Ubuntu" rel="stylesheet">
     <link rel="icon" type="img/png" href="./assets/forms.png">
-    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.4.1/css/all.css" integrity="sha384-5sAR7xN1Nv6T6+dT2mhtzEpVJvfS3NScPQTrOxhwjIuvcA67KV2R5Jz6kr4abQsz" crossorigin="anonymous">
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.4.1/css/all.css" integrity="sha384-5sAR7xN1Nv6T6+dT2mhtzEpVJvfS3NScPQTrOxhwjIuvcA67KV2R5Jz6kr4abQsz"
+        crossorigin="anonymous">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO"
+        crossorigin="anonymous">
 
     <title>Request Form | Good Company</title>
 </head>
+
 <body>
     <header>
         <!--Nav-bar-->
@@ -50,7 +54,7 @@
 
                 <fieldset id="requester_info">
                     <!-- <legend><i class="far fa-id-card"></i> Request Information</legend> -->
-                    
+
                     <!-- Bagian Kiri -->
                     <!-- <div id="all" class="row">
                         <div id="left" class="col-md-6">
@@ -74,8 +78,8 @@
                             <p></p>
                         </div> -->
 
-                        <!-- Bagian Kanan -->
-                        <!-- <div id="right" class="col-md-6">
+                    <!-- Bagian Kanan -->
+                    <!-- <div id="right" class="col-md-6">
                             <label class="col-md-4" for="payroll">Payroll Number</label>
                             <span id="payroll" name="payroll"></span>
                             <p></p>
@@ -129,41 +133,41 @@
                     <legend><i class="fas fa-warehouse"></i> Item</legend>
 
                     <div id="all" class="row">
-                            <div id="left" class="col-md-12">
-                                <label class="col-md-2" for="material">Material</label>
-                                <select  id="materials" name="materials" />
-                                    <option selected>Choose...</option>
-                                    <!--<option>001 - Computer pheriperals</option>
+                        <div id="left" class="col-md-12">
+                            <label class="col-md-2" for="material">Material</label>
+                            <select id="materials" name="materials" />
+                            <option selected>Choose...</option>
+                            <!--<option>001 - Computer pheriperals</option>
                                     <option>002 - Electrical equipment and part</option>
                                     <option>003 - Office stationery and tools</option>
                                     <option>004 - Transportation equipment and part</option>
                                     <option>005 - Heavy equipment and part</option> -->
-                                </select>
-                                <p></p>
-                                <label class="col-md-2" for="description">Description</label>
-                                <input type="text" class="col-md-8" id="description" name="description" />
-                                <p></p>
-                                <label class="col-md-2" for="quantity">Quantity</label>
-                                <input type="number" id="quantity" name="quantity" />
-                                <p></p>
-                                <label class="col-md-2" for="unit_measurement">Unit Measurement</label>
-                                <select id="unit_measurement" name="unit_measurement" />
-                                    <option selected>Piece</option>
-                                    <option>Meter</option>
-                                    <option>Set</option>
-                                    <option>Ton</option>
-                                    <option>Kilogram</option>
-                                </select>
-                                <p></p>
-                                <label class="col-md-2" for="price">Estimate Price</label>
-                                <span>$</span>
-                                <input type="text" id="price" name="price" />
-                                <span>.00</span>
-                                <p></p>
-                                <label class="col-md-2" for="material_picture">Material Picture</label>
-                                <input type="file" id="material_picture" name="material_picture" />
-                                <p></p>
-                            </div>
+                            </select>
+                            <p></p>
+                            <label class="col-md-2" for="description">Description</label>
+                            <input type="text" class="col-md-8" id="description" name="description" />
+                            <p></p>
+                            <label class="col-md-2" for="quantity">Quantity</label>
+                            <input type="number" id="quantity" name="quantity" />
+                            <p></p>
+                            <label class="col-md-2" for="unit_measurement">Unit Measurement</label>
+                            <select id="unit_measurement" name="unit_measurement" />
+                            <option selected>Piece</option>
+                            <option>Meter</option>
+                            <option>Set</option>
+                            <option>Ton</option>
+                            <option>Kilogram</option>
+                            </select>
+                            <p></p>
+                            <label class="col-md-2" for="price">Estimate Price</label>
+                            <span>$</span>
+                            <input type="text" id="price" name="price" />
+                            <span>.00</span>
+                            <p></p>
+                            <label class="col-md-2" for="material_picture">Material Picture</label>
+                            <input type="file" id="material_picture" name="material_picture" />
+                            <p></p>
+                        </div>
                     </div>
                 </fieldset>
 
@@ -179,27 +183,44 @@
                 <table class="table table-bordered table-hover container">
                     <thead class="thead">
                         <tr>
-                            <th scope="col">No.</th>
-                            <th scope="col">Item Detail</th>
-                            <th scope="col">Est. Price</th>
-                            <th scope="col">Qty</th>
-                            <th scope="col">Unit</th>
-                            <th scope="col">Sub Total</th>
-                            <th scope="col" id="table-action">Action</th>
+                            <th scope="col" class="col-md-1">No.</th>
+                            <th scope="col" class="col-md-3">Item Detail</th>
+                            <th scope="col" class="col-md-3">Description</th>
+                            <th scope="col" class="col-md-1">Est. Price</th>
+                            <th scope="col" class="col-md-1">Qty</th>
+                            <th scope="col" class="col-md-1">Unit</th>
+                            <th scope="col" class="col-md-1">Sub Total</th>
+                            <th scope="col" class="col-md-1" id="table-action">Action</th>
                             <!-- <th scope="col">Action</th> -->
                         </tr>
                     </thead>
                     <tbody>
                         <tr>
                             <th scope="row">1</th>
-                            <td id="tableDataItemDetail" >Electrical equipment</td>
+                            <td id="tableDataItemDetail">Electrical equipment</td>
+                            <td id="tableDataDescription"> Kabel roll 3M</td>
                             <td id="tableDataEstimatedPrice">50</td>
                             <td id="tableDataQuantity">5</td>
                             <td id="tableDataUnit">Piece</td>
                             <td id="tableDataSubTotal">250</td>
                             <form action="">
                                 <td id="table-action">
-                                    <button formaction="#" type="submit" id="edit-button"><i class="fas fa-pen"></i></button>
+                                    <!-- <button formaction="#" type="submit" id="edit-button"><i class="fas fa-pen"></i></button> -->
+                                    <button formaction="#" type="submit" id="delete-button"><i class="far fa-trash-alt"></i></button>
+                                </td>
+                            </form>
+                        </tr>
+                        <tr>
+                            <th scope="row">2</th>
+                            <td id="tableDataItemDetail">Machine equipment</td>
+                            <td id="tableDataDescription"> Baut</td>
+                            <td id="tableDataEstimatedPrice">50</td>
+                            <td id="tableDataQuantity">10</td>
+                            <td id="tableDataUnit">Piece</td>
+                            <td id="tableDataSubTotal">500</td>
+                            <form action="">
+                                <td id="table-action">
+                                    <!-- <button formaction="#" type="submit" id="edit-button"><i class="fas fa-pen"></i></button> -->
                                     <button formaction="#" type="submit" id="delete-button"><i class="far fa-trash-alt"></i></button>
                                 </td>
                             </form>
@@ -217,16 +238,20 @@
 
     <!-- Optional JavaScript -->
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
-    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+        crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49"
+        crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy"
+        crossorigin="anonymous"></script>
     <link rel="stylesheet" type="text/css" media="screen" href="css/formReq.css" />
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="/main.js"></script>
     <script>
-    getMaterial()
-    getRequestInfo()
-    getProfile()
+        getMaterial()
+        getRequestInfo()
+        getProfile()
     </script>
 </body>
+
 </html>
