@@ -2,6 +2,7 @@ DROP DATABASE pr_makers;
 CREATE DATABASE pr_makers;
 DELETE from material;
 SELECT * from kelas;
+Drop table request;
 
 -- View data
 select * from public.position;
@@ -9,7 +10,6 @@ select * from public.employee;
 select * from public.material;
 select * from request;
 select * from items;
-select * from tweet;
 
 -- add data to position
 insert into position(name) values ('Owner');
