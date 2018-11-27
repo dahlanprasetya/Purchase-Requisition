@@ -234,7 +234,7 @@ function addItem() {
 function sendRequest() {
   $.ajax({
     method: 'POST',
-    url: 'http://localhost:9000/sendRequest',
+    url: 'http://localhost:9000/submitRequest',
     beforeSend: function (req) {
       req.setRequestHeader('Content-Type', 'application/json')
       req.setRequestHeader('Authorization', getCookie('token'))
@@ -263,8 +263,10 @@ function sendRequest() {
 }
 
 // FUNGSI BIKINAN NAUFAL
-function getAllData() {
-
+function sendAllData(button) {
+  console.log(button)
+  $(button).addClass('hide')
+  $('#loading').removeClass('hide')
   // //////////////////////////////// Request ////////////////////////////////////////
   // autoComplete
   var obj = new Object(),
@@ -296,6 +298,7 @@ function getAllData() {
         text = $(td).text()
       item_obj[`${id}`] = text
     })
+    delete item_obj['table-action']
     array.push(item_obj)
   })
 
@@ -303,21 +306,27 @@ function getAllData() {
   var obj_data = new Object()
   obj_data["request_data"] = obj
   obj_data["array_item"] = array
+  console.log(obj_data)
 
   // /////////////////////////////// Kirim pake Ajax //////////////////////////////////////
   $.ajax({
     method: 'POST',
-    url: 'http://localhost:9000/sendRequest',
+    url: 'http://localhost:9000/submitrequest',
     beforeSend: function (req) {
       req.setRequestHeader('Content-Type', 'application/json')
       req.setRequestHeader('Authorization', getCookie('token'))
     },
-    data: obj_data,
+    data: JSON.stringify(
+      obj_data    
+    ),
     success: function (res) {
-      alert('berhasil')
+      console.log(res)
+      alert('Data berhasil dikirim')
+      window.location = "/employee.html"
     },
-    error: function (res) {
-      alert('gagal')
+    error: function (err) {
+      console.log(err)
+      alert('Data gagal dikirim')
     }
   })
 }
@@ -347,6 +356,19 @@ function addItemToTabel() {
       </td>
   </form>
 </tr>`)
+  $('#materials').val("Choose...")
+  $('#description').val("")
+  $('#quantity').val("")
+  $('#unit_measurement').val("Piece")
+  $('#price').val("")
+}
+
+function reset () {
+  $('#materials').val("Choose...")
+  $('#description').val("")
+  $('#quantity').val("")
+  $('#unit_measurement').val("Piece")
+  $('#price').val("")
 }
 
 function deleteTable(id) {
@@ -357,7 +379,6 @@ function deleteTable(id) {
     $(row).eq(i).find('th').html(`${i + 1}`)
   }
 }
-
 
 function form1() {
   // debugger
