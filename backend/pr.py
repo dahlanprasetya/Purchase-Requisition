@@ -79,7 +79,13 @@ def login():
             "secretcode": "kumiskucing"
         }
         encoded = jwt.encode(payload, jwtSecretKey, algorithm='HS256')
-        return encoded, 200
+        json_format = {
+        "token" : encoded,
+        "position" : dataUser.position
+        }
+        user_json = json.dumps(json_format)
+
+        return user_json, 200
     else:
         return 'gagal', 404
 
@@ -266,6 +272,8 @@ def getRequest():
 
 @app.route('/submitrequest',methods=['POST'])
 def submitRequest():
+    decoded = jwt.decode(request.headers["Authorization"], jwtSecretKey, algorithm='HS256')
+    userDB = Employee.query.filter_by(id=decoded["id"]).first()
     if request.method == 'POST':
         request_data = request.get_json()
         req_email = request_data['email']
@@ -289,7 +297,7 @@ def submitRequest():
             record_id = result['data']['id']
 
             #submit si flow pake record id dan token
-            submit_request_result = submit_request(record_id,user_token)
+            submit_request_result = submit_request(record_id,user_token,'requester_pr@makersinstitute.id')
             process_id = submit_request_result['data']['process_id']
 
             # gerakin flow dari requester ke manager
@@ -305,12 +313,12 @@ def submitRequest():
             return "token not found",404
 
 # fungsi untuk submit record dan gerakin flow ke requester
-def submit_request(record_id,user_token):
+def submit_request(record_id,user_token,email_requester):
     # data template untuk submit record
     record_instance = {
         "data": {
             "form_data": {
-                "pVRequester": "requester_pr@makersinstitute.id",
+                "pVRequester": email_requester,
                 "pVSCM": "scm_pr@makersinstitute.id"
             },
             "comment": "Initiated"
@@ -326,11 +334,11 @@ def submit_request(record_id,user_token):
     return result
 
 # fungsi untuk gerakin flow dari requester ke manager
-def sent_task(req_comment,user_token,process_id):
+def sent_task(req_comment,user_token,process_id,task_name):
 
     def recursive():
         # get task id and pVApprover name
-        query = "folder=app:task:all&filter[name]=%s&filter[state]=active&filter[definition_id]=%s&filter[process_id]=%s" % ('Submit Request',
+        query = "folder=app:task:all&filter[name]=%s&filter[state]=active&filter[definition_id]=%s&filter[process_id]=%s" % (task_name,
             os.getenv("DEFINITION_ID"),process_id)
         url = os.getenv("BASE_URL_TASK")+"?"+quote(query, safe="&=")
         r = requests.get(url,headers={
@@ -394,6 +402,17 @@ def submit_to_database(record_id,process_id):
     else:
         return None
 
+def get_tasklist(task_name,process_id,user_token):
+    query = "folder=app:task:all&filter[name]=%s&filter[state]=active&filter[definition_id]=%s&filter[process_id]=%s" % (task_name,
+            os.getenv("DEFINITION_ID"),process_id)
+    url = os.getenv("BASE_URL_TASK")+"?"+quote(query, safe="&=")
+    r = requests.get(url,headers={
+        "Content-Type": "application/json","Authorization": "Bearer %s" %user_token
+    })
+    print(r.text)
+    result = json.loads(r.text)
+    return result,201
 
+# def acc
 if __name__ == '__main__':
     app.run(debug=os.getenv("DEBUG"), host=os.getenv("HOST"), port=os.getenv("PORT"))

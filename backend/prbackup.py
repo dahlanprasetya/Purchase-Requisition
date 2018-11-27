@@ -10,7 +10,7 @@ from requests.utils import quote
 
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] =  'postgresql://postgres:Sembilantujuh97@localhost:5432/pr_makers'
+app.config['SQLALCHEMY_DATABASE_URI'] =  'postgresql://postgres:kumiskucing@localhost:5432/pr_makers'
 CORS(app, support_credentials=True)
 app.config['SECRET_KEY'] = os.urandom(24)
 db = SQLAlchemy(app)
@@ -35,33 +35,37 @@ class Employee(db.Model):
     photoprofile = db.Column(db.String())
     payroll_number = db.Column(db.Integer())
     token = db.Column(db.String())
+    company = db.Column(db.String())
+    plant = db.Column(db.String())
 
 class Request(db.Model):
     id = db.Column(db.Integer,primary_key=True)
     person_id = db.Column(db.Integer,db.ForeignKey('employee.id'))
-    plant = db.Column(db.String())
     budget_type = db.Column(db.String())
     currency = db.Column(db.String())
-    expected_date = db.Column(db.DateTime())
+    expected_date = db.Column(db.String())
     location = db.Column(db.String())
     budget_source = db.Column(db.String())
     justification = db.Column(db.String())
     acc_scm = db.Column(db.Integer())
     acc_manager = db.Column(db.Integer())
     acc_owner = db.Column(db.Integer())
-    material = db.Column(db.Integer, db.ForeignKey('material.id'))
-    description = db.Column(db.String())
-    quatity = db.Column(db.Integer())
-    unit_measurement = db.Column(db.String())
-    material_picture = db.Column(db.String())
     record_id = db.Column(db.String())
     process_id = db.Column(db.String())
+    item_id = db.relationship('Request', backref='owner')
 
-# class Comment(db.Model):
-#     id = db.Column(db.Integer,primary_key=True)
-#     comment_content = db.Column(db.String())
-#     id_user = db.Column(db.Integer, db.ForeignKey('employee.id'))
-#     record_id = db.Column(db.String())
+class Items(db.Model):
+    id = db.Column(db.Integer,primary_key=True)
+    material_id = db.Column(db.Integer,db.ForeignKey('material.id'))
+    quantity = db.Column(db.Integer())
+    unit_measurement = db.Column(db.String())
+    material_picture = db.Column(db.String())
+    description = db.Column(db.String())
+    estimate_price = db.Column(db.Integer())
+    total = db.Column(db.Integer())
+
+
+
 
 @app.route('/')
 def get():
@@ -95,11 +99,11 @@ def getAccRequest():
     requests = Request.filter_by(acc_scm=1, acc_manager=1, acc_owner=1).first()
     req = []
     for request in requests:
-        employee = Employee.filter_by(id=request.id).first()
+        employee = Employee.filter_by(id=request.person_id).first()
         json_format = {
             "id" : request.id,
             "person_name": employee.fullname,
-            "plant": request.plant,
+            "plant": employee.plant,
             "budget_type": request.budget_type,
             "currency": request.currency,
             "expected_date": request.expected_date,
@@ -270,22 +274,20 @@ def getRequest():
     req_json = json.dumps(json_format)
     return req_json, 201
 
-@app.route('/sendRequest',methods=["POST"])
+@app.route('/sendRequest')
 def sendRequest():
+    decoded = jwt.decode(Request.headers["Authorization"], jwtSecretKey, algorithm='HS256')
+    userDB = Employee.query.filter_by(id = decoded['id']).first()
     request_data = request.get_json()
     data_db = Request(
-        person_id= request_data['id'],
+        person_name= userDB.fullname,
+        plant= userDB.plant,
         budget_type= request_data['budget_type'],
         currency= request_data['currency'],
         expected_date= request_data['expected_date'],
         location= request_data['location'],
         budget_source= request_data['budget_source'],
-        justification= request_data['justification'],
-        material= request_data['materials'],
-        description= request_data['description'],
-        quatity= request_data['quantity'],
-        unit_measurement= request_data['unit_measurement'],
-        material_picture= request_data['material_picture']
+        justification= request_data['justification']
     )
     db.session.add(data_db)
     db.session.commit()
@@ -296,16 +298,30 @@ def sendRequest():
     else:
         return 'gagal',400
 
+def addMaterial(arr_material,data_id):
+    request_data = request.get_json()
+    data_db = Items(
+        material_id = request_data['material_id'],
+        quantity = request_data['quantity'],
+        unit_measurement = request_data['unit_measurement'],
+        material_picture = request_data['material_picture'],
+        description = request_data['description'],
+        estimate_price = request_data['estimate_price'],
+        total = request_data['quantity'] * request_data['estimate_price'],
+        request_id = data_id
+    )
+    arr_material.append(data_db)
+    return arr_material
 # =====================================================================
 
 @app.route('/submitrequest',methods=['POST'])
 def submitRequest():
+    decoded = jwt.decode(request.headers["Authorization"], jwtSecretKey, algorithm='HS256')
+    userDB = Employee.query.filter_by(id=decoded["id"]).first()
     if request.method == 'POST':
         request_data = request.get_json()
-        req_email = request_data['email']
-        req_comment = request_data['comment']
-
-        userDB = Employee.query.filter_by(email=req_email).first()
+        req_email = userDB.email
+        req_comment = "test"
         if userDB:
             user_token = userDB.token
             # data template untuk create record
@@ -323,14 +339,16 @@ def submitRequest():
             record_id = result['data']['id']
 
             #submit si flow pake record id dan token
-            submit_request_result = submit_request(record_id,user_token,'requester_pr@makersinstitute.id')
+            submit_request_result = submit_request(record_id,user_token,req_email)
             process_id = submit_request_result['data']['process_id']
 
             # gerakin flow dari requester ke manager
-            sent_task(req_comment,user_token,process_id)
+            position = Position.query.filter_by(id=userDB.position)
+            task_name = position.name
+            sent_task(req_comment,user_token,process_id,task_name)
 
             # submit ke DB
-            # data_db = submit_to_database(record_id,process_instance["data"]["process_id"])
+            data_db = submit_to_database(record_id,process_instance["data"]["process_id"],userDB.id)
 
             # return berupa id dan status
             return 'ok',201
@@ -397,37 +415,53 @@ def sent_task(req_comment,user_token,process_id,task_name):
     return "OK"
 
 # submit data ke DB
-def submit_to_database(record_id,process_id):
-    request_data = request.get_json()
-    req_code = request_data['code']
-    req_price = request_data['price']
+def submit_to_database(record_id,process_id,employee_id):
+    request_json = request.get_json()
+    userDB = Employee.query.filter_by(id=employee_id).first()
     # buat data template ke DB
+    arr_material = []
     data_db = Request(
-        person_name= employee.fullname,
-        plant= request.plant,
-        budget_type= request.budget_type,
-        currency= request.currency,
-        expected_date= request.expected_date,
-        location= request.location,
-        budget_source= request.budget_source,
-        justification= request.justification,
-        material= request.material,
-        description= request.description,
-        quatity= request.quatity,
-        unit_measurement= request.unit_measurement,
-        material_picture= request.material_picture,
+        person_id = employee_id,
+        budget_type= request_data['budget_type'],
+        currency= request_data['currency'],
+        expected_date= request_data['expected_date'],
+        location= request_data['location'],
+        budget_source= request_data['budget_source'],
+        justification= request_data['justification'],
         process_id = process_id,
-        record_id = record_id
+        record_id = record_id,
+        acc_scm = 0,
+        acc_manager = 0,
+        acc_owner = 0
     )
     db.session.add(data_db)
     db.session.commit()
     db.session.flush() # fungsinya ketika data telah dimasukan kita mau pakai lagi datanya
+    request = Request.query.filter_by(id=data_db.id).first()
+    if request is not None:
+        
+    addMaterial(arr_material,data_db.id)
+    for material in arr_material:
+        db.session.add(data_db)
+        db.session.commit()
+        db.session.flush() # f
 
     if data_db.id:
         return str(data_db.id)
     else:
         return None
 
+def get_tasklist(task_name,process_id,user_token):
+    query = "folder=app:task:all&filter[name]=%s&filter[state]=active&filter[definition_id]=%s&filter[process_id]=%s" % (task_name,
+            os.getenv("DEFINITION_ID"),process_id)
+    url = os.getenv("BASE_URL_TASK")+"?"+quote(query, safe="&=")
+    r = requests.get(url,headers={
+        "Content-Type": "application/json","Authorization": "Bearer %s" %user_token
+    })
+    print(r.text)
+    result = json.loads(r.text)
+    return result,201
 
+# def acc
 if __name__ == '__main__':
     app.run(debug=os.getenv("DEBUG"), host=os.getenv("HOST"), port=os.getenv("PORT"))
