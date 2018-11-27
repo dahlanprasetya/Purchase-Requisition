@@ -111,6 +111,12 @@ function welcome() {
   })
 }
 
+function loading() {
+  document.getElementById("loading").style.display = "none";
+}
+
+
+
 function getRequestInfo() {
   $.ajax({
     method : 'GET',
@@ -214,6 +220,13 @@ function getMaterial(){
   })
 }
 
+function addItem () {
+  $.ajax({
+    method: 'POST',
+  
+  })
+}
+
 function sendRequest(){
   $.ajax({
     method: 'POST',
@@ -292,7 +305,7 @@ function getAllData() {
     method: 'POST',
     url: 'http://localhost:9000/sendRequest',
     beforeSend : function(req){
-      req.('Content-Type', 'application/json')
+      req.setRequestHeader('Content-Type', 'application/json')
       req.setRequestHeader('Authorization', getCookie('token'))
     },
     data : obj_data,

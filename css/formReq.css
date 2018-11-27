@@ -251,7 +251,13 @@ thead {
 
 /* button send req */
 
-#send_req {
+#send_req, #button_load {
     margin: 10px 0px 10px 20px;
 }
+
+#button_load {
+    width: 125px;
+}
+
+
 
