@@ -1,6 +1,6 @@
 DROP DATABASE pr_makers;
 CREATE DATABASE pr_makers;
-DELETE from material;
+DELETE from request;
 SELECT * from kelas;
 Drop table request;
 
@@ -46,4 +46,4 @@ INSERT INTO public.request(person_id,plant,budget_type,currency,expected_date, l
 INSERT INTO public.request(person_id,plant,budget_type,currency,expected_date, location, budget_source, justification, acc_scm, acc_manager, acc_owner,material,description,quatity,unit_measurement,record_id,process_id) values
 (4,'thisIsPlant','thisIsBudget','thisIsCurrency','08/02/1996','Bandung','thisIsBudgetSource','thisIsJustification',0,0,0,27,'thisIsDescription',12,'thisIsUnitMeasurenment','thisIsRecordId','thisIsProcessId');
 
-UPDATE employee set token = 'Dz0YjDWgEDZ6LOgF48i453y9gyh9lAKTJU-520GpmcA.LyxRqBfxUZskAu_rHa-NrtSvYwG3AMdqR4yo2wfeNz4' where id=4;
+UPDATE employee set token = '_Q_ZcSrp1du6yiQNoSEqi6Qg4OV2WtFYNJdxgtDwgnM.c1cbk0c-PFyUcxfDqBC2ryykULs0v2Av28cx8lVBn0o' where id=4;
