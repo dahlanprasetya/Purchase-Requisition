@@ -306,7 +306,7 @@ function getAllData() {
 }
 
 function addItemToTabel(){
-  
+
   <tr>
       <th scope="row">2</th>
       <td id="tableDataItemDetail">Machine equipment</td>
@@ -323,7 +323,6 @@ function addItemToTabel(){
       </form>
   </tr>
 }
-
 
 
 
