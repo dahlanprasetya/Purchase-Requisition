@@ -305,7 +305,7 @@ def addMaterial(arr_material,data_id):
         quantity = request_data['quantity'],
         unit_measurement = request_data['unit_measurement'],
         material_picture = request_data['material_picture'],
-        description = request_data['description']
+        description = request_data['description'],
         estimate_price = request_data['estimate_price'],
         total = request_data['quantity'] * request_data['estimate_price'],
         request_id = data_id
@@ -416,7 +416,7 @@ def sent_task(req_comment,user_token,process_id,task_name):
 
 # submit data ke DB
 def submit_to_database(record_id,process_id,employee_id):
-    request_data = request.get_json()
+    request_json = request.get_json()
     userDB = Employee.query.filter_by(id=employee_id).first()
     # buat data template ke DB
     arr_material = []
@@ -427,7 +427,7 @@ def submit_to_database(record_id,process_id,employee_id):
         expected_date= request_data['expected_date'],
         location= request_data['location'],
         budget_source= request_data['budget_source'],
-        justification= request_data['justification']
+        justification= request_data['justification'],
         process_id = process_id,
         record_id = record_id,
         acc_scm = 0,
@@ -440,7 +440,6 @@ def submit_to_database(record_id,process_id,employee_id):
     request = Request.query.filter_by(id=data_db.id).first()
     if request is not None:
         
-    
     addMaterial(arr_material,data_db.id)
     for material in arr_material:
         db.session.add(data_db)

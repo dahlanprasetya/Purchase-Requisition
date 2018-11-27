@@ -288,7 +288,7 @@ function getAllData() {
   obj_data["array_item"] = array
 
   // /////////////////////////////// Kirim pake Ajax //////////////////////////////////////
-  $.ajak({
+  $.ajax({
     method: 'POST',
     url: 'http://localhost:9000/sendRequest',
     beforeSend : function(req){
@@ -303,6 +303,25 @@ function getAllData() {
       alert('gagal')
     }
   })
+}
+
+function addItemToTabel(){
+  
+  <tr>
+      <th scope="row">2</th>
+      <td id="tableDataItemDetail">Machine equipment</td>
+      <td id="tableDataDescription"> Baut</td>
+      <td id="tableDataEstimatedPrice">50</td>
+      <td id="tableDataQuantity">10</td>
+      <td id="tableDataUnit">Piece</td>
+      <td id="tableDataSubTotal">500</td>
+      <form action="">
+          <td id="table-action">
+              <!-- <button formaction="#" type="submit" id="edit-button"><i class="fas fa-pen"></i></button> -->
+              <button formaction="#" type="submit" id="delete-button"><i class="far fa-trash-alt"></i></button>
+          </td>
+      </form>
+  </tr>
 }
 
 
