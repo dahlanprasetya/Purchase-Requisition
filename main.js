@@ -24,8 +24,8 @@ function removeCookie() {
   window.location = '/login.html';
 }
 
-function home(){
-  var a= getCookie('requester')
+function home() {
+  var a = getCookie('requester')
   a == "true" ? window.location = "/employee.html" : window.location = "/scm.html"
 }
 
@@ -33,14 +33,14 @@ function login() {
   $.ajax({
     method: "POST",
     url: "http://localhost:9000/login",
-    beforeSend: function(req) {
+    beforeSend: function (req) {
       req.setRequestHeader('Content-Type', 'application/json')
     },
-    data: JSON.stringify ({
-      "email" : document.getElementById('email').value,
-      "password" : document.getElementById('password').value
+    data: JSON.stringify({
+      "email": document.getElementById('email').value,
+      "password": document.getElementById('password').value
     }),
-    success : function(res) {
+    success: function (res) {
       data = JSON.parse(res)
       if (data.position == 4) {
         var isRequest = true
@@ -50,14 +50,14 @@ function login() {
       alert("Login Success");
       document.cookie = `token=${data.token}`
       document.cookie = `requester=${isRequest}`
-      if (isRequest){
+      if (isRequest) {
         window.location = "/employee.html"
-      }else{
+      } else {
         window.location = "/scm.html"
       }
     },
-    error : function(err) {
-      alert ("email atau password salah: "+this.status);
+    error: function (err) {
+      alert("email atau password salah: " + this.status);
       console.log(err)
     }
   })
@@ -65,13 +65,13 @@ function login() {
 
 function getProfile() {
   $.ajax({
-    method : 'GET',
+    method: 'GET',
     url: "http://localhost:9000/getProfile",
-    beforeSend: function(req) {
+    beforeSend: function (req) {
       req.setRequestHeader('Content-Type', 'application/json'),
-      req.setRequestHeader('Authorization', getCookie('token'))
+        req.setRequestHeader('Authorization', getCookie('token'))
     },
-    success : function(res) {
+    success: function (res) {
       data = JSON.parse(res)
       console.log(data)
       document.getElementById('dropdown').insertAdjacentHTML("afterbegin", `<div class="dropdown__user">
@@ -84,7 +84,7 @@ function getProfile() {
       </div>
   </div>`)
     },
-    error : function(err) {
+    error: function (err) {
       console.log(err)
     }
   })
@@ -92,40 +92,44 @@ function getProfile() {
 
 function welcome() {
   $.ajax({
-    method : 'GET',
+    method: 'GET',
     url: "http://localhost:9000/getProfile",
-    beforeSend: function(req) {
+    beforeSend: function (req) {
       req.setRequestHeader('Content-Type', 'application/json'),
-      req.setRequestHeader('Authorization', getCookie('token'))
+        req.setRequestHeader('Authorization', getCookie('token'))
     },
-    success : function(res) {
+    success: function (res) {
       data = JSON.parse(res)
       console.log(data)
       document.getElementById('home').insertAdjacentHTML("afterbegin", `<p class="lead text-center display-4">Hello, ${data.fullname}</p>
       <p class="lead text-center mb-5 display-4">Make a form request now ?</p>
       <button onclick="window.location = '/formReq.html'" type="button" class="btn btn-lg col-2 offset-5">Request </button>`)
     },
-    error : function(err) {
+    error: function (err) {
       console.log(err)
     }
   })
 }
 
-function loading() {
-  document.getElementById("loading").style.display = "none";
+function loading(button) {
+
+  console.log(button)
+  $(button).addClass('hide')
+  $('#loading').removeClass('hide')
+  // document.getElementById("loading").style.display = "none";
 }
 
 
 
 function getRequestInfo() {
   $.ajax({
-    method : 'GET',
+    method: 'GET',
     url: "http://localhost:9000/getProfile",
-    beforeSend: function(req) {
+    beforeSend: function (req) {
       req.setRequestHeader('Content-Type', 'application/json'),
-      req.setRequestHeader('Authorization', getCookie('token'))
+        req.setRequestHeader('Authorization', getCookie('token'))
     },
-    success : function(res) {
+    success: function (res) {
       data = JSON.parse(res)
       // console.log(data)
       document.getElementById('requester_info').insertAdjacentHTML("afterbegin", `<legend><i class="far fa-id-card"></i> Request Information</legend>
@@ -146,10 +150,10 @@ function getRequestInfo() {
               <span id="id_employee" name="id_employee">${data.id}</span>
               <p></p>
               <label class="col-md-4" for="company">Company</label>
-              <span id="company" name="company"></span>
+              <span id="company" name="company">${data.company}</span>
               <p></p>
               <label class="col-md-4" for="plant">Plant</label>
-              <span id="plant" name="plant"></span>
+              <span id="plant" name="plant">${data.plant}</span>
               <p></p>
           </div>
 
@@ -192,67 +196,67 @@ function getRequestInfo() {
           </div>
       </div>`)
     },
-    error : function(err) {
+    error: function (err) {
       console.log(err)
     }
   })
 }
 
-function getMaterial(){
+function getMaterial() {
   $.ajax({
-    method : 'GET',
+    method: 'GET',
     url: "http://localhost:9000/getAllMaterial",
-    beforeSend: function(req) {
+    beforeSend: function (req) {
       req.setRequestHeader('Content-Type', 'application/json'),
-      req.setRequestHeader('Authorization', getCookie('token'))
+        req.setRequestHeader('Authorization', getCookie('token'))
     },
-    success : function(res) {
-      JSON.parse(res).forEach(function(data){
+    success: function (res) {
+      JSON.parse(res).forEach(function (data) {
         // console.log(data)
         document.getElementById('materials').insertAdjacentHTML("beforeend", `
         <option id="${data.id}">${data.code} ${data.name}</option>
         `)
       })
     },
-    error : function(err) {
+    error: function (err) {
       console.log(err)
     }
   })
 }
 
-function addItem () {
+function addItem() {
   $.ajax({
     method: 'POST',
-  
+
   })
 }
 
-function sendRequest(){
+function sendRequest() {
   $.ajax({
     method: 'POST',
     url: 'http://localhost:9000/sendRequest',
-    beforeSend : function(req){
+    beforeSend: function (req) {
       req.setRequestHeader('Content-Type', 'application/json')
       req.setRequestHeader('Authorization', getCookie('token'))
     },
-    data : JSON.stringify({
-      "fullname" : document.getElementById('fullname').value,
-      "budget_type" : document.getElementById('budget_type').value,
+    data: JSON.stringify({
+      "fullname": document.getElementById('fullname').value,
+      "budget_type": document.getElementById('budget_type').value,
       "currency": document.getElementById('currenct').value,
       "expected_date": document.getElementById('expected_date').value,
-      "location" : document.getElementById('location').value,
-      "budget_source" : document.getElementById('budget_source').value,
-      "justification" : document.getElementById('justification').value,
-      "materials" : document.getElementById('materials').value,
-      "description" : document.getElementById('description').value,
-      "quantity" : document.getElementById('quantity').value,
-      "unit_measurement" : document.getElementById('unit_measurement').value,
-      "material_picture" : document.getElementById('material_picture').value
+      "location": document.getElementById('location').value,
+      "budget_source": document.getElementById('budget_source').value,
+      "justification": document.getElementById('justification').value,
+      "materials": document.getElementById('materials').value,
+      "description": document.getElementById('description').value,
+      "quantity": document.getElementById('quantity').value,
+      "unit_measurement": document.getElementById('unit_measurement').value,
+      "material_picture": document.getElementById('material_picture').value
     }),
-    success: function(res){    
+    success: function (res) {
       alert('berhasil')
-  },
-    error: function(err){
+    },
+    error: function (err) {
       alert('gagal')
     }
   })
@@ -260,16 +264,16 @@ function sendRequest(){
 
 // FUNGSI BIKINAN NAUFAL
 function getAllData() {
-  
+
   // //////////////////////////////// Request ////////////////////////////////////////
   // autoComplete
   var obj = new Object(),
-      autoComplete = $('#right select').get()
-      // autoComplete = document.querySelectorAll('.parent .child1');
+    autoComplete = $('#right select').get()
+  // autoComplete = document.querySelectorAll('.parent .child1');
 
   for (let i = 0; i < autoComplete.length; i++) {
     var id = $(autoComplete).eq(i).attr("id"),
-        val = $(autoComplete).eq(i).val()
+      val = $(autoComplete).eq(i).val()
     console.log(val)
     obj[`${id}`] = val
   }
@@ -283,17 +287,17 @@ function getAllData() {
 
   // //////////////////////////////// Item ////////////////////////////////////////
   var array = new Array(),
-      rows = $('table.table tbody tr').get()
+    rows = $('table.table tbody tr').get()
   rows.forEach(row => {
     var tds = $(row).find('td').get(),
-        item_obj = new Object()
+      item_obj = new Object()
     tds.forEach(td => {
       var id = $(td).attr("id"),
-          text = $(td).text()
+        text = $(td).text()
       item_obj[`${id}`] = text
     })
     array.push(item_obj)
-  })  
+  })
 
   // ///////////////////////////////// Data to send to Backend ///////////////////////////////////////
   var obj_data = new Object()
@@ -304,74 +308,89 @@ function getAllData() {
   $.ajax({
     method: 'POST',
     url: 'http://localhost:9000/sendRequest',
-    beforeSend : function(req){
+    beforeSend: function (req) {
       req.setRequestHeader('Content-Type', 'application/json')
       req.setRequestHeader('Authorization', getCookie('token'))
     },
-    data : obj_data,
-    success: function(res){
+    data: obj_data,
+    success: function (res) {
       alert('berhasil')
     },
-    error: function(res){
+    error: function (res) {
       alert('gagal')
     }
   })
 }
 
-function addItemToTabel(){
-  
-  <tr>
-      <th scope="row">2</th>
-      <td id="tableDataItemDetail">Machine equipment</td>
-      <td id="tableDataDescription"> Baut</td>
-      <td id="tableDataEstimatedPrice">50</td>
-      <td id="tableDataQuantity">10</td>
-      <td id="tableDataUnit">Piece</td>
-      <td id="tableDataSubTotal">500</td>
-      <form action="">
-          <td id="table-action">
-              <!-- <button formaction="#" type="submit" id="edit-button"><i class="fas fa-pen"></i></button> -->
-              <button formaction="#" type="submit" id="delete-button"><i class="far fa-trash-alt"></i></button>
-          </td>
-      </form>
-  </tr>
+function addItemToTabel() {
+  var materials_value = $('#materials').val()
+  var description_value = $('#description').val()
+  var quantity_value = $('#quantity').val()
+  var unit_measurement_value = $('#unit_measurement').val()
+  var price_value = $('#price').val()
+
+  // jQuery
+  var table = $('table.table tbody'),
+    row = table.find('tr')
+  $('table.table tbody').append(
+    `<tr id="${row.length + 1}">
+  <th scope="row">${row.length + 1}</th>
+  <td id="tableDataItemDetail">${materials_value} equipment</td>
+  <td id="tableDataDescription"> ${description_value}</td>
+  <td id="tableDataEstimatedPrice">${price_value}</td>
+  <td id="tableDataQuantity">${quantity_value}</td>
+  <td id="tableDataUnit">${unit_measurement_value}</td>
+  <td id="tableDataSubTotal">${quantity_value * price_value}</td>
+  <form action="">
+      <td id="table-action">
+          <button formaction="#" onclick=deleteTable(${row.length + 1}) type="submit" id="delete-button"><i class="far fa-trash-alt"></i></button>
+      </td>
+  </form>
+</tr>`)
 }
 
-
+function deleteTable(id) {
+  $(`tr#${id}`).remove()
+  // reset number
+  var row = $('table.table tbody tr')
+  for (var i = 0; i < row.length; i++) {
+    $(row).eq(i).find('th').html(`${i + 1}`)
+  }
+}
 
 
 function form1() {
   // debugger
- fullname = document.getElementById("fullname").value;
- email = document.getElementById("email").value;
- position = document.getElementById("position").value;
- id_employee = document.getElementById("id_employee").value;
- company = document.getElementById("company").value;
- plant = document.getElementById("plant").value;
- payroll = document.getElementById("payroll").value;
- budget_type = document.getElementById("budget_type").value;
- currency = document.getElementById("currency").value;
- location = document.getElementById("location").value;
- budget_source = document.getElementById("budget_source").value;
- justification = document.getElementById("justification").value;
+  fullname = document.getElementById("fullname").value;
+  email = document.getElementById("email").value;
+  position = document.getElementById("position").value;
+  id_employee = document.getElementById("id_employee").value;
+  company = document.getElementById("company").value;
+  plant = document.getElementById("plant").value;
+  payroll = document.getElementById("payroll").value;
+  budget_type = document.getElementById("budget_type").value;
+  currency = document.getElementById("currency").value;
+  location = document.getElementById("location").value;
+  budget_source = document.getElementById("budget_source").value;
+  justification = document.getElementById("justification").value;
 
- var xmlHttp = new XMLHttpRequest();
+  var xmlHttp = new XMLHttpRequest();
   xmlHttp.open("POST", "http://localhost:5000/form");
   xmlHttp.setRequestHeader("Content-Type", "application/json");
   xmlHttp.send(
     JSON.stringify({
-      fullname : fullname,
-      email : email,
-      position : position,
-      id_employee : id_employee,
-      company : company,
-      plant : plant,
-      payroll : payroll,
-      budget_type : budget_type,
-      currency : currency,
-      location : location,
-      budget_source : budget_source,
-      justification : justification
+      fullname: fullname,
+      email: email,
+      position: position,
+      id_employee: id_employee,
+      company: company,
+      plant: plant,
+      payroll: payroll,
+      budget_type: budget_type,
+      currency: currency,
+      location: location,
+      budget_source: budget_source,
+      justification: justification
     })
   );
   /* debugger */

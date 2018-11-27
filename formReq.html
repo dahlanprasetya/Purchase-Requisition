@@ -124,7 +124,7 @@
 
                     <div id="all" class="row">
                         <div class="col-md-12">
-                            <label class="col-md-2" for="justification">Justification</label>
+                            <label class="col-md-2" id="justification-label"  for="justification">Justification</label>
                             <textarea cols="76" rows="3" id="justification" name="justification"></textarea>
                         </div>
                     </div>
@@ -165,16 +165,16 @@
                             <input type="text" id="price" name="price" />
                             <span>.00</span>
                             <p></p>
-                            <label class="col-md-2" for="material_picture">Material Picture</label>
+                            <!-- <label class="col-md-2" for="material_picture">Material Picture</label>
                             <input type="file" id="material_picture" name="material_picture" />
-                            <p></p>
+                            <p></p> -->
                         </div>
                     </div>
                 </fieldset>
 
                 <div id="button" class="row">
                     <div class="col-md-0 offset-5">
-                        <button type="submit" class="btn btn-primary">Add</button>
+                        <button type="submit" onclick="addItemToTabel()" class="btn btn-primary">Add</button>
                     </div>
                     <div class="col-md-0">
                         <button type="submit" class="btn btn-primary">Reset</button>
@@ -196,7 +196,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr>
+                        <!-- <tr>
                             <th scope="row">1</th>
                             <td id="tableDataItemDetail">Electrical equipment</td>
                             <td id="tableDataDescription"> Kabel roll 3M</td>
@@ -206,7 +206,7 @@
                             <td id="tableDataSubTotal">250</td>
                             <form action="">
                                 <td id="table-action">
-                                    <!-- <button formaction="#" type="submit" id="edit-button"><i class="fas fa-pen"></i></button> -->
+                                    <button formaction="#" type="submit" id="edit-button"><i class="fas fa-pen"></i></button>
                                     <button formaction="#" type="submit" id="delete-button"><i class="far fa-trash-alt"></i></button>
                                 </td>
                             </form>
@@ -221,18 +221,18 @@
                             <td id="tableDataSubTotal">500</td>
                             <form action="">
                                 <td id="table-action">
-                                    <!-- <button formaction="#" type="submit" id="edit-button"><i class="fas fa-pen"></i></button> -->
+                                    <button formaction="#" type="submit" id="edit-button"><i class="fas fa-pen"></i></button>
                                     <button formaction="#" type="submit" id="delete-button"><i class="far fa-trash-alt"></i></button>
                                 </td>
                             </form>
-                        </tr>
+                        </tr> -->
                     </tbody>
                 </table>
                 <div class="row">
                     <div class="col-md-0 offset-5">
-                        <button id="send_req" type="submit" onclick="loading()" class="btn btn-primary">Send Request</button>
+                        <button id="send_req" type="submit" onclick="loading(this)" class="btn btn-primary">Send Request</button>
                     </div>
-                    <div id="loading" class="col-md-0 offset-5">
+                    <div id="loading" class="col-md-0 hide">
                         <button id="button_load" type="submit" class="btn btn-primary"><i class="fa fa-circle-o-notch fa-spin"></i> Loading</button>
                     </div>
                 </div>

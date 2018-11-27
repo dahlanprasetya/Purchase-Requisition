@@ -10,7 +10,7 @@ from requests.utils import quote
 
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] =  'postgresql://postgres:kumiskucing@localhost:5432/pr_makers'
+app.config['SQLALCHEMY_DATABASE_URI'] =  'postgresql://postgres:Sembilantujuh97@localhost:5432/pr_makers'
 CORS(app, support_credentials=True)
 app.config['SECRET_KEY'] = os.urandom(24)
 db = SQLAlchemy(app)
@@ -52,7 +52,7 @@ class Request(db.Model):
     acc_owner = db.Column(db.Integer())
     record_id = db.Column(db.String())
     process_id = db.Column(db.String())
-    item_id = db.relationship('Request', backref='owner')
+    items = db.relationship('Items', backref='owner')
 
 class Items(db.Model):
     id = db.Column(db.Integer,primary_key=True)
@@ -63,6 +63,7 @@ class Items(db.Model):
     description = db.Column(db.String())
     estimate_price = db.Column(db.Integer())
     total = db.Column(db.Integer())
+    request_id = db.Column(db.Integer, db.ForeignKey('request.id'))
 
 
 
@@ -74,7 +75,7 @@ def get():
 @app.route('/login',methods=['POST'])
 def login():
     request_data = request.get_json()
-    req_email = request_data.get('email'),
+    req_email = request_data.get('email')
     req_password = request_data.get('password')
     dataUser = Employee.query.filter_by(email=req_email, password=req_password).first()
     if dataUser :
@@ -160,6 +161,8 @@ def getProfile():
             "position" :  postition_name.name,
             "photoprofile" : userDB.photoprofile,
             "payroll": userDB.payroll_number,
+            "company": userDB.company,
+            "plant": userDB.plant,
             "id" : userDB.id
         }
         profile_json = json.dumps(json_format) 
@@ -348,7 +351,7 @@ def submitRequest():
             sent_task(req_comment,user_token,process_id,task_name)
 
             # submit ke DB
-            data_db = submit_to_database(record_id,process_instance["data"]["process_id"],userDB.id)
+            # data_db = submit_to_database(record_id,process_instance["data"]["process_id"],userDB.id)
 
             # return berupa id dan status
             return 'ok',201
@@ -415,41 +418,41 @@ def sent_task(req_comment,user_token,process_id,task_name):
     return "OK"
 
 # submit data ke DB
-def submit_to_database(record_id,process_id,employee_id):
-    request_json = request.get_json()
-    userDB = Employee.query.filter_by(id=employee_id).first()
-    # buat data template ke DB
-    arr_material = []
-    data_db = Request(
-        person_id = employee_id,
-        budget_type= request_data['budget_type'],
-        currency= request_data['currency'],
-        expected_date= request_data['expected_date'],
-        location= request_data['location'],
-        budget_source= request_data['budget_source'],
-        justification= request_data['justification'],
-        process_id = process_id,
-        record_id = record_id,
-        acc_scm = 0,
-        acc_manager = 0,
-        acc_owner = 0
-    )
-    db.session.add(data_db)
-    db.session.commit()
-    db.session.flush() # fungsinya ketika data telah dimasukan kita mau pakai lagi datanya
-    request = Request.query.filter_by(id=data_db.id).first()
-    if request is not None:
+# def submit_to_database(record_id,process_id,employee_id):
+#     request_json = request.get_json()
+#     userDB = Employee.query.filter_by(id=employee_id).first()
+#     # buat data template ke DB
+#     arr_material = []
+#     data_db = Request(
+#         person_id = employee_id,
+#         budget_type= request_data['budget_type'],
+#         currency= request_data['currency'],
+#         expected_date= request_data['expected_date'],
+#         location= request_data['location'],
+#         budget_source= request_data['budget_source'],
+#         justification= request_data['justification'],
+#         process_id = process_id,
+#         record_id = record_id,
+#         acc_scm = 0,
+#         acc_manager = 0,
+#         acc_owner = 0
+#     )
+#     db.session.add(data_db)
+#     db.session.commit()
+#     db.session.flush() # fungsinya ketika data telah dimasukan kita mau pakai lagi datanya
+#     request = Request.query.filter_by(id=data_db.id).first()
+#     if request is not None:
         
-    addMaterial(arr_material,data_db.id)
-    for material in arr_material:
-        db.session.add(data_db)
-        db.session.commit()
-        db.session.flush() # f
+#         addMaterial(arr_material,data_db.id)
+#     for material in arr_material:
+#         db.session.add(data_db)
+#         db.session.commit()
+#         db.session.flush() # f
 
-    if data_db.id:
-        return str(data_db.id)
-    else:
-        return None
+#     if data_db.id:
+#         return str(data_db.id)
+#     else:
+#         return None
 
 def get_tasklist(task_name,process_id,user_token):
     query = "folder=app:task:all&filter[name]=%s&filter[state]=active&filter[definition_id]=%s&filter[process_id]=%s" % (task_name,
