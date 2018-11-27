@@ -56,7 +56,7 @@ class Request(db.Model):
 
 class Items(db.Model):
     id = db.Column(db.Integer,primary_key=True)
-    material_id = db.Column(db.Integer,db.ForeignKey('material.id'))
+    material_name = db.Column(db.String())
     quantity = db.Column(db.Integer())
     unit_measurement = db.Column(db.String())
     material_picture = db.Column(db.String())
@@ -83,7 +83,7 @@ def login():
             "id": dataUser.id,
             "secretcode": "kumiskucing"
         }
-        encoded = jwt.encode(payload, jwtSecretKey, algorithm='HS256')
+        encoded = jwt.encode(payload, jwtSecretKey, algorithm='HS256').decode('utf-8')
         json_format = {
         "token" : encoded,
         "position" : dataUser.position
@@ -279,12 +279,12 @@ def getRequest():
 
 def addMaterial(request,req_item):
     data_db = Items(
-        material_id = req_item['material_id'],
-        quantity = req_item['quantity'],
-        unit_measurement = req_item['unit_measurement'],
-        description = req_item['description'],
-        estimate_price = req_item['estimate_price'],
-        total = req_item['total'],
+        material_name = req_item['tableDataItemDetail'],
+        quantity = req_item['tableDataQuantity'],
+        unit_measurement = req_item['tableDataUnit'],
+        description = req_item['tableDataDescription'],
+        estimate_price = req_item['tableDataEstimatedPrice'],
+        total = req_item['tableDataSubTotal'],
         owner = request
     )
     db.session.add(data_db)

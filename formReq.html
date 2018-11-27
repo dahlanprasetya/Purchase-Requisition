@@ -49,7 +49,7 @@
 
     <!-- Form Request -->
     <section>
-        <form onsubmit="event.preventDefault(); sendRequest()" method="POST">
+        <form onsubmit="event.preventDefault();" method="POST">
             <div class="container">
                 <h2 id="welcome" class="text-center">General Material Purchase Request</h2>
 
@@ -137,7 +137,7 @@
                         <div id="left" class="col-md-12">
                             <label class="col-md-2" for="material">Material</label>
                             <select id="materials" name="materials" />
-                            <option selected>Choose...</option>
+                            <option id="default" selected>Choose...</option>
                             <!--<option>001 - Computer pheriperals</option>
                                     <option>002 - Electrical equipment and part</option>
                                     <option>003 - Office stationery and tools</option>
@@ -177,7 +177,7 @@
                         <button type="submit" onclick="addItemToTabel()" class="btn btn-primary">Add</button>
                     </div>
                     <div class="col-md-0">
-                        <button type="submit" class="btn btn-primary">Reset</button>
+                        <button type="submit" onclick="reset()" class="btn btn-primary">Reset</button>
                     </div>
                 </div>
 
@@ -211,26 +211,12 @@
                                 </td>
                             </form>
                         </tr>
-                        <tr>
-                            <th scope="row">2</th>
-                            <td id="tableDataItemDetail">Machine equipment</td>
-                            <td id="tableDataDescription"> Baut</td>
-                            <td id="tableDataEstimatedPrice">50</td>
-                            <td id="tableDataQuantity">10</td>
-                            <td id="tableDataUnit">Piece</td>
-                            <td id="tableDataSubTotal">500</td>
-                            <form action="">
-                                <td id="table-action">
-                                    <button formaction="#" type="submit" id="edit-button"><i class="fas fa-pen"></i></button>
-                                    <button formaction="#" type="submit" id="delete-button"><i class="far fa-trash-alt"></i></button>
-                                </td>
-                            </form>
-                        </tr> -->
+                         -->
                     </tbody>
                 </table>
                 <div class="row">
                     <div class="col-md-0 offset-5">
-                        <button id="send_req" type="submit" onclick="loading(this)" class="btn btn-primary">Send Request</button>
+                        <button id="send_req" type="submit" onclick="sendAllData(this)" class="btn btn-primary">Send Request</button>
                     </div>
                     <div id="loading" class="col-md-0 hide">
                         <button id="button_load" type="submit" class="btn btn-primary"><i class="fa fa-circle-o-notch fa-spin"></i> Loading</button>
