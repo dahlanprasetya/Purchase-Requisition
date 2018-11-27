@@ -63,7 +63,7 @@ class Items(db.Model):
     description = db.Column(db.String())
     estimate_price = db.Column(db.Integer())
     total = db.Column(db.Integer())
-    request_id = db.Column(db.Integer, db.ForeignKey('request.id'))
+    request_id =  db.Column(db.Integer,db.ForeignKey('request.id'))
 
 
 
@@ -83,7 +83,7 @@ def login():
             "id": dataUser.id,
             "secretcode": "kumiskucing"
         }
-        encoded = jwt.encode(payload, jwtSecretKey, algorithm='HS256').decode('utf-8')
+        encoded = jwt.encode(payload, jwtSecretKey, algorithm='HS256')
         json_format = {
         "token" : encoded,
         "position" : dataUser.position
@@ -277,44 +277,20 @@ def getRequest():
     req_json = json.dumps(json_format)
     return req_json, 201
 
-@app.route('/sendRequest')
-def sendRequest():
-    decoded = jwt.decode(Request.headers["Authorization"], jwtSecretKey, algorithm='HS256')
-    userDB = Employee.query.filter_by(id = decoded['id']).first()
-    request_data = request.get_json()
-    data_db = Request(
-        person_name= userDB.fullname,
-        plant= userDB.plant,
-        budget_type= request_data['budget_type'],
-        currency= request_data['currency'],
-        expected_date= request_data['expected_date'],
-        location= request_data['location'],
-        budget_source= request_data['budget_source'],
-        justification= request_data['justification']
+def addMaterial(request,req_item):
+    data_db = Items(
+        material_id = req_item['material_id'],
+        quantity = req_item['quantity'],
+        unit_measurement = req_item['unit_measurement'],
+        description = req_item['description'],
+        estimate_price = req_item['estimate_price'],
+        total = req_item['total'],
+        owner = request
     )
     db.session.add(data_db)
     db.session.commit()
-    db.session.flush() # fungsinya ketika data telah dimasukan kita mau pakai lagi datanya
-
-    if data_db.id:
-        return str(data_db.id),201
-    else:
-        return 'gagal',400
-
-def addMaterial(arr_material,data_id):
-    request_data = request.get_json()
-    data_db = Items(
-        material_id = request_data['material_id'],
-        quantity = request_data['quantity'],
-        unit_measurement = request_data['unit_measurement'],
-        material_picture = request_data['material_picture'],
-        description = request_data['description'],
-        estimate_price = request_data['estimate_price'],
-        total = request_data['quantity'] * request_data['estimate_price'],
-        request_id = data_id
-    )
-    arr_material.append(data_db)
-    return arr_material
+    db.session.flush()
+    return data_db.id
 # =====================================================================
 
 @app.route('/submitrequest',methods=['POST'])
@@ -322,7 +298,6 @@ def submitRequest():
     decoded = jwt.decode(request.headers["Authorization"], jwtSecretKey, algorithm='HS256')
     userDB = Employee.query.filter_by(id=decoded["id"]).first()
     if request.method == 'POST':
-        request_data = request.get_json()
         req_email = userDB.email
         req_comment = "test"
         if userDB:
@@ -342,20 +317,21 @@ def submitRequest():
             record_id = result['data']['id']
 
             #submit si flow pake record id dan token
-            submit_request_result = submit_request(record_id,user_token,req_email)
+            submit_request_result = submit_request(record_id,user_token,'requester_pr@makersinstitute.id')
             process_id = submit_request_result['data']['process_id']
 
             # gerakin flow dari requester ke manager
-            position = Position.query.filter_by(id=userDB.position)
+            position = Position.query.filter_by(id=userDB.position).first()
             task_name = position.name
+            # return task_name,201
             sent_task(req_comment,user_token,process_id,task_name)
 
             # submit ke DB
-            # data_db = submit_to_database(record_id,process_instance["data"]["process_id"],userDB.id)
+            data_db = submit_to_database(record_id,process_id,userDB.id)
 
             # return berupa id dan status
-            return 'ok',201
-            return r.status_text,201
+            # return 'ok',201
+            return data_db,201
         else:
             return "token not found",404
 
@@ -418,41 +394,36 @@ def sent_task(req_comment,user_token,process_id,task_name):
     return "OK"
 
 # submit data ke DB
-# def submit_to_database(record_id,process_id,employee_id):
-#     request_json = request.get_json()
-#     userDB = Employee.query.filter_by(id=employee_id).first()
-#     # buat data template ke DB
-#     arr_material = []
-#     data_db = Request(
-#         person_id = employee_id,
-#         budget_type= request_data['budget_type'],
-#         currency= request_data['currency'],
-#         expected_date= request_data['expected_date'],
-#         location= request_data['location'],
-#         budget_source= request_data['budget_source'],
-#         justification= request_data['justification'],
-#         process_id = process_id,
-#         record_id = record_id,
-#         acc_scm = 0,
-#         acc_manager = 0,
-#         acc_owner = 0
-#     )
-#     db.session.add(data_db)
-#     db.session.commit()
-#     db.session.flush() # fungsinya ketika data telah dimasukan kita mau pakai lagi datanya
-#     request = Request.query.filter_by(id=data_db.id).first()
-#     if request is not None:
-        
-#         addMaterial(arr_material,data_db.id)
-#     for material in arr_material:
-#         db.session.add(data_db)
-#         db.session.commit()
-#         db.session.flush() # f
+def submit_to_database(record_id,process_id,employee_id):
+    request_json = request.get_json()
+    # buat data template ke DB
+    data_db = Request(
+        person_id = employee_id,
+        budget_type= request_json['request_data']['budget_type'],
+        currency= request_json['request_data']['currency'],
+        expected_date= request_json['request_data']['expected_date'],
+        location= request_json['request_data']['location'],
+        budget_source= request_json['request_data']['budget_source'],
+        justification= request_json['request_data']['justification'],
+        process_id = process_id,
+        record_id = record_id,
+        acc_scm = 0,
+        acc_manager = 0,
+        acc_owner = 0
+    )
+    db.session.add(data_db)
+    db.session.commit()
+    db.session.flush() # fungsinya ketika data telah dimasukan kita mau pakai lagi datanya
+    req_item = request_json['array_item']
+    request_data = Request.query.filter_by(id=data_db.id).first()
+    if request_data is not None:
+        for item in req_item:
+            addMaterial(request_data, item)
 
-#     if data_db.id:
-#         return str(data_db.id)
-#     else:
-#         return None
+    if data_db.id:
+        return str(data_db.id)
+    else:
+        return None
 
 def get_tasklist(task_name,process_id,user_token):
     query = "folder=app:task:all&filter[name]=%s&filter[state]=active&filter[definition_id]=%s&filter[process_id]=%s" % (task_name,
