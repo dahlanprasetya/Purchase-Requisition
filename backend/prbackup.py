@@ -75,7 +75,7 @@ def get():
 @app.route('/login',methods=['POST'])
 def login():
     request_data = request.get_json()
-    req_email = request_data.get('email'),
+    req_email = request_data.get('email')
     req_password = request_data.get('password')
     dataUser = Employee.query.filter_by(email=req_email, password=req_password).first()
     if dataUser :
@@ -161,6 +161,8 @@ def getProfile():
             "position" :  postition_name.name,
             "photoprofile" : userDB.photoprofile,
             "payroll": userDB.payroll_number,
+            "company": userDB.company,
+            "plant": userDB.plant,
             "id" : userDB.id
         }
         profile_json = json.dumps(json_format) 
