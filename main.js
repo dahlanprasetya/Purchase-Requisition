@@ -1,7 +1,7 @@
-// untuk login
-const axios = require('axios')
+// untuk login ///////////////////////////////////////////////////////////////////////////////////////////////////////////
+// const axios = require('axios')
 
-//   untuk cookienya
+//   untuk cookienya ///////////////////////////////////////////////////////////////////////////////////////////////////////////
 function getCookie(cname) {
   var name = cname + "=";
   var decodedCookie = decodeURIComponent(document.cookie);
@@ -18,17 +18,20 @@ function getCookie(cname) {
   return "";
 }
 
+// Menghapus Cookie///////////////////////////////////////////////////////////////////////////////////////////////////////////
 function removeCookie() {
   document.cookie = 'token=;expires=Thu, 01 Jan 1970 00:00:01 GMT;';
   document.cookie = 'requester=;expires=Thu, 01 Jan 1970 00:00:01 GMT;';
   window.location = '/login.html';
 }
 
+// Mengatur dashboard location ///////////////////////////////////////////////////////////////////////////////////////////////////////////
 function home() {
   var a = getCookie('requester')
   a == "true" ? window.location = "/employee.html" : window.location = "/scm.html"
 }
 
+// Login ke dalam home ///////////////////////////////////////////////////////////////////////////////////////////////////////////
 function login() {
   $.ajax({
     method: "POST",
@@ -63,6 +66,7 @@ function login() {
   })
 }
 
+// Memunculkan data ke home ///////////////////////////////////////////////////////////////////////////////////////////////////////////
 function getProfile() {
   $.ajax({
     method: 'GET',
@@ -73,7 +77,7 @@ function getProfile() {
     },
     success: function (res) {
       data = JSON.parse(res)
-      console.log(data)
+      // console.log(data)
       document.getElementById('dropdown').insertAdjacentHTML("afterbegin", `<div class="dropdown__user">
       <img class="dropbtn" href="#" src="${data.photoprofile}" alt="orang" />
       <a id="profile-name" href="profile.html"> ${data.fullname}</a>
@@ -90,6 +94,7 @@ function getProfile() {
   })
 }
 
+// Mengambil nama employee //////////////////////////////////////////////////////////////////////////////////////////////////
 function welcome() {
   $.ajax({
     method: 'GET',
@@ -100,7 +105,7 @@ function welcome() {
     },
     success: function (res) {
       data = JSON.parse(res)
-      console.log(data)
+      // console.log(data)
       document.getElementById('home').insertAdjacentHTML("afterbegin", `<p class="lead text-center display-4">Hello, ${data.fullname}</p>
       <p class="lead text-center mb-5 display-4">Make a form request now ?</p>
       <button onclick="window.location = '/formReq.html'" type="button" class="btn btn-lg col-2 offset-5">Request </button>`)
@@ -111,6 +116,7 @@ function welcome() {
   })
 }
 
+// loading function ///////////////////////////////////////////////////////////////////////////////////////////////////////////
 function loading(button) {
 
   console.log(button)
@@ -119,15 +125,14 @@ function loading(button) {
   // document.getElementById("loading").style.display = "none";
 }
 
-
-
+// Saat mengisi request form langsung otomatis mengambil data employee /////////////////////////////////////////////////////////////////
 function getRequestInfo() {
   $.ajax({
     method: 'GET',
     url: "http://localhost:9000/getProfile",
     beforeSend: function (req) {
       req.setRequestHeader('Content-Type', 'application/json'),
-        req.setRequestHeader('Authorization', getCookie('token'))
+      req.setRequestHeader('Authorization', getCookie('token'))
     },
     success: function (res) {
       data = JSON.parse(res)
@@ -202,6 +207,7 @@ function getRequestInfo() {
   })
 }
 
+// memunculkan material pada kolom select di request form /////////////////////////////////////////////////////////////////
 function getMaterial() {
   $.ajax({
     method: 'GET',
@@ -224,59 +230,21 @@ function getMaterial() {
   })
 }
 
-function addItem() {
-  $.ajax({
-    method: 'POST',
-
-  })
-}
-
-function sendRequest() {
-  $.ajax({
-    method: 'POST',
-    url: 'http://localhost:9000/submitRequest',
-    beforeSend: function (req) {
-      req.setRequestHeader('Content-Type', 'application/json')
-      req.setRequestHeader('Authorization', getCookie('token'))
-    },
-    data: JSON.stringify({
-      "fullname": document.getElementById('fullname').value,
-      "budget_type": document.getElementById('budget_type').value,
-      "currency": document.getElementById('currenct').value,
-      "expected_date": document.getElementById('expected_date').value,
-      "location": document.getElementById('location').value,
-      "budget_source": document.getElementById('budget_source').value,
-      "justification": document.getElementById('justification').value,
-      "materials": document.getElementById('materials').value,
-      "description": document.getElementById('description').value,
-      "quantity": document.getElementById('quantity').value,
-      "unit_measurement": document.getElementById('unit_measurement').value,
-      "material_picture": document.getElementById('material_picture').value
-    }),
-    success: function (res) {
-      alert('berhasil')
-    },
-    error: function (err) {
-      alert('gagal')
-    }
-  })
-}
-
-// FUNGSI BIKINAN NAUFAL
+// Mengirim seluruh isi request form ke database ///////////////////////////////////////////////////////////////////////////////////////////////////////////
 function sendAllData(button) {
   console.log(button)
   $(button).addClass('hide')
   $('#loading').removeClass('hide')
   // //////////////////////////////// Request ////////////////////////////////////////
+
   // autoComplete
   var obj = new Object(),
     autoComplete = $('#right select').get()
   // autoComplete = document.querySelectorAll('.parent .child1');
-
   for (let i = 0; i < autoComplete.length; i++) {
     var id = $(autoComplete).eq(i).attr("id"),
       val = $(autoComplete).eq(i).val()
-    console.log(val)
+    // console.log(val)
     obj[`${id}`] = val
   }
   // input (date)
@@ -285,8 +253,6 @@ function sendAllData(button) {
   // justification
   var just = $('#justification').val()
   obj['justification'] = just
-
-
   // //////////////////////////////// Item ////////////////////////////////////////
   var array = new Array(),
     rows = $('table.table tbody tr').get()
@@ -306,7 +272,6 @@ function sendAllData(button) {
   var obj_data = new Object()
   obj_data["request_data"] = obj
   obj_data["array_item"] = array
-  console.log(obj_data)
 
   // /////////////////////////////// Kirim pake Ajax //////////////////////////////////////
   $.ajax({
@@ -320,7 +285,7 @@ function sendAllData(button) {
       obj_data    
     ),
     success: function (res) {
-      console.log(res)
+      // console.log(res)
       alert('Data berhasil dikirim')
       window.location = "/employee.html"
     },
@@ -331,6 +296,7 @@ function sendAllData(button) {
   })
 }
 
+// Fungsi menambahkan item ke tabel ///////////////////////////////////////////////////////////////////////////////////////////////////////////
 function addItemToTabel() {
   var materials_value = $('#materials').val()
   var description_value = $('#description').val()
@@ -363,6 +329,7 @@ function addItemToTabel() {
   $('#price').val("")
 }
 
+// fungsi reset ditabel item ///////////////////////////////////////////////////////////////////////////////////////////////////////////
 function reset () {
   $('#materials').val("Choose...")
   $('#description').val("")
@@ -371,6 +338,7 @@ function reset () {
   $('#price').val("")
 }
 
+// fungsi delete tabel item ///////////////////////////////////////////////////////////////////////////////////////////////////////////
 function deleteTable(id) {
   $(`tr#${id}`).remove()
   // reset number
@@ -380,60 +348,116 @@ function deleteTable(id) {
   }
 }
 
-function form1() {
-  // debugger
-  fullname = document.getElementById("fullname").value;
-  email = document.getElementById("email").value;
-  position = document.getElementById("position").value;
-  id_employee = document.getElementById("id_employee").value;
-  company = document.getElementById("company").value;
-  plant = document.getElementById("plant").value;
-  payroll = document.getElementById("payroll").value;
-  budget_type = document.getElementById("budget_type").value;
-  currency = document.getElementById("currency").value;
-  location = document.getElementById("location").value;
-  budget_source = document.getElementById("budget_source").value;
-  justification = document.getElementById("justification").value;
+// function editTable(id) {
+//   $(`tr#${id}`).text()
 
-  var xmlHttp = new XMLHttpRequest();
-  xmlHttp.open("POST", "http://localhost:5000/form");
-  xmlHttp.setRequestHeader("Content-Type", "application/json");
-  xmlHttp.send(
-    JSON.stringify({
-      fullname: fullname,
-      email: email,
-      position: position,
-      id_employee: id_employee,
-      company: company,
-      plant: plant,
-      payroll: payroll,
-      budget_type: budget_type,
-      currency: currency,
-      location: location,
-      budget_source: budget_source,
-      justification: justification
-    })
-  );
-  /* debugger */
-  xmlHttp.onreadystatechange = function () {
-    /* debugger */
-    if (this.readyState == 4 && this.status == 201) {
-      debugger
-      alert("Data Has Been Added");
-      window.location = "/loginTwitter.html";
-    } else if (this.readyState == 4) {
-      alert("Please Try Again");
+//   $('#materials').val("Choose...")
+//   $('#description').val("")
+//   $('#quantity').val("")
+//   $('#unit_measurement').val("Piece")
+//   $('#price').val("")
+// }
+
+// Memunculkan data ke tabel approval list ///////////////////////////////////////////////////////////////////////////////////////////////////////////
+function approvalList() {
+  $.ajax({
+    method: 'GET',
+    url: "http://localhost:9000/getAllMaterial",
+    beforeSend: function (req) {
+      req.setRequestHeader('Content-Type', 'application/json'),
+        req.setRequestHeader('Authorization', getCookie('token'))
+    },
+    success: function (res) {
+      JSON.parse(res).forEach(function (data) {
+        data = JSON.parse(res)
+        // console.log(data)
+        document.getElementById('materials').insertAdjacentHTML("beforeend", `
+        <tr>
+                <td scope="row">32132131</td>
+                <td>Mark</td>
+                <td>Astra</td>
+                <td>Approved by Manager</td>
+                <form action="">
+                    <td id="table-action"><button formaction="/details.html" type="submit" id="see-details-button">See details</button></td>
+                </form>
+            </tr>
+        `)
+      })
+    },
+    error: function (err) {
+      console.log(err)
     }
-  };
+  })
 }
 
+// Fungsi munculkan data ke comment html ///////////////////////////////////////////////////////////////////////////////////////////////////////////
+function commentProfile(){
+  $.ajax({
+    method: 'GET',
+    url: "http://localhost:9000/getProfile",
+    beforeSend: function (req) {
+      req.setRequestHeader('Content-Type', 'application/json'),
+        req.setRequestHeader('Authorization', getCookie('token'))
+    },
+    success: function (res) {
+      data = JSON.parse(res)
+      // console.log(data)
+      document.getElementById('comment-section').insertAdjacentHTML("afterbegin", 
+      `<form>
+      <div id="all" class="row">
+          <div class="col-md-1">
+              <img src="${data.photoprofile}" />
+          </div>
+          <div class="col-md-11">
+              <textarea rows="4" id="comment-box" placeholder="Add a comment"></textarea>
+          </div>
+      </div>
+  </form>`)
+    },
+    error: function (err) {
+      console.log(err)
+    }
+  })
+}
 
+// Fungsi menambahkan comment ke database ///////////////////////////////////////////////////////////////////////////////////////////////////////////
+function approvedComment(){
+  var comment_value = $('#comment-box').val()
+  var approved_value = $('#approved-button').text()
 
-function form2() {
-  materials = document.getElementByname("materials").value;
-  description = document.getElementById("description").value;
-  quantity = document.getElementByname("quantity").value;
-  unit_measurement = document.getElementsByName("unit_measurement").value;
-  price = document.getElementById("price").value;
-  material_picture = document.getElementById("material_picture").value;
+  // jQuery
+  var table = $('#table_comment_history.table tbody'),
+    row = table.find('tr')
+  $('#table_comment_history.table tbody').prepend(
+    `<tr>
+    <td id="tableDataParticipant" scope="${row}">Oka Aryanta</td>
+    <td id="tableDataPosition" >Supply Chain Management</td>
+    <td id="tableDataActivity">${approved_value}</td>
+    <td id="tableDataStart">5 Nov 2018 09:20</td>
+    <td id="tableDataComment">${comment_value}</td>
+</tr>`)
+  $('#comment-box').val("")
+}
+
+function revisedComment(){
+  var comment_value = $('#comment-box').val()
+  var revised_value = $('#revised-button').text()
+
+  // jQuery
+  var table = $('#table_comment_history.table tbody'),
+    row = table.find('tr')
+  $('#table_comment_history.table tbody').prepend(
+    `<tr>
+    <td id="tableDataParticipant" scope="row">Oka Aryanta</td>
+    <td id="tableDataPosition" >Supply Chain Management</td>
+    <td id="tableDataActivity">${revised_value}</td>
+    <td id="tableDataStart">5 Nov 2018 09:20</td>
+    <td id="tableDataComment">${comment_value}</td>
+</tr>`)
+  $('#comment-box').val("")
+}
+
+// Memunculkan comment ///////////////////////////////////////////////////////////////////////////////////////////////////////////
+function showComment(){
+
 }

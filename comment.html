@@ -48,7 +48,7 @@
 
     <!-- Form Request -->
     <section>
-        <form>
+        <form onsubmit="event.preventDefault();" method="POST">
             <div class="container">
                 <h2 id="welcome" class="text-center">General Material Purchase Request Details</h2>
 
@@ -157,7 +157,7 @@
                 </fieldset>
                 <div id="comment-section">
 
-                    <form>
+                    <!-- <form>
                         <div id="all" class="row">
                             <div class="col-md-1">
                                 <img src="assets/user.png" />
@@ -166,15 +166,15 @@
                                 <textarea rows="4" id="comment-box" placeholder="Add a comment"></textarea>
                             </div>
                         </div>
-                    </form>
+                    </form> -->
                 </div>
 
                 <div id="button" class="row">
                     <div class="col-md-0 offset-5">
-                        <button id="approved-button" type="submit" class="btn btn-primary">Approved</button>
+                        <button id="approved-button" type="submit" onclick="approvedComment()" class="btn btn-primary">Approved</button>
                     </div>
                     <div class="col-md-0">
-                        <button id="revised-button" type="submit" class="btn btn-primary">Revised</button>
+                        <button id="revised-button" type="submit" onclick="revisedComment()" class="btn btn-primary">Revised</button>
                     </div>
                 </div>
 
@@ -195,13 +195,13 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr>
+                        <!-- <tr>
                             <td id="tableDataParticipant" scope="row">Oka Aryanta</td>
                             <td id="tableDataPosition" >Supply Chain Management</td>
                             <td id="tableDataActivity">Revised</td>
                             <td id="tableDataStart">5 Nov 2018 09:20</td>
                             <td id="tableDataComment">Yang lain sudah oke, kecuali harganya masih terlalu mahal, tolong cari alternatif lain ya</td>
-                        </tr>
+                        </tr> -->
                     </tbody>
                 </table>
 
@@ -222,6 +222,7 @@
     <script src="/main.js"></script>
     <script>
     getProfile()
+    commentProfile()
     </script>
 </body>
 </html>
