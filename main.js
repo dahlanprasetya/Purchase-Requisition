@@ -170,7 +170,6 @@ function getRequestDetails() {
         // window.location = "/details.html";
         data = JSON.parse(res)
         document.getElementById('get-data-request').insertAdjacentHTML("afterbegin", `<h2 id="welcome" class="text-center">General Material Purchase Request Details</h2>
-
         <fieldset id="requester_info">
             <legend><i class="far fa-id-card"></i> Request Information</legend>
 
@@ -237,65 +236,27 @@ function getRequestDetails() {
                     <span id="justification" name="justification">${data.request_detail.justification}</span>
                 </div>
             </div>
-        </fieldset>
-
-        <fieldset id="item">
-            <legend><i class="fas fa-warehouse"></i> Item</legend>
-        </fieldset>
-
-        <table class="table table-bordered table-hover container">
-            <thead class="thead">
-                <tr>
-                    <th scope="col" class="col-md-1">No.</th>
-                    <th scope="col" class="col-md-3">Item Detail</th>
-                    <th scope="col" class="col-md-3">Description</th>
-                    <th scope="col" class="col-md-1">Est. Price</th>
-                    <th scope="col" class="col-md-1">Qty</th>
-                    <th scope="col" class="col-md-1">Unit</th>
-                    <th scope="col" class="col-md-1">Sub Total</th>
-                    <!-- <th scope="col" class="col-md-1"id="table-action">Action</th> -->
-                    <!-- <th scope="col">Action</th> -->
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <th scope="row">1</th>
-                    <td id="tableDataItemDetail" >Electrical equipment</td>
-                    <td id="tableDataDescription"> Kabel roll 3M</td>
-                    <td id="tableDataEstimatedPrice">50</td>
-                    <td id="tableDataQuantity">5</td>
-                    <td id="tableDataUnit">Piece</td>
-                    <td id="tableDataSubTotal">250</td>
-                </tr>
-            </tbody>
-        </table>
-
-        <!-- Riwayat Komentar -->
-        <fieldset id="comment_history">
-            <legend><i class="fas fa-history"></i> Comment History</legend>
-        </fieldset>
-        
-        <table id="table_comment_history" class="table table-bordered table-hover container">
-            <thead class="thead">
-                <tr>
-                    <th scope="col" class="col-md-2">Participant</th>
-                    <th scope="col" class="col-md-2">Position</th>
-                    <th scope="col" class="col-md-1">Activity</th>
-                    <th scope="col" class="col-md-2">Time</th>
-                    <th scope="col" class="col-md-5">Comment</th>
-                    <!-- <th scope="col">Action</th> -->
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td id="tableDataParticipant" scope="row">Oka Aryanta</td>
-                    <td id="tableDataPosition" >Supply Chain Management</td>
-                    <td id="tableDataActivity">Revised</td>
-                    <td id="tableDataStart">5 Nov 2018 09:20</td>
-                    <td id="tableDataComment">Yang lain sudah oke, kecuali harganya masih terlalu mahal, tolong cari alternatif lain ya</td>
-                </tr>
-            </tbody>
-        </table>`)
+        </fieldset>`)
+        var table_item = $('#table_item tbody'),
+            data_table_item = data.items_detail
+            // row = tbody.find('tr')
+            // masukin data tabel item
+            console.log(data_table_item)
+            data_table_item.forEach(data => {
+              
+              table_item.append(`
+              <tr>
+              <th scope="row"></th>
+              <td id="tableDataItemDetail" >${data.material_name}</td>
+              <td id="tableDataDescription">${data.description}</td>
+              <td id="tableDataEstimatedPrice">${data.estimate_price}</td>
+              <td id="tableDataQuantity">${data.quantity}</td>
+              <td id="tableDataUnit">${data.unit_measurement}</td>
+              <td id="tableDataSubTotal">${data.total}</td>
+          </tr>
+              `)
+              
+          })
       },
       error: function (err) {
         console.log(err)
@@ -305,7 +266,10 @@ function getRequestDetails() {
 
 function redirectToDetail(id){
   window.location = 'details.html?id=' + id
-  
+}
+
+function getItemDetails(){
+
 }
 
 function getRequestInfo() {
