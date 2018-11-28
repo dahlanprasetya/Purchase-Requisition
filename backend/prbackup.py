@@ -94,57 +94,41 @@ def login():
     else:
         return 'gagal', 404
 
-@app.route('/getAccRequest')
-def getAccRequest():
-    decoded = jwt.decode(Request.headers["Authorization"], jwtSecretKey, algorithm='HS256')
-    requests = Request.filter_by(acc_scm=1, acc_manager=1, acc_owner=1).first()
-    req = []
-    for request in requests:
-        employee = Employee.filter_by(id=request.person_id).first()
-        json_format = {
-            "id" : request.id,
-            "person_name": employee.fullname,
-            "plant": employee.plant,
-            "budget_type": request.budget_type,
-            "currency": request.currency,
-            "expected_date": request.expected_date,
-            "location" : request.location,
-            "budget_source": request.budget_source,
-            "justification": request.justification,
-            "material" : request.material,
-            "description" : request.description,
-            "quatity" : request.quatity,
-            "unit_measurement": request.unit_measurement,
-            "material_picture": request.material_picture,
-        }
-        req.append(json_format)
-        req_json = json.dumps(req)
-        return req_json,201
-
 @app.route('/getUserRequest')
 def getUserRequest():
-    decoded = jwt.decode(Request.headers["Authorization"], jwtSecretKey, algorithm='HS256')
+    decoded = jwt.decode(request.headers["Authorization"], jwtSecretKey, algorithm='HS256')
     requests = Request.query.filter_by(person_id=decoded["id"])
     request_arr = []
-    for request in requests:
-        userDB = Employee.query.filter_by(id=decoded["id"])
-        request_arr = []
-        json_format = {
-            "id": request.id,
-            "person_name": userDB.fullname,
-            "plant": request.plant,
-            "budget_type": request.budget_type,
-            "currency": request.currency,
-            "expected_date": request.expected_date,
-            "location" : request.location,
-            "budget_source": request.budget_source,
-            "justification": request.justification,
-            "material" : request.material,
-            "description" : request.description,
-            "quatity" : request.quatity,
-            "unit_measurement": request.unit_measurement,
-            "material_picture": request.material_picture
-        }
+    for req in requests:
+        userDB = Employee.query.filter_by(id=decoded["id"]).first()
+        if req.acc_scm == 1 and req.acc_manager == 1 and req.acc_owner==1:
+            json_format = {
+                "id": req.id,
+                "person_name": userDB.fullname,
+                "company": userDB.company,
+                "status": "Approved by Owner"
+            }
+        elif req.acc_scm == 1 and req.acc_manager == 1:
+            json_format = {
+                "id": req.id,
+                "person_name": userDB.fullname,
+                "company": userDB.company,
+                "status": "Approved by Manager"
+            }
+        elif req.acc_scm == 1:
+            json_format = {
+                "id": req.id,
+                "person_name": userDB.fullname,
+                "company": userDB.company,
+                "status": "Approved by SCM"
+            }
+        else:
+            json_format = {
+                "id": req.id,
+                "person_name": userDB.fullname,
+                "company": userDB.company,
+                "status": "Not yet approved"
+            }
         request_arr.append(json_format)
     request_json = json.dumps(request_arr)
     return request_json,201
@@ -251,46 +235,93 @@ def getRequestAccManager():
         req_json = json.dumps(req)
         return req_json,201
 
-@app.route('/getRequest')
+@app.route('/getRequestDetails', methods=['POST'])
 def getRequest():
-    decoded = jwt.decode(Request.headers["Authorization"], jwtSecretKey, algorithm='HS256')
-    employee = Employee.query.filter_by(id = decoded["id"]).first()
-    request_data = request.get_json()
-    request_id = request_data.get('id')
-    request = Request.query.filter_by(id=request_id)
-    json_format = {
-        "id" : request.id,
-        "person_name": employee.fullname,
-        "plant": request.plant,
-        "budget_type": request.budget_type,
-        "currency": request.currency,
-        "expected_date": request.expected_date,
-        "location" : request.location,
-        "budget_source": request.budget_source,
-        "justification": request.justification,
-        "material" : request.material,
-        "description" : request.description,
-        "quatity" : request.quatity,
-        "unit_measurement": request.unit_measurement,
-        "material_picture": request.material_picture
-    }
-    req_json = json.dumps(json_format)
-    return req_json, 201
+    if request.method == 'POST':
+        request_data = request.get_json()
+        decoded = jwt.decode(request.headers["Authorization"], jwtSecretKey, algorithm='HS256')
+        requestDB = Request.query.filter_by(id=request_data["id"]).first()
+        requester_detail = Employee.query.filter_by(id=requestDB.person_id).first()
+        position = Position.query.filter_by(id=requester_detail.position).first()
+        req_items = Items.query.filter_by(request_id=requestDB.id)
+        arr_items = []
+        for item in req_items:
+            item_json = {
+                "material_name" : item.material_name,
+                "description" : item.description,
+                "estimate_price" : item.estimate_price,
+                "quantity" : item.quantity,
+                "unit_measurement" : item.unit_measurement,
+                "total" : item.total
+            }
+            arr_items.append(item_json)
 
-def addMaterial(request,req_item):
-    data_db = Items(
-        material_name = req_item['tableDataItemDetail'],
-        quantity = req_item['tableDataQuantity'],
-        unit_measurement = req_item['tableDataUnit'],
-        description = req_item['tableDataDescription'],
-        estimate_price = req_item['tableDataEstimatedPrice'],
-        total = req_item['tableDataSubTotal'],
-        owner = request
-    )
-    db.session.add(data_db)
-    db.session.commit()
-    db.session.flush()
-    return data_db.id
+        r = requests.get(os.getenv('BASE_URL_RECORD') +"/"+requestDB.record_id+"/stageview", headers={"Content-Type": "application/json", "Authorization":"Bearer %s" % requester_detail.token})
+        result = json.loads(r.text)
+        # result = json.dumps(result)
+        # print("ini result", result)
+        # return result,201
+        result_length = len(result["data"])
+        # return str(result_length),201
+        counter = 4
+        arr_comment = []
+        while counter <= result_length-1:
+            comment_json = {
+                "comment" : result["data"][counter]["target"]["content"],
+                "date" : result["data"][counter]["published"],
+                "user": result["data"][counter]["actor"]["display_name"]
+            }
+            arr_comment.append(comment_json)
+            print(counter)
+            print(arr_comment)
+            if result["data"][counter]["object"]["display_name"] == "Owner" and result["data"][counter]["name"] == "Task completed":
+                break
+            counter += 2
+        
+        # json_format = {
+        #     "comment" : arr_comment
+        # }
+        # req_json = json.dumps(json_format)
+        # return req_json,201
+
+        json_format = {
+            "requester_detail" : {
+                "fullname" : requester_detail.fullname,
+                "email" : requester_detail.email,
+                "position" : position.name,
+                "id_number" : requester_detail.id,
+                "company" : requester_detail.company,
+                "plant": requester_detail.plant,
+                "payroll" : requester_detail.payroll_number
+            },
+            "request_detail":{
+                "budget_type": requestDB.budget_type,
+                "currency" : requestDB.currency,
+                "location" : requestDB.location,
+                "budget_source": requestDB.budget_source,
+                "expected_date" : requestDB.expected_date,
+                "justification" : requestDB.justification
+            },
+            "items_detail": arr_items,
+            "comment_history" : arr_comment
+        }
+        req_json = json.dumps(json_format)
+        return req_json, 201
+
+    def addMaterial(request,req_item):
+        data_db = Items(
+            material_name = req_item['tableDataItemDetail'],
+            quantity = req_item['tableDataQuantity'],
+            unit_measurement = req_item['tableDataUnit'],
+            description = req_item['tableDataDescription'],
+            estimate_price = req_item['tableDataEstimatedPrice'],
+            total = req_item['tableDataSubTotal'],
+            owner = request
+        )
+        db.session.add(data_db)
+        db.session.commit()
+        db.session.flush()
+        return data_db.id
 # =====================================================================
 
 @app.route('/submitrequest',methods=['POST'])
@@ -342,7 +373,9 @@ def submit_request(record_id,user_token,email_requester):
         "data": {
             "form_data": {
                 "pVRequester": email_requester,
-                "pVSCM": "scm_pr@makersinstitute.id"
+                "pVSCM": "scm_pr@makersinstitute.id",
+                "pVManager": "manager_pr@makersinstitute.id",
+                "pVOwner": "owner_pr@makersinstitute.id",
             },
             "comment": "Initiated"
         }
@@ -435,6 +468,168 @@ def get_tasklist(task_name,process_id,user_token):
     print(r.text)
     result = json.loads(r.text)
     return result,201
+
+@app.route('/getComment')
+def get_comment_history():
+    request_data = request.get_json()
+    decoded = jwt.decode(request.headers["Authorization"], jwtSecretKey, algorithm='HS256')
+    userDB = Employee.query.filter_by(id=decoded["id"]).first()
+    if request.method == 'GET':
+        if userDB:
+            user_token = userDB.token
+    url = os.getenv("BASE_URL_RECORD")+"/"+request_data["record_id"]+"/stageview"
+    r = requests.get(url,headers={
+        "Content-Type": "application/json","Authorization": "Bearer %s" %user_token
+    })
+    result = json.loads(r.text)
+    result = json.dumps(result)
+    return result,201
+
+@app.route('/responseRequest',methods=["POST"])
+def responseRequest():
+    if request.method == 'POST':
+
+        request_data = request.get_json()
+        comment = request_data["comment"]
+        decoded = jwt.decode(request.headers["Authorization"], jwtSecretKey, algorithm='HS256')
+        userDB = Employee.query.filter_by(id=decoded["id"]).first()
+        user_token = userDB.token
+        user_position = Position.query.filter_by(id=userDB.position).first()
+        requestDB = Request.query.filter_by(id=request_data["request_id"]).first()
+        def recursive():
+            # get task id and pVApprover name
+            query = "folder=app:task:all&filter[name]=%s&filter[state]=active&filter[definition_id]=%s&filter[process_id]=%s" % (user_position.name,
+                os.getenv("DEFINITION_ID"),requestDB.process_id)
+            url = os.getenv("BASE_URL_TASK")+"?"+quote(query, safe="&=")
+            r = requests.get(url,headers={
+                "Content-Type": "application/json","Authorization": "Bearer %s" %user_token
+            })
+            print(r.text)
+
+            result = json.loads(r.text)
+            print("loading")
+            if result['data'] is None or len(result['data']) == 0:
+                recursive()
+            else:
+                #get manager email dan task id
+                if user_position.name == 'SCM':
+                    if request_data["response"] == "Yes":
+                        print("scm yes")
+                        print("ini result",result)
+                        email = result['data'][0]['form_data']['pVManager']
+                        task_id = result['data'][0]['id']
+                        print(task_id)
+
+                        # gerakin flow ke manager dari requester
+                        submit_data = {
+                            "data": {
+                                "form_data": {
+                                    "pVManager": "manager_pr@makersinstitute.id",
+                                    "pVAction": "Yes"
+                                },
+                                "comment": comment
+                            }
+                        }
+                        r = requests.post(os.getenv('BASE_URL_TASK') +"/"+task_id+"/submit",data=json.dumps(submit_data), headers={"Content-Type": "application/json", "Authorization":"Bearer %s" % user_token})
+                        result = json.loads(r.text)
+                        requestDB.acc_scm = 1
+                        db.session.commit()
+                    else:
+                        print("scm no")
+                        email = result['data'][0]['form_data']['pVRequester']
+                        task_id = result['data'][0]['id']
+
+                        # gerakin flow ke manager dari requester
+                        submit_data = {
+                            "data": {
+                                "form_data": {
+                                    "pVRequester": "requester_pr@makersinstitute.id",
+                                    "pVAction": "No"
+                                },
+                                "comment": comment
+                            }
+                        }
+                        r = requests.post(os.getenv('BASE_URL_TASK') +"/"+task_id+"/submit",data=json.dumps(submit_data), headers={"Content-Type": "application/json", "Authorization":"Bearer %s" % user_token})
+                        result = json.loads(r.text)
+                
+                elif user_position.name == 'Manager':
+                    print("manager")
+                    email = result['data'][0]['form_data']['pVOwner']
+                    task_id = result['data'][0]['id']
+
+                    # gerakin flow ke manager dari requester
+                    submit_data = {
+                        "data": {
+                            "form_data": {
+                                "pVOwner": "owner_pr@makersinstitute.id"
+                            },
+                            "comment": comment
+                        }
+                    }
+                    r = requests.post(os.getenv('BASE_URL_TASK') +"/"+task_id+"/submit",data=json.dumps(submit_data), headers={"Content-Type": "application/json", "Authorization":"Bearer %s" % user_token})
+                    result = json.loads(r.text)
+                    requestDB.acc_manager = 1
+                    db.session.commit()
+                
+                else:
+                    print("owner")
+                    task_id = result['data'][0]['id']
+
+                    submit_data = {
+                        "data": {
+                            "form_data": {
+                            },
+                            "comment": comment
+                        }
+                    }
+                    r = requests.post(os.getenv('BASE_URL_TASK') +"/"+task_id+"/submit",data=json.dumps(submit_data), headers={"Content-Type": "application/json", "Authorization":"Bearer %s" % user_token})
+                    result = json.loads(r.text)
+                    requestDB.acc_owner = 1
+                    db.session.commit()
+
+        recursive()
+        return "OK"
+
+@app.route('/getTaskList')
+def getTaskList():
+    decoded = jwt.decode(request.headers["Authorization"], jwtSecretKey, algorithm='HS256')
+    userDB = Employee.query.filter_by(id=decoded["id"]).first()
+    task_name = Position.query.filter_by(id=userDB.position).first()
+    task_name = task_name.name
+    query = "folder=app:task:all&filter[name]=%s&filter[state]=active&filter[definition_id]=%s" % (task_name,
+        os.getenv("DEFINITION_ID"))
+    url = os.getenv("BASE_URL_TASK")+"?"+quote(query, safe="&=")
+    r = requests.get(url,headers={
+        "Content-Type": "application/json","Authorization": "Bearer %s" %userDB.token
+    })
+    print("ini r.text",r.text)
+    result = json.loads(r.text)
+    result_length = len(result["data"])
+    print("panjang result", result_length)
+    arr_tasklist = []
+    for x in range(result_length):
+        print("ini process id : ",result["data"][x]["process_id"])
+        requestDB = Request.query.filter_by(process_id=result["data"][x]["process_id"]).first()
+        print(requestDB)
+        requesterDB = Employee.query.filter_by(id=requestDB.person_id).first()
+        if task_name == "Employee" or task_name =="SCM":
+            status = "Not yet approved"
+        elif task_name == "Manager":
+            status = "Approved by SCM"
+        else : 
+            status = "Approved by Manager"    
+        format_json = {
+            "id" : requestDB.id,
+            "fullname" : requesterDB.fullname,
+            "company" : requesterDB.company,
+            "status" : status
+        }
+        arr_tasklist.append(format_json)
+    request_json = json.dumps(arr_tasklist)
+    return request_json,201
+    
+
+
 
 # def acc
 if __name__ == '__main__':

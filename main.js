@@ -65,6 +65,34 @@ function login() {
     }
   })
 }
+function getUserRequest(){
+  $.ajax({
+    method: 'GET',
+    url : "http://localhost:9000/getUserRequest",
+    beforeSend: function (req) {
+      req.setRequestHeader('Authorization', getCookie('token'))
+    },
+    success: function (res) {
+      JSON.parse(res).forEach(function (data) {
+        // console.log(data)
+        document.getElementById('table-request').insertAdjacentHTML("beforeend", `<tr>
+        <td scope="row">${data.id}</td>
+        <td>${data.person_name}</td>
+        <td>${data.company}</td>
+        <td>${data.status}</td>
+        <form action="">
+            <td id="table-action"><button onclick="redirectToDetail(${data.id})"
+            type="submit" id="see-details-button">See details</button></td>
+        </form>
+    </tr>
+        `)
+      })
+    },
+    error: function (err) {
+      console.log(err)
+    }
+  })
+}
 
 // Memunculkan data ke home ///////////////////////////////////////////////////////////////////////////////////////////////////////////
 function getProfile() {
@@ -73,7 +101,7 @@ function getProfile() {
     url: "http://localhost:9000/getProfile",
     beforeSend: function (req) {
       req.setRequestHeader('Content-Type', 'application/json'),
-        req.setRequestHeader('Authorization', getCookie('token'))
+      req.setRequestHeader('Authorization', getCookie('token'))
     },
     success: function (res) {
       data = JSON.parse(res)
@@ -125,7 +153,161 @@ function loading(button) {
   // document.getElementById("loading").style.display = "none";
 }
 
-// Saat mengisi request form langsung otomatis mengambil data employee /////////////////////////////////////////////////////////////////
+function getRequestDetails() {
+  var loc = window.location.search,
+      id = loc.substr(loc.length-1)
+  $.ajax({
+      method: 'POST',
+      url: "http://localhost:9000/getRequestDetails",
+      beforeSend: function (req) {
+        req.setRequestHeader('Content-Type', 'application/json'),
+        req.setRequestHeader('Authorization', getCookie('token'))
+      },
+      data: JSON.stringify({
+        "id": id
+      }),
+      success: function (res) {
+        // window.location = "/details.html";
+        data = JSON.parse(res)
+        document.getElementById('get-data-request').insertAdjacentHTML("afterbegin", `<h2 id="welcome" class="text-center">General Material Purchase Request Details</h2>
+
+        <fieldset id="requester_info">
+            <legend><i class="far fa-id-card"></i> Request Information</legend>
+
+            <!-- Bagian Kiri -->
+            <div id="all" class="row">
+                <div id="left" class="col-md-6">
+                    <label class="col-md-4" for="fullname">Fullname</label>
+                    <span id="fullname" name="fullname">${data.requester_detail.fullname}</span>
+                    <p></p>
+                    <label class="col-md-4" for="email">Email</label>
+                    <span id="email" name="email">${data.requester_detail.email}</span>
+                    <p></p>
+                    <label class="col-md-4" for="position">Postion</label>
+                    <span id="position" name="position">${data.requester_detail.position}</span>
+                    <p></p>
+                    <label class="col-md-4" for="id">ID Number</label>
+                    <span id="id_employee" name="id_employee">${data.requester_detail.id_number}</span>
+                    <p></p>
+                    <label class="col-md-4" for="company">Company</label>
+                    <span id="company" name="company">${data.requester_detail.company}</span>
+                    <p></p>
+                    <label class="col-md-4" for="plant">Plant</label>
+                    <span id="plant" name="plant">${data.requester_detail.plant}</span>
+                    <p></p>
+                </div>
+
+                <!-- Bagian Kanan -->
+                <div id="right" class="col-md-6">
+                    <label class="col-md-4" for="payroll">Payroll Number</label>
+                    <span id="payroll" name="payroll">${data.requester_detail.plant}</span>
+                    <p></p>
+                    <label class="col-md-4" for="budget_type">Budget Type</label>
+                    <span id="budget_type" name="${data.request_detail.budget_type}" />
+                    Maintenance Order
+                    </span>
+                    <p></p>
+                    <label class="col-md-4" for="currency">Currency</label>
+                    <span id="currency" name="currency" />
+                    ${data.request_detail.currency}
+                    </span>
+                    <p></p>
+                    <label class="col-md-4" for="location">Receiving Location</label>
+                    <span id="location" name="location" />
+                    ${data.request_detail.location}
+                    </span>
+                    <p></p>
+                    <label class="col-md-4" for="budget_source">Budget Source</label>
+                    <span id="budget_source" name="budget_source" />
+                    ${data.request_detail.budget_source}
+                    </span>
+                    <p></p>
+                    <label class="col-md-4" for="expected_date">Expected Date</label>
+                    <span id="expected_date" name="expected_date" >${data.request_detail.expected_date}</span> 
+                </div>
+            </div>
+        </fieldset>
+
+        <fieldset id="header_info">
+            <legend><i class="fas fa-info"></i> Header Information</legend>
+
+            <div id="all" class="row">
+                <div class="col-md-12">
+                    <label class="col-md-2" for="justification">Justification</label>
+                    <span id="justification" name="justification">${data.request_detail.justification}</span>
+                </div>
+            </div>
+        </fieldset>
+
+        <fieldset id="item">
+            <legend><i class="fas fa-warehouse"></i> Item</legend>
+        </fieldset>
+
+        <table class="table table-bordered table-hover container">
+            <thead class="thead">
+                <tr>
+                    <th scope="col" class="col-md-1">No.</th>
+                    <th scope="col" class="col-md-3">Item Detail</th>
+                    <th scope="col" class="col-md-3">Description</th>
+                    <th scope="col" class="col-md-1">Est. Price</th>
+                    <th scope="col" class="col-md-1">Qty</th>
+                    <th scope="col" class="col-md-1">Unit</th>
+                    <th scope="col" class="col-md-1">Sub Total</th>
+                    <!-- <th scope="col" class="col-md-1"id="table-action">Action</th> -->
+                    <!-- <th scope="col">Action</th> -->
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <th scope="row">1</th>
+                    <td id="tableDataItemDetail" >Electrical equipment</td>
+                    <td id="tableDataDescription"> Kabel roll 3M</td>
+                    <td id="tableDataEstimatedPrice">50</td>
+                    <td id="tableDataQuantity">5</td>
+                    <td id="tableDataUnit">Piece</td>
+                    <td id="tableDataSubTotal">250</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <!-- Riwayat Komentar -->
+        <fieldset id="comment_history">
+            <legend><i class="fas fa-history"></i> Comment History</legend>
+        </fieldset>
+        
+        <table id="table_comment_history" class="table table-bordered table-hover container">
+            <thead class="thead">
+                <tr>
+                    <th scope="col" class="col-md-2">Participant</th>
+                    <th scope="col" class="col-md-2">Position</th>
+                    <th scope="col" class="col-md-1">Activity</th>
+                    <th scope="col" class="col-md-2">Time</th>
+                    <th scope="col" class="col-md-5">Comment</th>
+                    <!-- <th scope="col">Action</th> -->
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td id="tableDataParticipant" scope="row">Oka Aryanta</td>
+                    <td id="tableDataPosition" >Supply Chain Management</td>
+                    <td id="tableDataActivity">Revised</td>
+                    <td id="tableDataStart">5 Nov 2018 09:20</td>
+                    <td id="tableDataComment">Yang lain sudah oke, kecuali harganya masih terlalu mahal, tolong cari alternatif lain ya</td>
+                </tr>
+            </tbody>
+        </table>`)
+      },
+      error: function (err) {
+        console.log(err)
+      }
+    })
+}
+
+function redirectToDetail(id){
+  window.location = 'details.html?id=' + id
+  
+}
+
 function getRequestInfo() {
   $.ajax({
     method: 'GET',
