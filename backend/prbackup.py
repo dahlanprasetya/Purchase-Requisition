@@ -1,4 +1,4 @@
-from flask import Flask,request,json,session, make_response
+from flask import Flask,request,json,session, make_response, render_template
 from flask_sqlalchemy import SQLAlchemy
 from flask_restful import marshal,fields
 import datetime
@@ -235,77 +235,81 @@ def getRequestAccManager():
         req_json = json.dumps(req)
         return req_json,201
 
-@app.route('/getRequestDetails')
+
+
+@app.route('/getRequestDetails',methods=["POST"])
 def getRequest():
-    request_data = request.get_json()
-    decoded = jwt.decode(request.headers["Authorization"], jwtSecretKey, algorithm='HS256')
-    requestDB = Request.query.filter_by(id=request_data["id"]).first()
-    requester_detail = Employee.query.filter_by(id=requestDB.person_id).first()
-    position = Position.query.filter_by(id=requester_detail.position).first()
-    req_items = Items.query.filter_by(request_id=requestDB.id)
-    arr_items = []
-    for item in req_items:
-        item_json = {
-            "material_name" : item.material_name,
-            "description" : item.description,
-            "estimate_price" : item.estimate_price,
-            "quantity" : item.quantity,
-            "unit_measurement" : item.unit_measurement,
-            "total" : item.total
-        }
-        arr_items.append(item_json)
+    if request.method == "POST":
+        request_data = request.get_json()
+        decoded = jwt.decode(request.headers["Authorization"], jwtSecretKey, algorithm='HS256')
+        requestDB = Request.query.filter_by(id=request_data["id"]).first()
+        requester_detail = Employee.query.filter_by(id=requestDB.person_id).first()
+        position = Position.query.filter_by(id=requester_detail.position).first()
+        req_items = Items.query.filter_by(request_id=requestDB.id)
+        arr_items = []
+        for item in req_items:
+            item_json = {
+                "material_name" : item.material_name,
+                "description" : item.description,
+                "estimate_price" : item.estimate_price,
+                "quantity" : item.quantity,
+                "unit_measurement" : item.unit_measurement,
+                "total" : item.total
+            }
+            arr_items.append(item_json)
 
-    r = requests.get(os.getenv('BASE_URL_RECORD') +"/"+requestDB.record_id+"/stageview", headers={"Content-Type": "application/json", "Authorization":"Bearer %s" % requester_detail.token})
-    result = json.loads(r.text)
-    # result = json.dumps(result)
-    # print("ini result", result)
-    # return result,201
-    result_length = len(result["data"])
-    # return str(result_length),201
-    counter = 4
-    arr_comment = []
-    while counter <= result_length-1:
-        comment_json = {
-            "comment" : result["data"][counter]["target"]["content"],
-            "date" : result["data"][counter]["published"],
-            "user": result["data"][counter]["actor"]["display_name"]
-        }
-        arr_comment.append(comment_json)
-        print(counter)
-        print(arr_comment)
-        if result["data"][counter]["object"]["display_name"] == "Owner" and result["data"][counter]["name"] == "Task completed":
-            break
-        counter += 2
-    
-    # json_format = {
-    #     "comment" : arr_comment
-    # }
-    # req_json = json.dumps(json_format)
-    # return req_json,201
+        r = requests.get(os.getenv('BASE_URL_RECORD') +"/"+requestDB.record_id+"/stageview", headers={"Content-Type": "application/json", "Authorization":"Bearer %s" % requester_detail.token})
+        result = json.loads(r.text)
+        # result = json.dumps(result)
+        # print("ini result", result)
+        # return result,201
+        result_length = len(result["data"])
+        # return str(result_length),201
+        counter = 4
+        arr_comment = []
+        while counter <= result_length-1:
+            comment_json = {
+                "comment" : result["data"][counter]["target"]["content"],
+                "date" : result["data"][counter]["published"],
+                "user": result["data"][counter]["actor"]["display_name"]
+            }
+            arr_comment.append(comment_json)
+            print(counter)
+            print(arr_comment)
+            if result["data"][counter]["object"]["display_name"] == "Owner" and result["data"][counter]["name"] == "Task completed":
+                break
+            counter += 2
+        
+        # json_format = {
+        #     "comment" : arr_comment
+        # }
+        # req_json = json.dumps(json_format)
+        # return req_json,201
 
-    json_format = {
-        "requester_detail" : {
-            "fullname" : requester_detail.fullname,
-            "email" : requester_detail.email,
-            "position" : position.name,
-            "id_number" : requester_detail.id,
-            "company" : requester_detail.company,
-            "plant": requester_detail.plant,
-            "payroll" : requester_detail.payroll_number
-        },
-        "request_detail":{
-            "budget_type": requestDB.budget_type,
-            "currency" : requestDB.currency,
-            "location" : requestDB.location,
-            "budget_source": requestDB.budget_source,
-            "expected_date" : requestDB.expected_date,
-            "justification" : requestDB.justification
-        },
-        "items_detail": arr_items,
-        "comment_history" : arr_comment
-    }
-    req_json = json.dumps(json_format)
-    return req_json, 201
+        json_format = {
+            "requester_detail" : {
+                "fullname" : requester_detail.fullname,
+                "email" : requester_detail.email,
+                "position" : position.name,
+                "id_number" : requester_detail.id,
+                "company" : requester_detail.company,
+                "plant": requester_detail.plant,
+                "payroll" : requester_detail.payroll_number
+            },
+            "request_detail":{
+                "budget_type": requestDB.budget_type,
+                "currency" : requestDB.currency,
+                "location" : requestDB.location,
+                "budget_source": requestDB.budget_source,
+                "expected_date" : requestDB.expected_date,
+                "justification" : requestDB.justification
+            },
+            "items_detail": arr_items,
+            "comment_history" : arr_comment
+        }
+        req_json = json.dumps(json_format)
+        # return render_template('details.html', result = req_json)
+        return req_json,201
 
 def addMaterial(request,req_item):
     data_db = Items(
