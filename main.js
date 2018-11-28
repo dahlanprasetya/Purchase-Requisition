@@ -241,12 +241,12 @@ function getRequestDetails() {
             data_table_item = data.items_detail
             // row = tbody.find('tr')
             // masukin data tabel item
-            console.log(data_table_item)
+            a = 0
             data_table_item.forEach(data => {
-              
+              a++
               table_item.append(`
               <tr>
-              <th scope="row"></th>
+              <th scope="row">${a}</th>
               <td id="tableDataItemDetail" >${data.material_name}</td>
               <td id="tableDataDescription">${data.description}</td>
               <td id="tableDataEstimatedPrice">${data.estimate_price}</td>
@@ -255,7 +255,22 @@ function getRequestDetails() {
               <td id="tableDataSubTotal">${data.total}</td>
           </tr>
               `)
-              
+          })
+          var table_comment = $('#table_comment_history tbody'),
+          data_table_comment = data.comment_history
+          // row = tbody.find('tr')
+          // masukin data tabel item
+          a = 0
+          data_table_comment.forEach(data => {
+            a++
+            table_comment.append(`
+            <tr>
+                <th id="comment-fullname" scope="col" class="col-md-2">${data.user}</th>
+                <th id="comment-position" scope="col" class="col-md-2">${data.position}</th>
+                <th id="comment-activity" scope="col" class="col-md-1">approved</th>
+                <th id="comment-time" scope="col" class="col-md-2">${data.date}</th>
+                <th id="comment-content" scope="col" class="col-md-5">${data.comment}</th>
+            </tr>`)
           })
       },
       error: function (err) {

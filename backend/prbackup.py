@@ -269,7 +269,8 @@ def getRequest():
             comment_json = {
                 "comment" : result["data"][counter]["target"]["content"],
                 "date" : result["data"][counter]["published"],
-                "user": result["data"][counter]["actor"]["display_name"]
+                "user": result["data"][counter]["actor"]["display_name"],
+                "position" : result["data"][counter]["object"]["display_name"]
             }
             arr_comment.append(comment_json)
             print(counter)
