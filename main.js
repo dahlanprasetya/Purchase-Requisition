@@ -1,7 +1,7 @@
-// untuk login
-const axios = require('axios')
+// untuk login ///////////////////////////////////////////////////////////////////////////////////////////////////////////
+// const axios = require('axios')
 
-//   untuk cookienya
+//   untuk cookienya ///////////////////////////////////////////////////////////////////////////////////////////////////////////
 function getCookie(cname) {
   var name = cname + "=";
   var decodedCookie = decodeURIComponent(document.cookie);
@@ -18,17 +18,20 @@ function getCookie(cname) {
   return "";
 }
 
+// Menghapus Cookie///////////////////////////////////////////////////////////////////////////////////////////////////////////
 function removeCookie() {
   document.cookie = 'token=;expires=Thu, 01 Jan 1970 00:00:01 GMT;';
   document.cookie = 'requester=;expires=Thu, 01 Jan 1970 00:00:01 GMT;';
   window.location = '/login.html';
 }
 
+// Mengatur dashboard location ///////////////////////////////////////////////////////////////////////////////////////////////////////////
 function home() {
   var a = getCookie('requester')
   a == "true" ? window.location = "/employee.html" : window.location = "/scm.html"
 }
 
+// Login ke dalam home ///////////////////////////////////////////////////////////////////////////////////////////////////////////
 function login() {
   $.ajax({
     method: "POST",
@@ -78,7 +81,8 @@ function getUserRequest(){
         <td>${data.company}</td>
         <td>${data.status}</td>
         <form action="">
-            <td id="table-action"><button onclick="getRequestDetail(${data.id})" type="submit" id="see-details-button">See details</button></td>
+            <td id="table-action"><button onclick="redirectToDetail(${data.id})"
+            type="submit" id="see-details-button">See details</button></td>
         </form>
     </tr>
         `)
@@ -90,17 +94,18 @@ function getUserRequest(){
   })
 }
 
+// Memunculkan data ke home ///////////////////////////////////////////////////////////////////////////////////////////////////////////
 function getProfile() {
   $.ajax({
     method: 'GET',
     url: "http://localhost:9000/getProfile",
     beforeSend: function (req) {
       req.setRequestHeader('Content-Type', 'application/json'),
-        req.setRequestHeader('Authorization', getCookie('token'))
+      req.setRequestHeader('Authorization', getCookie('token'))
     },
     success: function (res) {
       data = JSON.parse(res)
-      console.log(data)
+      // console.log(data)
       document.getElementById('dropdown').insertAdjacentHTML("afterbegin", `<div class="dropdown__user">
       <img class="dropbtn" href="#" src="${data.photoprofile}" alt="orang" />
       <a id="profile-name" href="profile.html"> ${data.fullname}</a>
@@ -117,6 +122,7 @@ function getProfile() {
   })
 }
 
+// Mengambil nama employee //////////////////////////////////////////////////////////////////////////////////////////////////
 function welcome() {
   $.ajax({
     method: 'GET',
@@ -127,7 +133,7 @@ function welcome() {
     },
     success: function (res) {
       data = JSON.parse(res)
-      console.log(data)
+      // console.log(data)
       document.getElementById('home').insertAdjacentHTML("afterbegin", `<p class="lead text-center display-4">Hello, ${data.fullname}</p>
       <p class="lead text-center mb-5 display-4">Make a form request now ?</p>
       <button onclick="window.location = '/formReq.html'" type="button" class="btn btn-lg col-2 offset-5">Request </button>`)
@@ -138,6 +144,7 @@ function welcome() {
   })
 }
 
+// loading function ///////////////////////////////////////////////////////////////////////////////////////////////////////////
 function loading(button) {
 
   console.log(button)
@@ -146,153 +153,159 @@ function loading(button) {
   // document.getElementById("loading").style.display = "none";
 }
 
-function getRequestDetail(id){
-  window.location = "/details.html"
+function getRequestDetails() {
+  var loc = window.location.search,
+      id = loc.substr(loc.length-1)
   $.ajax({
-    method: 'POST',
-    url: "http://localhost:9000/getRequestDetails",
-    beforeSend: function (req) {
-      req.setRequestHeader('Content-Type', 'application/json'),
-      req.setRequestHeader('Authorization', getCookie('token'))
-    },
-    data: JSON.stringify({
-      "id": id
-    }),
-    success: function (res) {
-      // window.location = "/details.html";
-      console.log(res)    
-      document.getElementById('get-data-request').insertAdjacentHTML("afterbegin", `<h2 id="welcome" class="text-center">General Material Purchase Request Details</h2>
-      
-            <fieldset id="requester_info">
-                <legend><i class="far fa-id-card"></i> Request Information</legend>
-      
-                <!-- Bagian Kiri -->
-                <div id="all" class="row">
-                    <div id="left" class="col-md-6">
-                        <label class="col-md-4" for="fullname">Fullname</label>
-                        <span id="fullname" name="fullname">${data.requester_detail.fullname}</span>
-                        <p></p>
-                        <label class="col-md-4" for="email">Email</label>
-                        <span id="email" name="email">${data.requester_detail.email}</span>
-                        <p></p>
-                        <label class="col-md-4" for="position">Postion</label>
-                        <span id="position" name="position">${data.requester_detail.position}</span>
-                        <p></p>
-                        <label class="col-md-4" for="id">ID Number</label>
-                        <span id="id_employee" name="id_employee">${data.requester_detail.id_number}</span>
-                        <p></p>
-                        <label class="col-md-4" for="company">Company</label>
-                        <span id="company" name="company">${data.requester_detail.company}</span>
-                        <p></p>
-                        <label class="col-md-4" for="plant">Plant</label>
-                        <span id="plant" name="plant">${data.requester_detail.plant}</span>
-                        <p></p>
-                    </div>
-      
-                    <!-- Bagian Kanan -->
-                    <div id="right" class="col-md-6">
-                        <label class="col-md-4" for="payroll">Payroll Number</label>
-                        <span id="payroll" name="payroll">${data.requester_detail.plant}</span>
-                        <p></p>
-                        <label class="col-md-4" for="budget_type">Budget Type</label>
-                        <span id="budget_type" name="${data.request_detail.budget_type}" />
-                        Maintenance Order
-                        </span>
-                        <p></p>
-                        <label class="col-md-4" for="currency">Currency</label>
-                        <span id="currency" name="currency" />
-                        ${data.request_detail.currency}
-                        </span>
-                        <p></p>
-                        <label class="col-md-4" for="location">Receiving Location</label>
-                        <span id="location" name="location" />
-                        ${data.request_detail.location}
-                        </span>
-                        <p></p>
-                        <label class="col-md-4" for="budget_source">Budget Source</label>
-                        <span id="budget_source" name="budget_source" />
-                        ${data.request_detail.budget_source}
-                        </span>
-                        <p></p>
-                        <label class="col-md-4" for="expected_date">Expected Date</label>
-                        <span id="expected_date" name="expected_date" >${data.request_detail.expected_date}</span> 
-                    </div>
+      method: 'POST',
+      url: "http://localhost:9000/getRequestDetails",
+      beforeSend: function (req) {
+        req.setRequestHeader('Content-Type', 'application/json'),
+        req.setRequestHeader('Authorization', getCookie('token'))
+      },
+      data: JSON.stringify({
+        "id": id
+      }),
+      success: function (res) {
+        // window.location = "/details.html";
+        data = JSON.parse(res)
+        document.getElementById('get-data-request').insertAdjacentHTML("afterbegin", `<h2 id="welcome" class="text-center">General Material Purchase Request Details</h2>
+
+        <fieldset id="requester_info">
+            <legend><i class="far fa-id-card"></i> Request Information</legend>
+
+            <!-- Bagian Kiri -->
+            <div id="all" class="row">
+                <div id="left" class="col-md-6">
+                    <label class="col-md-4" for="fullname">Fullname</label>
+                    <span id="fullname" name="fullname">${data.requester_detail.fullname}</span>
+                    <p></p>
+                    <label class="col-md-4" for="email">Email</label>
+                    <span id="email" name="email">${data.requester_detail.email}</span>
+                    <p></p>
+                    <label class="col-md-4" for="position">Postion</label>
+                    <span id="position" name="position">${data.requester_detail.position}</span>
+                    <p></p>
+                    <label class="col-md-4" for="id">ID Number</label>
+                    <span id="id_employee" name="id_employee">${data.requester_detail.id_number}</span>
+                    <p></p>
+                    <label class="col-md-4" for="company">Company</label>
+                    <span id="company" name="company">${data.requester_detail.company}</span>
+                    <p></p>
+                    <label class="col-md-4" for="plant">Plant</label>
+                    <span id="plant" name="plant">${data.requester_detail.plant}</span>
+                    <p></p>
                 </div>
-            </fieldset>
-      
-            <fieldset id="header_info">
-                <legend><i class="fas fa-info"></i> Header Information</legend>
-      
-                <div id="all" class="row">
-                    <div class="col-md-12">
-                        <label class="col-md-2" for="justification">Justification</label>
-                        <span id="justification" name="justification">${data.request_detail.justification}</span>
-                    </div>
+
+                <!-- Bagian Kanan -->
+                <div id="right" class="col-md-6">
+                    <label class="col-md-4" for="payroll">Payroll Number</label>
+                    <span id="payroll" name="payroll">${data.requester_detail.plant}</span>
+                    <p></p>
+                    <label class="col-md-4" for="budget_type">Budget Type</label>
+                    <span id="budget_type" name="${data.request_detail.budget_type}" />
+                    Maintenance Order
+                    </span>
+                    <p></p>
+                    <label class="col-md-4" for="currency">Currency</label>
+                    <span id="currency" name="currency" />
+                    ${data.request_detail.currency}
+                    </span>
+                    <p></p>
+                    <label class="col-md-4" for="location">Receiving Location</label>
+                    <span id="location" name="location" />
+                    ${data.request_detail.location}
+                    </span>
+                    <p></p>
+                    <label class="col-md-4" for="budget_source">Budget Source</label>
+                    <span id="budget_source" name="budget_source" />
+                    ${data.request_detail.budget_source}
+                    </span>
+                    <p></p>
+                    <label class="col-md-4" for="expected_date">Expected Date</label>
+                    <span id="expected_date" name="expected_date" >${data.request_detail.expected_date}</span> 
                 </div>
-            </fieldset>
-      
-            <fieldset id="item">
-                <legend><i class="fas fa-warehouse"></i> Item</legend>
-            </fieldset>
-      
-            <table class="table table-bordered table-hover container">
-                <thead class="thead">
-                    <tr>
-                        <th scope="col" class="col-md-1">No.</th>
-                        <th scope="col" class="col-md-3">Item Detail</th>
-                        <th scope="col" class="col-md-3">Description</th>
-                        <th scope="col" class="col-md-1">Est. Price</th>
-                        <th scope="col" class="col-md-1">Qty</th>
-                        <th scope="col" class="col-md-1">Unit</th>
-                        <th scope="col" class="col-md-1">Sub Total</th>
-                        <!-- <th scope="col" class="col-md-1"id="table-action">Action</th> -->
-                        <!-- <th scope="col">Action</th> -->
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <th scope="row">1</th>
-                        <td id="tableDataItemDetail" >Electrical equipment</td>
-                        <td id="tableDataDescription"> Kabel roll 3M</td>
-                        <td id="tableDataEstimatedPrice">50</td>
-                        <td id="tableDataQuantity">5</td>
-                        <td id="tableDataUnit">Piece</td>
-                        <td id="tableDataSubTotal">250</td>
-                    </tr>
-                </tbody>
-            </table>
-      
-            <!-- Riwayat Komentar -->
-            <fieldset id="comment_history">
-                <legend><i class="fas fa-history"></i> Comment History</legend>
-            </fieldset>
-            
-            <table id="table_comment_history" class="table table-bordered table-hover container">
-                <thead class="thead">
-                    <tr>
-                        <th scope="col" class="col-md-2">Participant</th>
-                        <th scope="col" class="col-md-2">Position</th>
-                        <th scope="col" class="col-md-1">Activity</th>
-                        <th scope="col" class="col-md-2">Time</th>
-                        <th scope="col" class="col-md-5">Comment</th>
-                        <!-- <th scope="col">Action</th> -->
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td id="tableDataParticipant" scope="row">Oka Aryanta</td>
-                        <td id="tableDataPosition" >Supply Chain Management</td>
-                        <td id="tableDataActivity">Revised</td>
-                        <td id="tableDataStart">5 Nov 2018 09:20</td>
-                        <td id="tableDataComment">Yang lain sudah oke, kecuali harganya masih terlalu mahal, tolong cari alternatif lain ya</td>
-                    </tr>
-                </tbody>
-            </table>`)
-    },
-    error: function (err) {
-      console.log(err)
-    }
-  })
+            </div>
+        </fieldset>
+
+        <fieldset id="header_info">
+            <legend><i class="fas fa-info"></i> Header Information</legend>
+
+            <div id="all" class="row">
+                <div class="col-md-12">
+                    <label class="col-md-2" for="justification">Justification</label>
+                    <span id="justification" name="justification">${data.request_detail.justification}</span>
+                </div>
+            </div>
+        </fieldset>
+
+        <fieldset id="item">
+            <legend><i class="fas fa-warehouse"></i> Item</legend>
+        </fieldset>
+
+        <table class="table table-bordered table-hover container">
+            <thead class="thead">
+                <tr>
+                    <th scope="col" class="col-md-1">No.</th>
+                    <th scope="col" class="col-md-3">Item Detail</th>
+                    <th scope="col" class="col-md-3">Description</th>
+                    <th scope="col" class="col-md-1">Est. Price</th>
+                    <th scope="col" class="col-md-1">Qty</th>
+                    <th scope="col" class="col-md-1">Unit</th>
+                    <th scope="col" class="col-md-1">Sub Total</th>
+                    <!-- <th scope="col" class="col-md-1"id="table-action">Action</th> -->
+                    <!-- <th scope="col">Action</th> -->
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <th scope="row">1</th>
+                    <td id="tableDataItemDetail" >Electrical equipment</td>
+                    <td id="tableDataDescription"> Kabel roll 3M</td>
+                    <td id="tableDataEstimatedPrice">50</td>
+                    <td id="tableDataQuantity">5</td>
+                    <td id="tableDataUnit">Piece</td>
+                    <td id="tableDataSubTotal">250</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <!-- Riwayat Komentar -->
+        <fieldset id="comment_history">
+            <legend><i class="fas fa-history"></i> Comment History</legend>
+        </fieldset>
+        
+        <table id="table_comment_history" class="table table-bordered table-hover container">
+            <thead class="thead">
+                <tr>
+                    <th scope="col" class="col-md-2">Participant</th>
+                    <th scope="col" class="col-md-2">Position</th>
+                    <th scope="col" class="col-md-1">Activity</th>
+                    <th scope="col" class="col-md-2">Time</th>
+                    <th scope="col" class="col-md-5">Comment</th>
+                    <!-- <th scope="col">Action</th> -->
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td id="tableDataParticipant" scope="row">Oka Aryanta</td>
+                    <td id="tableDataPosition" >Supply Chain Management</td>
+                    <td id="tableDataActivity">Revised</td>
+                    <td id="tableDataStart">5 Nov 2018 09:20</td>
+                    <td id="tableDataComment">Yang lain sudah oke, kecuali harganya masih terlalu mahal, tolong cari alternatif lain ya</td>
+                </tr>
+            </tbody>
+        </table>`)
+      },
+      error: function (err) {
+        console.log(err)
+      }
+    })
+}
+
+function redirectToDetail(id){
+  window.location = 'details.html?id=' + id
+  
 }
 
 function getRequestInfo() {
@@ -301,7 +314,7 @@ function getRequestInfo() {
     url: "http://localhost:9000/getProfile",
     beforeSend: function (req) {
       req.setRequestHeader('Content-Type', 'application/json'),
-        req.setRequestHeader('Authorization', getCookie('token'))
+      req.setRequestHeader('Authorization', getCookie('token'))
     },
     success: function (res) {
       data = JSON.parse(res)
@@ -376,6 +389,7 @@ function getRequestInfo() {
   })
 }
 
+// memunculkan material pada kolom select di request form /////////////////////////////////////////////////////////////////
 function getMaterial() {
   $.ajax({
     method: 'GET',
@@ -398,59 +412,21 @@ function getMaterial() {
   })
 }
 
-function addItem() {
-  $.ajax({
-    method: 'POST',
-
-  })
-}
-
-function sendRequest() {
-  $.ajax({
-    method: 'POST',
-    url: 'http://localhost:9000/submitRequest',
-    beforeSend: function (req) {
-      req.setRequestHeader('Content-Type', 'application/json')
-      req.setRequestHeader('Authorization', getCookie('token'))
-    },
-    data: JSON.stringify({
-      "fullname": document.getElementById('fullname').value,
-      "budget_type": document.getElementById('budget_type').value,
-      "currency": document.getElementById('currenct').value,
-      "expected_date": document.getElementById('expected_date').value,
-      "location": document.getElementById('location').value,
-      "budget_source": document.getElementById('budget_source').value,
-      "justification": document.getElementById('justification').value,
-      "materials": document.getElementById('materials').value,
-      "description": document.getElementById('description').value,
-      "quantity": document.getElementById('quantity').value,
-      "unit_measurement": document.getElementById('unit_measurement').value,
-      "material_picture": document.getElementById('material_picture').value
-    }),
-    success: function (res) {
-      alert('berhasil')
-    },
-    error: function (err) {
-      alert('gagal')
-    }
-  })
-}
-
-// FUNGSI BIKINAN NAUFAL
+// Mengirim seluruh isi request form ke database ///////////////////////////////////////////////////////////////////////////////////////////////////////////
 function sendAllData(button) {
   console.log(button)
   $(button).addClass('hide')
   $('#loading').removeClass('hide')
   // //////////////////////////////// Request ////////////////////////////////////////
+
   // autoComplete
   var obj = new Object(),
     autoComplete = $('#right select').get()
   // autoComplete = document.querySelectorAll('.parent .child1');
-
   for (let i = 0; i < autoComplete.length; i++) {
     var id = $(autoComplete).eq(i).attr("id"),
       val = $(autoComplete).eq(i).val()
-    console.log(val)
+    // console.log(val)
     obj[`${id}`] = val
   }
   // input (date)
@@ -459,8 +435,6 @@ function sendAllData(button) {
   // justification
   var just = $('#justification').val()
   obj['justification'] = just
-
-
   // //////////////////////////////// Item ////////////////////////////////////////
   var array = new Array(),
     rows = $('table.table tbody tr').get()
@@ -480,7 +454,6 @@ function sendAllData(button) {
   var obj_data = new Object()
   obj_data["request_data"] = obj
   obj_data["array_item"] = array
-  console.log(obj_data)
 
   // /////////////////////////////// Kirim pake Ajax //////////////////////////////////////
   $.ajax({
@@ -494,7 +467,7 @@ function sendAllData(button) {
       obj_data    
     ),
     success: function (res) {
-      console.log(res)
+      // console.log(res)
       alert('Data berhasil dikirim')
       window.location = "/employee.html"
     },
@@ -505,6 +478,7 @@ function sendAllData(button) {
   })
 }
 
+// Fungsi menambahkan item ke tabel ///////////////////////////////////////////////////////////////////////////////////////////////////////////
 function addItemToTabel() {
   var materials_value = $('#materials').val()
   var description_value = $('#description').val()
@@ -537,6 +511,7 @@ function addItemToTabel() {
   $('#price').val("")
 }
 
+// fungsi reset ditabel item ///////////////////////////////////////////////////////////////////////////////////////////////////////////
 function reset () {
   $('#materials').val("Choose...")
   $('#description').val("")
@@ -545,6 +520,7 @@ function reset () {
   $('#price').val("")
 }
 
+// fungsi delete tabel item ///////////////////////////////////////////////////////////////////////////////////////////////////////////
 function deleteTable(id) {
   $(`tr#${id}`).remove()
   // reset number
@@ -554,60 +530,116 @@ function deleteTable(id) {
   }
 }
 
-function form1() {
-  // debugger
-  fullname = document.getElementById("fullname").value;
-  email = document.getElementById("email").value;
-  position = document.getElementById("position").value;
-  id_employee = document.getElementById("id_employee").value;
-  company = document.getElementById("company").value;
-  plant = document.getElementById("plant").value;
-  payroll = document.getElementById("payroll").value;
-  budget_type = document.getElementById("budget_type").value;
-  currency = document.getElementById("currency").value;
-  location = document.getElementById("location").value;
-  budget_source = document.getElementById("budget_source").value;
-  justification = document.getElementById("justification").value;
+// function editTable(id) {
+//   $(`tr#${id}`).text()
 
-  var xmlHttp = new XMLHttpRequest();
-  xmlHttp.open("POST", "http://localhost:5000/form");
-  xmlHttp.setRequestHeader("Content-Type", "application/json");
-  xmlHttp.send(
-    JSON.stringify({
-      fullname: fullname,
-      email: email,
-      position: position,
-      id_employee: id_employee,
-      company: company,
-      plant: plant,
-      payroll: payroll,
-      budget_type: budget_type,
-      currency: currency,
-      location: location,
-      budget_source: budget_source,
-      justification: justification
-    })
-  );
-  /* debugger */
-  xmlHttp.onreadystatechange = function () {
-    /* debugger */
-    if (this.readyState == 4 && this.status == 201) {
-      debugger
-      alert("Data Has Been Added");
-      window.location = "/loginTwitter.html";
-    } else if (this.readyState == 4) {
-      alert("Please Try Again");
+//   $('#materials').val("Choose...")
+//   $('#description').val("")
+//   $('#quantity').val("")
+//   $('#unit_measurement').val("Piece")
+//   $('#price').val("")
+// }
+
+// Memunculkan data ke tabel approval list ///////////////////////////////////////////////////////////////////////////////////////////////////////////
+function approvalList() {
+  $.ajax({
+    method: 'GET',
+    url: "http://localhost:9000/getAllMaterial",
+    beforeSend: function (req) {
+      req.setRequestHeader('Content-Type', 'application/json'),
+        req.setRequestHeader('Authorization', getCookie('token'))
+    },
+    success: function (res) {
+      JSON.parse(res).forEach(function (data) {
+        data = JSON.parse(res)
+        // console.log(data)
+        document.getElementById('materials').insertAdjacentHTML("beforeend", `
+        <tr>
+                <td scope="row">32132131</td>
+                <td>Mark</td>
+                <td>Astra</td>
+                <td>Approved by Manager</td>
+                <form action="">
+                    <td id="table-action"><button formaction="/details.html" type="submit" id="see-details-button">See details</button></td>
+                </form>
+            </tr>
+        `)
+      })
+    },
+    error: function (err) {
+      console.log(err)
     }
-  };
+  })
 }
 
+// Fungsi munculkan data ke comment html ///////////////////////////////////////////////////////////////////////////////////////////////////////////
+function commentProfile(){
+  $.ajax({
+    method: 'GET',
+    url: "http://localhost:9000/getProfile",
+    beforeSend: function (req) {
+      req.setRequestHeader('Content-Type', 'application/json'),
+        req.setRequestHeader('Authorization', getCookie('token'))
+    },
+    success: function (res) {
+      data = JSON.parse(res)
+      // console.log(data)
+      document.getElementById('comment-section').insertAdjacentHTML("afterbegin", 
+      `<form>
+      <div id="all" class="row">
+          <div class="col-md-1">
+              <img src="${data.photoprofile}" />
+          </div>
+          <div class="col-md-11">
+              <textarea rows="4" id="comment-box" placeholder="Add a comment"></textarea>
+          </div>
+      </div>
+  </form>`)
+    },
+    error: function (err) {
+      console.log(err)
+    }
+  })
+}
 
+// Fungsi menambahkan comment ke database ///////////////////////////////////////////////////////////////////////////////////////////////////////////
+function approvedComment(){
+  var comment_value = $('#comment-box').val()
+  var approved_value = $('#approved-button').text()
 
-function form2() {
-  materials = document.getElementByname("materials").value;
-  description = document.getElementById("description").value;
-  quantity = document.getElementByname("quantity").value;
-  unit_measurement = document.getElementsByName("unit_measurement").value;
-  price = document.getElementById("price").value;
-  material_picture = document.getElementById("material_picture").value;
+  // jQuery
+  var table = $('#table_comment_history.table tbody'),
+    row = table.find('tr')
+  $('#table_comment_history.table tbody').prepend(
+    `<tr>
+    <td id="tableDataParticipant" scope="${row}">Oka Aryanta</td>
+    <td id="tableDataPosition" >Supply Chain Management</td>
+    <td id="tableDataActivity">${approved_value}</td>
+    <td id="tableDataStart">5 Nov 2018 09:20</td>
+    <td id="tableDataComment">${comment_value}</td>
+</tr>`)
+  $('#comment-box').val("")
+}
+
+function revisedComment(){
+  var comment_value = $('#comment-box').val()
+  var revised_value = $('#revised-button').text()
+
+  // jQuery
+  var table = $('#table_comment_history.table tbody'),
+    row = table.find('tr')
+  $('#table_comment_history.table tbody').prepend(
+    `<tr>
+    <td id="tableDataParticipant" scope="row">Oka Aryanta</td>
+    <td id="tableDataPosition" >Supply Chain Management</td>
+    <td id="tableDataActivity">${revised_value}</td>
+    <td id="tableDataStart">5 Nov 2018 09:20</td>
+    <td id="tableDataComment">${comment_value}</td>
+</tr>`)
+  $('#comment-box').val("")
+}
+
+// Memunculkan comment ///////////////////////////////////////////////////////////////////////////////////////////////////////////
+function showComment(){
+
 }

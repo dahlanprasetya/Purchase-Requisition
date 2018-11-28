@@ -83,7 +83,7 @@ def login():
             "id": dataUser.id,
             "secretcode": "kumiskucing"
         }
-        encoded = jwt.encode(payload, jwtSecretKey, algorithm='HS256')
+        encoded = jwt.encode(payload, jwtSecretKey, algorithm='HS256').decode('utf-8')
         json_format = {
         "token" : encoded,
         "position" : dataUser.position
@@ -235,11 +235,9 @@ def getRequestAccManager():
         req_json = json.dumps(req)
         return req_json,201
 
-
-
-@app.route('/getRequestDetails',methods=["POST"])
+@app.route('/getRequestDetails', methods=['POST'])
 def getRequest():
-    if request.method == "POST":
+    if request.method == 'POST':
         request_data = request.get_json()
         decoded = jwt.decode(request.headers["Authorization"], jwtSecretKey, algorithm='HS256')
         requestDB = Request.query.filter_by(id=request_data["id"]).first()
@@ -308,8 +306,7 @@ def getRequest():
             "comment_history" : arr_comment
         }
         req_json = json.dumps(json_format)
-        # return render_template('details.html', result = req_json)
-        return req_json,201
+        return req_json, 201
 
 def addMaterial(request,req_item):
     data_db = Items(
