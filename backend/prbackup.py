@@ -308,20 +308,20 @@ def getRequest():
         req_json = json.dumps(json_format)
         return req_json, 201
 
-    def addMaterial(request,req_item):
-        data_db = Items(
-            material_name = req_item['tableDataItemDetail'],
-            quantity = req_item['tableDataQuantity'],
-            unit_measurement = req_item['tableDataUnit'],
-            description = req_item['tableDataDescription'],
-            estimate_price = req_item['tableDataEstimatedPrice'],
-            total = req_item['tableDataSubTotal'],
-            owner = request
-        )
-        db.session.add(data_db)
-        db.session.commit()
-        db.session.flush()
-        return data_db.id
+def addMaterial(request,req_item):
+    data_db = Items(
+        material_name = req_item['tableDataItemDetail'],
+        quantity = req_item['tableDataQuantity'],
+        unit_measurement = req_item['tableDataUnit'],
+        description = req_item['tableDataDescription'],
+        estimate_price = req_item['tableDataEstimatedPrice'],
+        total = req_item['tableDataSubTotal'],
+        owner = request
+    )
+    db.session.add(data_db)
+    db.session.commit()
+    db.session.flush()
+    return data_db.id
 # =====================================================================
 
 @app.route('/submitrequest',methods=['POST'])
