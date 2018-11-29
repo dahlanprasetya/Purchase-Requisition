@@ -1,0 +1,225 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link href="https://fonts.googleapis.com/css?family=Ubuntu" rel="stylesheet">
+    <link rel="icon" type="img/png" href="./assets/loupe.png">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.4.1/css/all.css" integrity="sha384-5sAR7xN1Nv6T6+dT2mhtzEpVJvfS3NScPQTrOxhwjIuvcA67KV2R5Jz6kr4abQsz"
+        crossorigin="anonymous">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO"
+        crossorigin="anonymous">
+
+    <title>Request Details | Good Company</title>
+</head>
+
+<body>
+    <header>
+        <!--Nav-bar-->
+        <nav id="navbar" class="navbar navbar-fluid fixed-top">
+            <div id="navbar-container" class="container">
+                <!--Bar Kiri-->
+                <ul id="nav-bar-left">
+                    <li><a href="scm.html"><i class="fas fa-desktop"></i> Dashboard</i></a></li>
+                    <li><a href="#"> <i class="far fa-bell"></i> Notification</i></a></li>
+                </ul>
+                <!--Logo-->
+                <p><a id="nav-bar-middle" class="navbar-brand text-white" href="scm.html">Good Company</a></p>
+
+                <!--Bar kanan-->
+                <div id="dropdown" class="dropdown">
+                    <!-- <div class="dropdown__user">
+                        <img class="dropbtn" href="#" src="assets/user32.png" alt="orang" />
+                        <a id="profile-name" href="profile.html"> John Pantau</a>
+                        <div class="dropdown-content">
+                            <a href="edit.html"><i class="fas fa-cogs"></i> Setting and Privacy</a>
+                            <a href="#"><i class="far fa-question-circle"></i> Help Center</a>
+                            <a href="Login.html" id="logout-button"><i class="fas fa-power-off"></i> Log Out</a>
+                        </div>
+                    </div> -->
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Form Request -->
+    <section>
+        <form onsubmit="event.preventDefault();" method="POST">
+            <div class="container">
+                <h2 id="welcome" class="text-center">General Material Purchase Request Details</h2>
+
+                <fieldset id="requester_info">
+                    <legend><i class="far fa-id-card"></i> Request Information</legend>
+
+                    <!-- Bagian Kiri -->
+                    <div id="all" class="row">
+                        <div id="left" class="col-md-6">
+                            <label class="col-md-4" for="fullname">Fullname</label>
+                            <span id="fullname" name="fullname">John Pantau</span>
+                            <p></p>
+                            <label class="col-md-4" for="email">Email</label>
+                            <span id="email" name="email">johnpantau@gmail.com</span>
+                            <p></p>
+                            <label class="col-md-4" for="position">Postion</label>
+                            <span id="position" name="position">Programmer</span>
+                            <p></p>
+                            <label class="col-md-4" for="id">ID Number</label>
+                            <span id="id_employee" name="id_employee">821732131</span>
+                            <p></p>
+                            <label class="col-md-4" for="company">Company</label>
+                            <span id="company" name="company">Good Company</span>
+                            <p></p>
+                            <label class="col-md-4" for="plant">Plant</label>
+                            <span id="plant" name="plant">MSOP</span>
+                            <p></p>
+                        </div>
+
+                        <!-- Bagian Kanan -->
+                        <div id="right" class="col-md-6">
+                            <label class="col-md-4" for="payroll">Payroll Number</label>
+                            <span id="payroll" name="payroll">198721</span>
+                            <p></p>
+                            <label class="col-md-4" for="budget_type">Budget Type</label>
+                            <span id="budget_type" name="budget_type" />
+                            Maintenance Order
+                            </span>
+                            <p></p>
+                            <label class="col-md-4" for="currency">Currency</label>
+                            <span id="currency" name="currency" />
+                            Rupiah
+                            </span>
+                            <p></p>
+                            <label class="col-md-4" for="location">Receiving Location</label>
+                            <span id="location" name="location" />
+                            Bandung
+                            </span>
+                            <p></p>
+                            <label class="col-md-4" for="budget_source">Budget Source</label>
+                            <span id="budget_source" name="budget_source" />
+                            Cost Center
+                            </span>
+                            <p></p>
+                            <label class="col-md-4" for="expected_date">Expected Date</label>
+                            <span id="expected_date" name="expected_date" >11/30/2018</span> 
+                        </div>
+                    </div>
+                </fieldset>
+
+                <fieldset id="header_info">
+                    <legend><i class="fas fa-info"></i> Header Information</legend>
+
+                    <div id="all" class="row">
+                        <div class="col-md-12">
+                            <label class="col-md-2" for="justification">Justification</label>
+                            <span id="justification" name="justification">Tim programmer membutuhkan kabel roll lagi pak, karena kabel roll yang lama sudah rusak</span>
+                        </div>
+                    </div>
+                </fieldset>
+
+                <fieldset id="item">
+                    <legend><i class="fas fa-warehouse"></i> Item</legend>
+                </fieldset>
+
+                <table class="table table-bordered table-hover container">
+                    <thead class="thead">
+                        <tr>
+                            <th scope="col" class="col-md-1">No.</th>
+                            <th scope="col" class="col-md-3">Item Detail</th>
+                            <th scope="col" class="col-md-3">Description</th>
+                            <th scope="col" class="col-md-1">Est. Price</th>
+                            <th scope="col" class="col-md-1">Qty</th>
+                            <th scope="col" class="col-md-1">Unit</th>
+                            <th scope="col" class="col-md-1">Sub Total</th>
+                            <!-- <th scope="col" class="col-md-1"id="table-action">Action</th> -->
+                            <!-- <th scope="col">Action</th> -->
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <th scope="row">1</th>
+                            <td id="tableDataItemDetail" >Electrical equipment</td>
+                            <td id="tableDataDescription"> Kabel roll 3M</td>
+                            <td id="tableDataEstimatedPrice">50</td>
+                            <td id="tableDataQuantity">5</td>
+                            <td id="tableDataUnit">Piece</td>
+                            <td id="tableDataSubTotal">250</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <!-- Kolom komentar -->
+                <fieldset id="comment">
+                    <legend><i class="far fa-comment"></i></i> Comment</legend>
+                </fieldset>
+                <div id="comment-section">
+
+                    <!-- <form>
+                        <div id="all" class="row">
+                            <div class="col-md-1">
+                                <img src="assets/user.png" />
+                            </div>
+                            <div class="col-md-11">
+                                <textarea rows="4" id="comment-box" placeholder="Add a comment"></textarea>
+                            </div>
+                        </div>
+                    </form> -->
+                </div>
+
+                <div id="button" class="row">
+                    <div class="col-md-0 offset-6">
+                        <button id="approved-button" type="submit" onclick="approvedComment()" class="btn btn-primary">Approved</button>
+                    </div>
+                </div>
+
+                <!-- Riwayat Komentar -->
+                <fieldset id="comment_history">
+                    <legend><i class="fas fa-history"></i> Comment History</legend>
+                </fieldset>
+                
+                <table id="table_comment_history" class="table table-bordered table-hover container">
+                    <thead class="thead">
+                        <tr>
+                            <th scope="col" class="col-md-2">Participant</th>
+                            <th scope="col" class="col-md-2">Position</th>
+                            <th scope="col" class="col-md-1">Activity</th>
+                            <th scope="col" class="col-md-2">Time</th>
+                            <th scope="col" class="col-md-5">Comment</th>
+                            <!-- <th scope="col">Action</th> -->
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- <tr>
+                            <td id="tableDataParticipant" scope="row">Oka Aryanta</td>
+                            <td id="tableDataPosition" >Supply Chain Management</td>
+                            <td id="tableDataActivity">Revised</td>
+                            <td id="tableDataStart">5 Nov 2018 09:20</td>
+                            <td id="tableDataComment">Yang lain sudah oke, kecuali harganya masih terlalu mahal, tolong cari alternatif lain ya</td>
+                        </tr> -->
+                    </tbody>
+                </table>
+
+            </div>
+        </form>
+    </section>
+
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+        crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49"
+        crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy"
+        crossorigin="anonymous"></script>
+    <link rel="stylesheet" type="text/css" media="screen" href="css/comment.css" />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="/main.js"></script>
+    <script>
+    getProfile()
+    commentProfile()
+    </script>
+</body>
+</html>

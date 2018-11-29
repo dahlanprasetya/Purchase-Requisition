@@ -43,27 +43,27 @@
     </header>
 
     <!-- Settings -->
-    <form>
+    <div>
         <div class="container">
             <fieldset id="edit_profile">
-                
-                
                 <!-- Bagian Atas -->
                 <div id="top" class="row">
                     <div id="left" class="col-md-6 offset-3">
-                        <legend class="text-center">Edit Profile</legend>
-                        <label class="col-md-4" for="fullname">Fullname</label>
-                        <input type="text" id="fullame" name="fullname" />
-                        <p></p>
-                        <label class="col-md-4" for="email">Email</label>
-                        <input type="email" id="email" name="email" />
-                        <p></p>
-                        <label class="col-md-4" for="profile_picture">Profile Picture</label>
-                        <input type="file" id="profile_picture" name="profile_picture" />
+                        <div id="sixsense">
+                            <legend class="text-center">Edit Profile</legend>
+                            <label class="col-md-4" for="fullname">Fullname</label>
+                            <input type="text" id="fullname" name="fullname" />
+                            <p></p>
+                            <label class="col-md-4" for="email">Email</label>
+                            <input type="email" id="email" name="email" />
+                            <p></p>
+                            <label class="col-md-4" for="profile_picture">Profile Picture</label>
+                            <input type="url" id="profile_picture" name="profile_picture" />
+                            <p class="text-center"><button type="submit" id="save-button" onclick="editProfile()">Save changes</button></p>
+                        </div>
                     </div>
                 </div>
 
-                <p class="text-center"><button type="submit" id="save-button">Save changes</button></p>
 
                 <!-- Bagian Bawah -->
                 <div id="bottom" class="row">
@@ -77,13 +77,14 @@
                         <p></p>
                         <label class="col-md-4" for="verify_password">Verify Password</label>
                         <input type="password" id="verify_password" name="verify_password" />
+                        <p class="text-center"><button type="submit" onclick="editPassword()" id="save-button">Save changes</button></p>              
                     </div>
                 </div>
 
-                <p class="text-center"><button type="submit" id="save-button">Save changes</button></p>
+
             </fieldset>
         </div>
-    </form>
+    </div>
         
     <!--Footer-->
     <footer>
@@ -125,6 +126,7 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="/main.js"></script>
     <script>
+    showEditData()
     getProfile()
     </script>
 </body>

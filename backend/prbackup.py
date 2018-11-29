@@ -627,7 +627,60 @@ def getTaskList():
         arr_tasklist.append(format_json)
     request_json = json.dumps(arr_tasklist)
     return request_json,201
-    
+
+@app.route('/showEditData', methods= ["GET"])
+def showEditData():
+    decoded = jwt.decode(request.headers["Authorization"], jwtSecretKey, algorithm='HS256')
+    userDB = Employee.query.filter_by(id=decoded["id"]).first()
+    if userDB:        
+        json_format = {
+            "fullname" : userDB.fullname,
+            "email" : userDB.email,
+            "photoprofile" : userDB.photoprofile,
+        }
+        profile_json = json.dumps(json_format) 
+        return profile_json, 201
+
+@app.route('/editProfile', methods= ["PUT"])
+def editProfile():
+    decoded = jwt.decode(request.headers["Authorization"], jwtSecretKey, algorithm='HS256')
+    userDB = Employee.query.filter_by(id=decoded["id"]).first()
+
+    if request.method == "PUT":      
+        #new data
+        req_data = request.get_json()
+        fullname = req_data.get('fullname')
+        email = req_data.get('email')
+        photo_profile = req_data.get('profile_picture')
+
+        userDB.fullname = fullname
+        userDB.email = email
+        userDB.photo_profile = photo_profile
+
+        db.session.commit()
+
+        return 'Data successfully edited', 200
+
+@app.route('/editPassword', methods = ["PUT"])
+def editPassword():
+    decoded = jwt.decode(request.headers["Authorization"], jwtSecretKey, algorithm='HS256')
+    userDB = Employee.query.filter_by(id=decoded["id"]).first()
+
+    req_data = request.get_json()
+    req_current_password = req_data.get('current_password')
+    req_new_password = req_data.get('new_password')
+    req_verify_password = req_data.get('verify_password')
+
+    if request.method == "PUT":
+        if userDB is not None and userDB.password == req_current_password:
+            if req_new_password == req_verify_password:
+                userDB.password = req_new_password
+                db.session.commit()
+                return "Password successfully changed ",200
+        else:
+            return "New password and validate password not match ",400
+    else:
+        return "Current password is wrong",400
 
 
 

@@ -154,8 +154,12 @@ section {
     padding: 0px 0px 0px 0px;
 }
 
-#header_info label {
-    padding-left: 30px
+#justification-div {
+    margin: 20px auto;
+}
+
+#justification-div label {
+    padding-left: 30px;
 } 
 
 /* Item */

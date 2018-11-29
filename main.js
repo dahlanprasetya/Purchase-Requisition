@@ -1,5 +1,3 @@
-// untuk login ///////////////////////////////////////////////////////////////////////////////////////////////////////////
-// const axios = require('axios')
 
 //   untuk cookienya ///////////////////////////////////////////////////////////////////////////////////////////////////////////
 function getCookie(cname) {
@@ -21,6 +19,7 @@ function getCookie(cname) {
 // Menghapus Cookie///////////////////////////////////////////////////////////////////////////////////////////////////////////
 function removeCookie() {
   document.cookie = 'token=;expires=Thu, 01 Jan 1970 00:00:01 GMT;';
+  document.cookie = 'position=;expires=Thu, 01 Jan 1970 00:00:01 GMT;';
   document.cookie = 'requester=;expires=Thu, 01 Jan 1970 00:00:01 GMT;';
   window.location = '/login.html';
 }
@@ -29,6 +28,11 @@ function removeCookie() {
 function home() {
   var a = getCookie('requester')
   a == "true" ? window.location = "/employee.html" : window.location = "/scm.html"
+}
+
+function comment() {
+  var a = getCookie('position')
+  a == "3" ? window.location = "/comment.html" : window.location = "/manager.html"
 }
 
 // Login ke dalam home ///////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -52,6 +56,7 @@ function login() {
       }
       alert("Login Success");
       document.cookie = `token=${data.token}`
+      document.cookie = `position=${data.position}`
       document.cookie = `requester=${isRequest}`
       if (isRequest) {
         window.location = "/employee.html"
@@ -199,7 +204,7 @@ function getRequestDetails() {
                 <!-- Bagian Kanan -->
                 <div id="right" class="col-md-6">
                     <label class="col-md-4" for="payroll">Payroll Number</label>
-                    <span id="payroll" name="payroll">${data.requester_detail.plant}</span>
+                    <span id="payroll" name="payroll">${data.requester_detail.payroll}</span>
                     <p></p>
                     <label class="col-md-4" for="budget_type">Budget Type</label>
                     <span id="budget_type" name="${data.request_detail.budget_type}" />
@@ -231,7 +236,7 @@ function getRequestDetails() {
             <legend><i class="fas fa-info"></i> Header Information</legend>
 
             <div id="all" class="row">
-                <div class="col-md-12">
+                <div id="justification-div" class="col-md-12">
                     <label class="col-md-2" for="justification">Justification</label>
                     <span id="justification" name="justification">${data.request_detail.justification}</span>
                 </div>
@@ -239,14 +244,15 @@ function getRequestDetails() {
         </fieldset>`)
         var table_item = $('#table_item tbody'),
             data_table_item = data.items_detail
-            // row = tbody.find('tr')
+            row = $('#table_item').find('tr')
             // masukin data tabel item
-            console.log(data_table_item)
+            // console.log(data_table_item)
+            a = 0
             data_table_item.forEach(data => {
-              
+              a++
               table_item.append(`
               <tr>
-              <th scope="row"></th>
+              <th scope="row">${a}</th>
               <td id="tableDataItemDetail" >${data.material_name}</td>
               <td id="tableDataDescription">${data.description}</td>
               <td id="tableDataEstimatedPrice">${data.estimate_price}</td>
@@ -603,7 +609,73 @@ function revisedComment(){
   $('#comment-box').val("")
 }
 
-// Memunculkan comment ///////////////////////////////////////////////////////////////////////////////////////////////////////////
-function showComment(){
+// Edit Profile ///////////////////////////////////////////////////////////////////////////////////////////////////////////
+function editPassword(){
+  $.ajax({
+    method: 'PUT',
+    url: "http://localhost:9000/editPassword",
+    beforeSend: function (req) {
+      req.setRequestHeader('Content-Type', 'application/json'),
+      req.setRequestHeader('Authorization', getCookie('token'))
+    },
+    data: JSON.stringify({
+      "current_password" : document.getElementById('current_password').value,
+      "new_password" : document.getElementById('new_password').value,
+      "verify_password" : document.getElementById('verify_password').value
+    }),
+    success: function(res) {
+      alert(res)
+      window.location = "/edit.html"
+    },
+    error: function(err) {
+      alert("Error, either the current password is wrong, or the new password is not the same as the verify password")
+    }
+  })
+}
 
+// Menampilkan Data profile sebelumnya ///////////////////////////////////////////////////////////////////////////////////////////////////////////
+function showEditData() {
+  $.ajax({
+    method: 'GET',
+    url: "http://localhost:9000/showEditData",
+    beforeSend: function (req) {
+      req.setRequestHeader('Content-Type', 'application/json'),
+      req.setRequestHeader('Authorization', getCookie('token'))
+    },
+    success: function (res) {
+      data = JSON.parse(res)
+      // console.log(data)
+      document.getElementById('fullname').value = data.fullname
+      document.getElementById('email').value = data.email
+      document.getElementById('profile_picture').value = data.photoprofile
+    },
+    error: function (err) {
+      console.log(err)
+    }
+  })
+}
+
+// Edit Password ///////////////////////////////////////////////////////////////////////////////////////////////////////////
+function editProfile(){
+  $.ajax({
+    method: 'PUT',
+    url: "http://localhost:9000/editProfile",
+    beforeSend: function (req) {
+      req.setRequestHeader('Content-Type', 'application/json'),
+      req.setRequestHeader('Authorization', getCookie('token'))
+    },
+    data: JSON.stringify({
+      "fullname" : document.getElementById('fullname').value,
+      "email" : document.getElementById('email').value,
+      "profile_picture" : document.getElementById('profile_picture').value
+    }),
+    success: function(res) {
+      alert(res)
+      window.location = "/edit.html"
+    },
+    error: function(err) {
+      alert("")
+      console.log(err)
+    }
+  })
 }
