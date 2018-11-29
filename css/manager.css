@@ -231,6 +231,12 @@ thead {
     background-color: orange;
 }
 
+#approved-button {
+    padding-left: 30px;
+    padding-right: 30px;
+    margin-left: 20px;
+}
+
 #button_load {
     padding-left: 30px;
     padding-right: 30px;
@@ -241,10 +247,6 @@ thead {
     display: none;
 }
 
-#revised-button:hover {
-    background-color: red;
-    color: white;
-}
 
 /* Comment History */
 #comment_history legend{

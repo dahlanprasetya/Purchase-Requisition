@@ -201,7 +201,7 @@ function getAccRequest(){
             <td>${data.company}</td>
             <td>${data.status}</td>
             <form action="">
-            <td id="table-action"><button onclick="redirectToDetail(${data.id})"type="submit" id="see-details-button">See details</button></td>
+            <td id="table-action"><a onclick="redirectToDetail(${data.id})"type="submit" id="see-details-button">See details</a></td>
             </form>
         </tr>
         `)
@@ -458,7 +458,14 @@ function responseRequest() {
       }
     })
 }
-function sendResponseSCM(response){
+function sendResponseSCM(response, button){
+  
+  $("#approved-button").addClass('hide')
+  $("#revised-button").addClass('hide')
+  $('#loading').removeClass('hide')
+
+  // /////////////////////////////////////////////
+
   var id = window.location.href.split("=")[1];
   $.ajax({
     method: 'POST',
@@ -473,8 +480,8 @@ function sendResponseSCM(response){
       "response": response
     }),
     success:function(res){
-      alert("Success")
-      window.location="/scm.html"
+      // alert("Success")
+      // window.location="/scm.html"
     },
     error:function(err){
       alert(err)
@@ -488,7 +495,11 @@ function redirectToDetail(id){
 }
 // funtion pindah halaman comment.html berdasarkan id
 function redirectToComment(id){
-  window.location = 'comment.html?id=' + id
+  if (getCookie('position') == "3") {
+    window.location = '/comment.html?id=' + id
+  } else {
+    window.location = '/manager.html?id=' + id
+  }
 }
 
 function getRequestInfo() {
