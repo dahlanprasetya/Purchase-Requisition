@@ -181,60 +181,6 @@ def getPosition():
     position_json = json.dumps(position_arr)
     return position_json,201
 
-@app.route('/getRequestAccScm')
-def getRequestAccScm():
-    decoded = jwt.decode(Request.headers["Authorization"], jwtSecretKey, algorithm='HS256')
-    requests = Request.filter_by(acc_scm=1, acc_manager=0, acc_owner=0)
-    req = []
-    for request in requests:
-        employee = Employee.filter_by(id=request.id)
-        json_format = {
-            "id" : request.id,
-            "person_name": employee.fullname,
-            "plant": request.plant,
-            "budget_type": request.budget_type,
-            "currency": request.currency,
-            "expected_date": request.expected_date,
-            "location" : request.location,
-            "budget_source": request.budget_source,
-            "justification": request.justification,
-            "material" : request.material,
-            "description" : request.description,
-            "quatity" : request.quatity,
-            "unit_measurement": request.unit_measurement,
-            "material_picture": request.material_picture,
-        }
-        req.append(json_format)
-        req_json = json.dumps(req)
-        return req_json,201
-
-@app.route('/getRequestAccManager')
-def getRequestAccManager():
-    decoded = jwt.decode(Request.headers["Authorization"], jwtSecretKey, algorithm='HS256')
-    requests = Request.filter_by(acc_scm=1, acc_manager=1, acc_owner=0)
-    req = []
-    for request in requests:
-        employee = Employee.filter_by(id=request.id)
-        json_format = {
-            "id" : request.id,
-            "person_name": employee.fullname,
-            "plant": request.plant,
-            "budget_type": request.budget_type,
-            "currency": request.currency,
-            "expected_date": request.expected_date,
-            "location" : request.location,
-            "budget_source": request.budget_source,
-            "justification": request.justification,
-            "material" : request.material,
-            "description" : request.description,
-            "quatity" : request.quatity,
-            "unit_measurement": request.unit_measurement,
-            "material_picture": request.material_picture,
-        }
-        req.append(json_format)
-        req_json = json.dumps(req)
-        return req_json,201
-
 @app.route('/getRequestDetails', methods=['POST'])
 def getRequest():
     if request.method == 'POST':
@@ -603,7 +549,7 @@ def getTaskList():
     r = requests.get(url,headers={
         "Content-Type": "application/json","Authorization": "Bearer %s" %userDB.token
     })
-    print("ini r.text",r.text)
+    # print("ini r.text",r.text)
     result = json.loads(r.text)
     result_length = len(result["data"])
     print("panjang result", result_length)
@@ -611,25 +557,48 @@ def getTaskList():
     for x in range(result_length):
         print("ini process id : ",result["data"][x]["process_id"])
         requestDB = Request.query.filter_by(process_id=result["data"][x]["process_id"]).first()
-        print(requestDB)
-        requesterDB = Employee.query.filter_by(id=requestDB.person_id).first()
-        if task_name == "Employee" or task_name =="SCM":
-            status = "Not yet approved"
-        elif task_name == "Manager":
-            status = "Approved by SCM"
-        else : 
-            status = "Approved by Manager"    
-        format_json = {
-            "id" : requestDB.id,
-            "fullname" : requesterDB.fullname,
-            "company" : requesterDB.company,
-            "status" : status
-        }
-        arr_tasklist.append(format_json)
+        # print(requestDB)
+        if requestDB == None:
+            continue
+        else:
+            requesterDB = Employee.query.filter_by(id=requestDB.person_id).first()
+            if task_name == "Employee" or task_name =="SCM":
+                status = "Not yet approved"
+            elif task_name == "Manager":
+                status = "Approved by SCM"
+            else : 
+                status = "Approved by Manager"    
+            format_json = {
+                "id" : requestDB.id,
+                "fullname" : requesterDB.fullname,
+                "company" : requesterDB.company,
+                "status" : status
+            }
+            arr_tasklist.append(format_json)
     request_json = json.dumps(arr_tasklist)
     return request_json,201
     
-
+@app.route('/getAccRequest')
+def getAccRequest():
+    requestDB = Request.query.filter_by(acc_scm=1,acc_manager=1,acc_owner=1)
+    if requestDB:
+        print("ini request db", requestDB)
+        arr_accrequest = []
+        for acc_request in requestDB:
+            userDB = Employee.query.filter_by(id=acc_request.person_id).first()
+            format_json = {
+                "id":acc_request.id,
+                "fullname": userDB.fullname,
+                "company":userDB.company,
+                "status":"Approved by Owner"
+            }
+            arr_accrequest.append(format_json)
+        request_json = json.dumps(arr_accrequest)
+        return request_json,201
+    else:
+        arr_accrequest = []
+        request_json = json.dumps(arr_accrequest)
+        return request_json,404
 
 
 # def acc
