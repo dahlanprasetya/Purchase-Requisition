@@ -221,6 +221,7 @@ function loading(button) {
   $('#loading').removeClass('hide')
   // document.getElementById("loading").style.display = "none";
 }
+
 // menampilkan detail request berdasarkan id
 function getRequestDetails() {
   var id = window.location.href.split("=")[1];
@@ -350,6 +351,7 @@ function getRequestDetails() {
       }
     })
 }
+
 // menampilkan detail request untuk di acc atau ditolak
 function responseRequest() {
   var id = window.location.href.split("=")[1];
@@ -458,6 +460,8 @@ function responseRequest() {
       }
     })
 }
+
+// send response dari scm
 function sendResponseSCM(response){
   var id = window.location.href.split("=")[1];
   $.ajax({
@@ -482,15 +486,41 @@ function sendResponseSCM(response){
   })
 }
 
+// send response dari manager dan owner
+function sendResponse(){
+  var id = window.location.href.split("=")[1];
+  $.ajax({
+    method: 'POST',
+    url: "http://localhost:9000/responseRequest",
+    beforeSend: function (req) {
+      req.setRequestHeader('Content-Type', 'application/json'),
+      req.setRequestHeader('Authorization', getCookie('token'))
+    },
+    data: JSON.stringify({
+      "request_id": id,
+      "comment": $('#comment-box').val()
+    }),
+    success:function(res){
+      alert("Success")
+      window.location="/scm.html"
+    },
+    error:function(err){
+      alert(err)
+    }
+  })
+}
+
 // function untuk pindah halaman ke detail.html berdasarkan id
 function redirectToDetail(id){
   window.location = 'details.html?id=' + id
 }
+
 // funtion pindah halaman comment.html berdasarkan id
 function redirectToComment(id){
   window.location = 'comment.html?id=' + id
 }
 
+// belum digunakan 
 function getRequestInfo() {
   $.ajax({
     method: 'GET',
