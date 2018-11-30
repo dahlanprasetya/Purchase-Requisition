@@ -46,9 +46,6 @@ INSERT INTO public.request(person_id,plant,budget_type,currency,expected_date, l
 INSERT INTO public.request(person_id,plant,budget_type,currency,expected_date, location, budget_source, justification, acc_scm, acc_manager, acc_owner,material,description,quatity,unit_measurement,record_id,process_id) values
 (4,'thisIsPlant','thisIsBudget','thisIsCurrency','08/02/1996','Bandung','thisIsBudgetSource','thisIsJustification',0,0,0,27,'thisIsDescription',12,'thisIsUnitMeasurenment','thisIsRecordId','thisIsProcessId');
 
-UPDATE employee set token = '_Q_ZcSrp1du6yiQNoSEqi6Qg4OV2WtFYNJdxgtDwgnM.c1cbk0c-PFyUcxfDqBC2ryykULs0v2Av28cx8lVBn0o' where id=4;
-
--- Update Token --
 UPDATE employee set token = 'bVba2uuQAqwPe77-kvyNwUPb6Ab8-NWvmzPCFFIbH-Q.CWBzB0eEOdnWeZZOVOtbPNyi33TLVPBKGyE0VWKLIQM' where id=4;
 UPDATE employee set token = '300lxXNPTsRBbolPlCnv3JQPyrT0M5WhS202HhHcpjE.xhdkL7R_83rBq7UQTDfxyepP8tSumgJgZdUvPtqOzO8' where id=3;
 UPDATE employee set token = 'cucFlgpukUJ5Wl2UGLq22yGBDyeZWYgdPhhb8mcZKSw.pEveDPIlnvdGq_uLRypv1ufu-93XqnTFrVAawd0UM_Q' where id=2;

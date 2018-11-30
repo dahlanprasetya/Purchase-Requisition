@@ -10,7 +10,7 @@ from requests.utils import quote
 
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] =  'postgresql://postgres:Sembilantujuh97@localhost:5432/pr_makers'
+app.config['SQLALCHEMY_DATABASE_URI'] =  'postgresql://postgres:kumiskucing@localhost:5432/pr_makers'
 CORS(app, support_credentials=True)
 app.config['SECRET_KEY'] = os.urandom(24)
 db = SQLAlchemy(app)
@@ -212,18 +212,26 @@ def getRequest():
         counter = 4
         arr_comment = []
         while counter <= result_length-1:
-            comment_json = {
-                "comment" : result["data"][counter]["target"]["content"],
-                "date" : result["data"][counter]["published"],
-                "user": result["data"][counter]["actor"]["display_name"],
-                "position" : result["data"][counter]["object"]["display_name"]
-            }
-            arr_comment.append(comment_json)
             print(counter)
-            print(arr_comment)
-            if result["data"][counter]["object"]["display_name"] == "Owner" and result["data"][counter]["name"] == "Task completed":
-                break
-            counter += 2
+            task_name = result["data"][counter]["object"]["display_name"]
+            if task_name != "Employee":
+                user_position = Position.query.filter_by(name=task_name).first()
+                userDB = Employee.query.filter_by(position=user_position.id).first()
+                comment_json = {
+                    "comment" : result["data"][counter]["target"]["content"],
+                    "date" : result["data"][counter]["published"],
+                    "user": userDB.fullname,
+                    "position" : user_position.name
+                }
+                arr_comment.append(comment_json)
+                print(arr_comment)
+                if result["data"][counter]["object"]["display_name"] == "Owner" and result["data"][counter]["name"] == "Task completed":
+                    break
+                counter += 2
+            else:
+                print("masuk ke else")
+                counter += 2
+                continue
         
         # json_format = {
         #     "comment" : arr_comment
@@ -653,6 +661,44 @@ def getAccRequest():
         arr_accrequest = []
         request_json = json.dumps(arr_accrequest)
         return request_json,404
+
+
+@app.route('/sendRevise',methods=["PUT"])
+def sendRevise():
+    if request.method == 'PUT':
+        decoded = jwt.decode(request.headers["Authorization"], jwtSecretKey, algorithm='HS256')
+        userDB = Employee.query.filter_by(id=decoded["id"]).first()
+        position = Position.query.filter_by(id=userDB.position).first()
+        request_data = request.get_json()
+        print("ini request data",request_data)
+        idRequest = request_data["id_request"]
+        requestDB = Request.query.filter_by(id=idRequest).first()
+        requestDB.budget_source = request_data["request_data"]["budget_source"]
+        requestDB.budget_type = request_data["request_data"]["budget_type"]
+        requestDB.currency = request_data["request_data"]["currency"]
+        requestDB.expected_date = request_data["request_data"]["expected_date"]
+        requestDB.justification = request_data["request_data"]["justification"]
+        requestDB.location = request_data["request_data"]["location"]
+        db.session.commit()
+        items = Items.query.filter_by(request_id=idRequest)
+        for item in items:
+            db.session.delete(item)
+            db.session.commit()
+        
+        req_item = request_data['array_item']
+        requestDB = Request.query.filter_by(id=idRequest).first()
+        if request_data is not None:
+            for item in req_item:
+                addMaterial(requestDB, item)
+        
+        req_comment = ""
+        user_token = userDB.token
+        process_id = requestDB.process_id
+        task_name = position.name
+
+        sent_task(req_comment,user_token,process_id,task_name)
+        return "Success",201
+
 
 
 # def acc

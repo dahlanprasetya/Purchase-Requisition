@@ -52,7 +52,7 @@
         <div id="loading">
             <div class="loader"></div>
         </div>
-        <form onsubmit="event.preventDefault();" method="POST">
+        <div>
             <div id="get-revise-data" class="container">
                 <h2 id="welcome" class="text-center">General Material Purchase Revise</h2>
 
@@ -63,12 +63,12 @@
                     <div id="all" class="row">
                         <div id="left" class="col-md-6">
                             <label class="col-md-4" for="fullname">Fullname</label>
-                            <span id="fullame" name="fullname"></span>
+                            <span id="fullname" name="fullname"></span>
                             <p></p>
                             <label class="col-md-4" for="email">Email</label>
                             <span id="email" name="email"></span>
                             <p></p>
-                            <label class="col-md-4" for="position">Postion</label>
+                            <label class="col-md-4" for="position">Position</label>
                             <span id="position" name="position"></span>
                             <p></p>
                             <label class="col-md-4" for="id">ID Number</label>
@@ -168,9 +168,7 @@
                             <input type="text" id="price" name="price" />
                             <span>.00</span>
                             <p></p>
-                            <!-- <label class="col-md-2" for="material_picture">Material Picture</label>
-                            <input type="file" id="material_picture" name="material_picture" />
-                            <p></p> -->
+                            
                         </div>
                     </div>
                 </fieldset>
@@ -198,38 +196,49 @@
                             <!-- <th scope="col">Action</th> -->
                         </tr>
                     </thead>
-                    <tbody>
-                        <!-- <tr>
-                            <th scope="row">1</th>
-                            <td id="tableDataItemDetail">Electrical equipment</td>
-                            <td id="tableDataDescription"> Kabel roll 3M</td>
-                            <td id="tableDataEstimatedPrice">50</td>
-                            <td id="tableDataQuantity">5</td>
-                            <td id="tableDataUnit">Piece</td>
-                            <td id="tableDataSubTotal">250</td>
-                            <form action="">
-                                <td id="table-action">
-                                    <button formaction="#" type="submit" id="edit-button"><i class="fas fa-pen"></i></button>
-                                    <button formaction="#" type="submit" id="delete-button"><i class="far fa-trash-alt"></i></button>
-                                </td>
-                            </form>
-                        </tr>
-                         -->
+                    <tbody id="table_item">
+                        
                     </tbody>
                 </table>
                 <div class="row">
                     <div class="col-md-0 offset-5">
-                        <button id="send_req" type="submit" onclick="sendAllData(this)" class="btn btn-primary">Send Request</button>
+                        <button id="send_req" type="submit" onclick="sendRevise(this)" class="btn btn-primary">Send Request</button>
                     </div>
                     <div id="loading" class="col-md-0 hide">
                         <button id="button_load" type="submit" class="btn btn-primary"><i class="fa fa-circle-o-notch fa-spin"></i> Loading</button>
                     </div>
                 </div>
 
+                
                 <!-- Loader  -->
                 
+                <!-- Riwayat Komentar -->
+                <fieldset id="comment_history">
+                    <legend><i class="fas fa-history"></i> Comment History</legend>
+                </fieldset>
+                
+                <table id="table_comment_history" class="table table-bordered table-hover container">
+                    <thead class="thead">
+                        <tr>
+                            <th scope="col" class="col-md-2">Participant</th>
+                            <th scope="col" class="col-md-2">Position</th>
+                            <th scope="col" class="col-md-1">Activity</th>
+                            <th scope="col" class="col-md-2">Time</th>
+                            <th scope="col" class="col-md-5">Comment</th>
+                        </tr> 
+                    </thead>
+                    <tbody id="table_comment">
+                        <!-- <tr>
+                            <td id="tableDataParticipant" scope="row">Oka Aryanta</td>
+                            <td id="tableDataPosition" >Supply Chain Management</td>
+                            <td id="tableDataActivity">Revised</td>
+                            <td id="tableDataStart">5 Nov 2018 09:20</td>
+                            <td id="tableDataComment">Yang lain sudah oke, kecuali harganya masih terlalu mahal, tolong cari alternatif lain ya</td>
+                        </tr> -->
+                    </tbody>
+                </table>
             </div>
-        </form>
+        </div>
     </section>
 
     <!-- Optional JavaScript -->
