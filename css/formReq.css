@@ -193,7 +193,7 @@ textarea {
 
 /* Item */
 thead {
-    background-color: lightslategrey;
+    background-color: gray;
     color: white;
 }
 
@@ -269,6 +269,30 @@ thead {
 
 .hide {
     display: none;
+}
+
+
+/* Comment History */
+#comment_history legend{
+    background-color: lightslategrey;
+    color: white;
+    margin-top: 12px;
+    padding: 0px 12px 0px 12px;
+    border-radius: 3px;
+    margin: 0px;
+}
+
+#table_comment_history {
+    text-align: center;
+    margin: 20px auto;
+}
+
+#tableDataComment {
+    text-align: left;
+}
+
+#table_comment_history td {
+    padding: 20px;
 }
 
 

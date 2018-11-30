@@ -78,6 +78,7 @@ function getUserRequest(){
     url : "http://localhost:9000/getUserRequest",
     beforeSend: function (req) {
       req.setRequestHeader('Authorization', getCookie('token'))
+      $('#loading').show()
     },
     success: function (res) {
       JSON.parse(res).forEach(function (data) {
@@ -94,9 +95,11 @@ function getUserRequest(){
     </tr>
         `)
       })
+      $('#loading').hide()
     },
     error: function (err) {
       console.log(err)
+      $('#loading').hide()
     }
   })
 }
@@ -553,12 +556,7 @@ function responseRequest() {
       }
     })
 }
-function sendResponseSCM(response, button){
-  
-  $("#approved-button").addClass('hide')
-  $("#revised-button").addClass('hide')
-  $('#loading').removeClass('hide')
-
+function sendResponseSCM(response){
   // /////////////////////////////////////////////
 
   var id = window.location.href.split("=")[1];
@@ -568,14 +566,18 @@ function sendResponseSCM(response, button){
     beforeSend: function (req) {
       req.setRequestHeader('Content-Type', 'application/json'),
       req.setRequestHeader('Authorization', getCookie('token'))
+      $('#loading-button').removeClass('hide')
+      $("#approved-button").hide()
+      $("#revised-button").hide()
     },
     data: JSON.stringify({
       "request_id": id,
       "comment": $('#comment-box').val(),
       "response": response
     }),
-    success:function(res){
-      // alert("Success")
+    success:function(res){ 
+      // $('#loading-button').show()
+      alert("Success")
       // window.location="/scm.html"
     },
     error:function(err){
@@ -869,6 +871,7 @@ function commentProfile(){
     beforeSend: function (req) {
       req.setRequestHeader('Content-Type', 'application/json'),
         req.setRequestHeader('Authorization', getCookie('token'))
+        $('#loading').show()
     },
     success: function (res) {
       data = JSON.parse(res)
@@ -884,9 +887,11 @@ function commentProfile(){
           </div>
       </div>
   </form>`)
+    $('#loading').hide()
     },
     error: function (err) {
       console.log(err)
+      $('#loading').show()
     }
   })
 }

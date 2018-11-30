@@ -164,7 +164,7 @@ section {
 
 /* Item */
 thead {
-    background-color: lightslategrey;
+    background-color: gray;
     color: white;
 }
 
@@ -172,7 +172,8 @@ thead {
     background-color: lightslategrey;
     color: white;
     padding: 0px 12px 0px 12px;
-    b1remorder-radius: 3px;
+    border-radius: 3px;
+    margin: 0px;
 }
 
 .table th, .table td{
@@ -191,17 +192,27 @@ thead {
     padding: 0px;
 }
 
+#table_item {
+    margin: 20px auto;
+}
+
 /* Comment History */
 #comment_history legend{
     background-color: lightslategrey;
     color: white;
     padding: 0px 12px 0px 12px;
     border-radius: 3px;
+    margin: 0px;
 }
 
 #table_comment_history {
     text-align: center;
-    margin-bottom: 30px;
+    /* margin-bottom: 30px; */
+    margin: 20px auto;
+}
+
+#table_comment_history td {
+    padding: 20px;
 }
 
 #tableDataComment {

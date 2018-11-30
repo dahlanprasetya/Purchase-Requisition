@@ -160,7 +160,7 @@ section {
 
 /* Item */
 thead {
-    background-color: lightslategrey;
+    background-color: gray;
     color: white;
 }
 
@@ -169,6 +169,7 @@ thead {
     color: white;
     padding: 0px 12px 0px 12px;
     border-radius: 3px;
+    margin: 0px;
 }
 
 .table th, .table td{
@@ -185,6 +186,10 @@ thead {
 
 #item #description {
     padding: 0px;
+}
+
+#table_item {
+    margin: 20px auto;
 }
 
 /* button item */
@@ -253,15 +258,20 @@ thead {
     margin-top: 12px;
     padding: 0px 12px 0px 12px;
     border-radius: 3px;
+    margin: 0px;
 }
 
 #table_comment_history {
     text-align: center;
-    margin-bottom: 30px;
+    margin: 20px auto;
 }
 
 #tableDataComment {
     text-align: left;
+}
+
+#table_comment_history td {
+    padding: 20px;
 }
 
 /* Loading Page */
