@@ -549,7 +549,6 @@ def getTaskList():
     r = requests.get(url,headers={
         "Content-Type": "application/json","Authorization": "Bearer %s" %userDB.token
     })
-    # print("ini r.text",r.text)
     result = json.loads(r.text)
     result_length = len(result["data"])
     print("panjang result", result_length)

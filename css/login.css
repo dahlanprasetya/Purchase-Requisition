@@ -1,5 +1,5 @@
 body {
-    background: url("/assets/login-wallpaper.jpg") no-repeat center center/cover;
+    background: url("/assets/login2.jpeg") no-repeat center center/cover;
     font-family: 'Ubuntu', sans-serif;
     justify-content: center;
     align-items: center;
@@ -7,11 +7,21 @@ body {
     height: 100vh;
 }
 
+#welcome {
+    color: white;
+    text-shadow:
+   -1px -1px 0 #000,  
+    1px -1px 0 #000,
+    -1px 1px 0 #000,
+     1px 1px 0 #000;
+}
+
 #login-section {
     margin-top: 30px;
-    background-color: transparent;
+    /* background-color: #ffffff1a; */
     padding: 20px;
     width: 600px;
+    /* border-top: 2px solid white; */
     border: 2px solid white;
     border-radius: 15px;
 }
@@ -19,7 +29,7 @@ body {
 #email {
     border-radius: 5px;
     box-sizing: border-box;
-    border: 2px solid white;
+    border: 2px solid transparent;
     text-align: center;
     margin-top: 10px;
     width: 340px;
@@ -27,26 +37,25 @@ body {
     color: black;
 }
 
-#email:hover {
-    background-color: lightslategrey;
-    color: white;
-}
+/* #email:hover {
+    background-color: #ffffff49;
+    color: black;
+} */
 
 #password {
     border-radius: 5px;
     box-sizing: border-box;
-    border: 2px solid white;
+    border: 2px solid transparent;
     text-align: center;
     margin-top: 10px;
     width: 340px;
     height:35px;
     color: black;
 }
-
+/* 
 #password:hover {
-    background-color: lightslategrey;
-    color: white;
-}
+    background-color: #ffffff49;
+} */
 
 #checkbox {
     text-align: left;
@@ -54,14 +63,21 @@ body {
 }
 
 .form-check-label {
-    background-color: white;
-    border: 2px solid white;
+    /* background-color: white; */
+    /* margin-top: 20px;     */
+    border: 2px solid transparent;
     border-radius: 5px;
     padding-left: 25px;
+    color: white;
+    font-weight: 500;
 }
 
+/* .form-check-label:hover {
+    background-color: white;
+} */
+
 #login-button {
-    margin-top: 10px;
+    /* margin-top: 10px; */
     border-radius: 10px;
     border: 2px solid transparent;
     background-color: white; 
@@ -71,6 +87,6 @@ body {
 }
 
 #login-button:hover {
-    background-color: cornflowerblue;
+    background-color: lightblue;
     color: white;
 }
