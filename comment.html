@@ -8,6 +8,7 @@
 
     <!-- Bootstrap CSS -->
     <link href="https://fonts.googleapis.com/css?family=Ubuntu" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <link rel="icon" type="img/png" href="./assets/loupe.png">
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.4.1/css/all.css" integrity="sha384-5sAR7xN1Nv6T6+dT2mhtzEpVJvfS3NScPQTrOxhwjIuvcA67KV2R5Jz6kr4abQsz"
         crossorigin="anonymous">
@@ -40,6 +41,9 @@
 
     <!-- Form Request -->
     <section>
+        <div id="loading">
+            <div class="loader"></div>
+        </div>
         <form onsubmit="event.preventDefault();" method="POST">
             <div class="container">
                 <h2 id="welcome" class="text-center">General Material Purchase Request Details</h2>
@@ -167,6 +171,9 @@
                     </div>
                     <div class="col-md-0">
                         <button id="revised-button" type="submit" onclick="sendResponseSCM('No')" class="btn btn-primary">Revised</button>
+                    </div>
+                    <div id="loading" class="col-md-0 hide">
+                        <button id="button_load" type="submit" class="btn btn-primary"><i class="fa fa-circle-o-notch fa-spin"></i> Loading</button>
                     </div>
                 </div>
 

@@ -158,6 +158,7 @@ function getTaskList(){
     url: "http://localhost:9000/getTaskList",
     beforeSend: function (req) {
       req.setRequestHeader('Authorization', getCookie('token'))
+      $('#loading').show()
     },
     success: function (res) {
       JSON.parse(res).forEach(function (data) {
@@ -175,13 +176,47 @@ function getTaskList(){
         </tr>
         `)
       })
+      $('#loading').hide()
     },
     error: function (err) {
       console.log(err)
+      $('#loading').hide()
     }
   })
 }
-
+// mengambil request yang harus direvisi
+function getTaskRevise(){
+  $.ajax({
+    method: 'GET',
+    url: "http://localhost:9000/getTaskList",
+    beforeSend: function (req) {
+      req.setRequestHeader('Authorization', getCookie('token'))
+      $('#loading').show()
+    },
+    success: function (res) {
+      JSON.parse(res).forEach(function (data) {
+        // console.log(data)
+        $('#table-revise').append(`
+        <tr>
+            <td scope="row">${data.id}</th>
+            <td>${data.fullname}</td>
+            <td>${data.company}</td>
+            <td>${data.status}</td>
+            <form action="">
+            <td id="table-action"><button onclick="redirectToRevise(${data.id})"
+            type="submit" id="see-details-button">See details</button></td>
+            </form>
+        </tr>
+        `)
+      })
+      $('#loading').hide()
+    },
+    error: function (err) {
+      console.log(err)
+      $('#loading').hide()
+    }
+  })
+}
 // mencari request yg sudah di acc oleh owner////////////////////////////////////////////////////////////////////////////
 
 function getAccRequest(){
@@ -201,7 +236,7 @@ function getAccRequest(){
             <td>${data.company}</td>
             <td>${data.status}</td>
             <form action="">
-            <td id="table-action"><button onclick="redirectToDetail(${data.id})"type="submit" id="see-details-button">See details</button></td>
+            <td id="table-action"><a onclick="redirectToDetail(${data.id})"type="submit" id="see-details-button">See details</a></td>
             </form>
         </tr>
         `)
@@ -222,7 +257,7 @@ function loading(button) {
   // document.getElementById("loading").style.display = "none";
 }
 
-// menampilkan detail request berdasarkan id
+// menampilkan detail request berdasarkan id ///////////////////////////////////////////////////////////////////////////////////////////////////////////
 function getRequestDetails() {
   var id = window.location.href.split("=")[1];
   $.ajax({
@@ -231,6 +266,7 @@ function getRequestDetails() {
       beforeSend: function (req) {
         req.setRequestHeader('Content-Type', 'application/json'),
         req.setRequestHeader('Authorization', getCookie('token'))
+        $('#loading').show()
       },
       data: JSON.stringify({
         "id": id
@@ -345,14 +381,99 @@ function getRequestDetails() {
                 <td id="comment-content" scope="col" class="col-md-5">${data.comment}</td>
             </tr>`)
           })
+          $('#loading').hide()
       },
       error: function (err) {
         console.log(err)
+        $('#loading').hide()
       }
     })
 }
 
-// menampilkan detail request untuk di acc atau ditolak
+// Memunculkan data sebelumnya untuk direvisi ///////////////////////////////////////////////////////////////////////////////////////////////////////////
+function showReviseData() {
+  var id = window.location.href.split("=")[1];
+  $.ajax({
+      method: 'POST',
+      url: "http://localhost:9000/getRequestDetails",
+      beforeSend: function (req) {
+        req.setRequestHeader('Content-Type', 'application/json'),
+        req.setRequestHeader('Authorization', getCookie('token'))
+        $('#loading').show()
+      },
+      data: JSON.stringify({
+        "id": id
+      }),
+      success: function (res) {
+        // window.location = "/details.html";
+        data = JSON.parse(res)
+        $('#fullname').append(data['requester_detail']['fullname'])
+        $('#email').append(data['requester_detail']['email'])
+        $('#position').append(data['requester_detail']['position'])
+        $('#id_employee').append(data['requester_detail']['id_number'])
+        $('#company').append(data['requester_detail']['company'])
+        $('#plant').append(data['requester_detail']['plant'])
+        $('#payroll').append(data['requester_detail']['payroll'])
+        $('#budget_type').val(`${data['request_detail']['budget_type']}`)
+        $('#currency').val(`${data['request_detail']['currency']}`)
+        $('#location').val(`${data['request_detail']['location']}`)
+        $('#expected_date').val(`${data['request_detail']['expected_date']}`)
+        $('#justification').val(`${data['request_detail']['justification']}`)
+        
+
+        var table_item = $('#table_item'),
+            data_table_item = data['items_detail']
+            row = $('#table_item').find('tr')
+            // masukin data tabel item
+            a = 0
+            data_table_item.forEach(data => {
+              a++
+              table_item.append(`
+              <tr id="${row.length + 1}">
+              <th scope="row">${a}</th>
+              <td id="tableDataItemDetail" >${data['material_name']}</td>
+              <td id="tableDataDescription">${data['description']}</td>
+              <td id="tableDataEstimatedPrice">${data['estimate_price']}</td>
+              <td id="tableDataQuantity">${data['quantity']}</td>
+              <td id="tableDataUnit">${data['unit_measurement']}</td>
+              <td id="tableDataSubTotal">${data['total']}</td>
+              <form action="">
+                  <td id="table-action">
+                      <button formaction="#" onclick=deleteTable(${row.length + 1}) type="submit" id="delete-button"><i class="far fa-trash-alt"></i></button>
+                  </td>
+              </form>
+          </tr>
+              `)
+          })
+          var table_comment = $('#table_comment_history'),
+          data_table_comment = data['comment_history']
+          // row = tbody.find('tr')
+          // masukin data tabel item
+          a = 0
+          data_table_comment.forEach(data => {
+            a++
+            var str = data.date
+            var tanggal = str.split("T")
+            var res1 = tanggal[1].substr(0,5)
+            var tes = tanggal[0] + " " +res1
+            table_comment.append(`
+            <tr>
+                <td id="comment-fullname" scope="col" class="col-md-2">${data["user"]}</td>
+                <td id="comment-position" scope="col" class="col-md-2">${data["position"]}</td>
+                <td id="comment-activity" scope="col" class="col-md-1">approved</td>
+                <td id="comment-time" scope="col" class="col-md-2">${tes}</td>
+                <td id="comment-content" scope="col" class="col-md-5">${data["comment"]}</td>
+            </tr>`)
+          })
+          $('#loading').hide()
+      },
+      error: function (err) {
+        console.log(err)
+        $('#loading').hide()
+      }
+    })
+}
+// menampilkan detail request untuk di acc atau ditolak ///////////////////////////////////////////////////////////////////////////////////////////////////////////
 function responseRequest() {
   var id = window.location.href.split("=")[1];
   $.ajax({
@@ -361,6 +482,7 @@ function responseRequest() {
       beforeSend: function (req) {
         req.setRequestHeader('Content-Type', 'application/json'),
         req.setRequestHeader('Authorization', getCookie('token'))
+        $('#loading').show()
       },
       data: JSON.stringify({
         "id": id
@@ -454,15 +576,22 @@ function responseRequest() {
                 <td id="comment-content" scope="col" class="col-md-5">${data.comment}</td>
             </tr>`)
           })
+          $('#loading').hide()
       },
       error: function (err) {
         console.log(err)
+        $('#loading').hide()
       }
     })
 }
+function sendResponseSCM(response, button){
+  
+  $("#approved-button").addClass('hide')
+  $("#revised-button").addClass('hide')
+  $('#loading').removeClass('hide')
 
-// send response dari scm
-function sendResponseSCM(response){
+  // /////////////////////////////////////////////
+
   var id = window.location.href.split("=")[1];
   $.ajax({
     method: 'POST',
@@ -515,9 +644,18 @@ function redirectToDetail(id){
   window.location = 'details.html?id=' + id
 }
 
+// function untuk pindah halaman ke formRebvise.html
+function redirectToRevise(id){
+  window.location = 'formRev.html?id=' + id
+}
+
 // funtion pindah halaman comment.html berdasarkan id
 function redirectToComment(id){
-  window.location = 'comment.html?id=' + id
+  if (getCookie('position') == "3") {
+    window.location = '/comment.html?id=' + id
+  } else {
+    window.location = '/manager.html?id=' + id
+  }
 }
 
 // belum digunakan 
@@ -681,14 +819,80 @@ function sendAllData(button) {
     ),
     success: function (res) {
       // console.log(res)
-      alert('Data berhasil dikirim')
+      alert('Data has been sent successfully')
       window.location = "/employee.html"
     },
     error: function (err) {
       console.log(err)
-      alert('Data gagal dikirim')
+      alert('Data sent failed')
     }
   })
+}
+
+function sendRevise(button) {
+  console.log(button)
+  $(button).addClass('hide')
+  $('#loading').removeClass('hide')
+  // //////////////////////////////// Request ////////////////////////////////////////
+
+  // autoComplete
+  var obj = new Object(),
+    autoComplete = $('#right select').get()
+  // autoComplete = document.querySelectorAll('.parent .child1');
+  for (let i = 0; i < autoComplete.length; i++) {
+    var id = $(autoComplete).eq(i).attr("id"),
+      val = $(autoComplete).eq(i).val()
+    // console.log(val)
+    obj[`${id}`] = val
+  }
+  // input (date)
+  var date = $('#expected_date').val()
+  obj['expected_date'] = date
+  // justification
+  var just = $('#justification').val()
+  obj['justification'] = just
+  // //////////////////////////////// Item ////////////////////////////////////////
+  var array = new Array(),
+    rows = $('table.table tbody tr').get()
+  rows.forEach(row => {
+    var tds = $(row).find('td').get(),
+      item_obj = new Object()
+    tds.forEach(td => {
+      var id = $(td).attr("id"),
+        text = $(td).text()
+      item_obj[`${id}`] = text
+    })
+    delete item_obj['table-action']
+    array.push(item_obj)
+  })
+
+  // ///////////////////////////////// Data to send to Backend ///////////////////////////////////////
+  var obj_data = new Object()
+  obj_data["request_data"] = obj
+  obj_data["array_item"] = array
+  console.log(obj_data)
+
+  // /////////////////////////////// Kirim pake Ajax //////////////////////////////////////
+  // $.ajax({
+  //   method: 'POST',
+  //   url: 'http://localhost:9000/submitrequest',
+  //   beforeSend: function (req) {
+  //     req.setRequestHeader('Content-Type', 'application/json')
+  //     req.setRequestHeader('Authorization', getCookie('token'))
+  //   },
+  //   data: JSON.stringify(
+  //     obj_data    
+  //   ),
+  //   success: function (res) {
+  //     // console.log(res)
+  //     alert('Data has been sent successfully')
+  //     window.location = "/employee.html"
+  //   },
+  //   error: function (err) {
+  //     console.log(err)
+  //     alert('Data sent failed')
+    // }
+  // })
 }
 
 // Fungsi menambahkan item ke tabel ///////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -700,9 +904,9 @@ function addItemToTabel() {
   var price_value = $('#price').val()
 
   // jQuery
-  var table = $('table.table tbody'),
+  var table = $('table.table tbody#table_item'),
     row = table.find('tr')
-  $('table.table tbody').append(
+  $('table.table tbody#table_item').append(
     `<tr id="${row.length + 1}">
   <th scope="row">${row.length + 1}</th>
   <td id="tableDataItemDetail">${materials_value} equipment</td>
@@ -742,16 +946,6 @@ function deleteTable(id) {
     $(row).eq(i).find('th').html(`${i + 1}`)
   }
 }
-
-// function editTable(id) {
-//   $(`tr#${id}`).text()
-
-//   $('#materials').val("Choose...")
-//   $('#description').val("")
-//   $('#quantity').val("")
-//   $('#unit_measurement').val("Piece")
-//   $('#price').val("")
-// }
 
 // Memunculkan data ke tabel approval list ///////////////////////////////////////////////////////////////////////////////////////////////////////////
 function approvalList() {

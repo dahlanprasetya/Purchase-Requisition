@@ -9,13 +9,13 @@
     <!-- Bootstrap CSS -->
     <link href="https://fonts.googleapis.com/css?family=Ubuntu" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-    <link rel="icon" type="img/png" href="./assets/loupe.png">
+    <link rel="icon" type="img/png" href="./assets/reload.png">
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.4.1/css/all.css" integrity="sha384-5sAR7xN1Nv6T6+dT2mhtzEpVJvfS3NScPQTrOxhwjIuvcA67KV2R5Jz6kr4abQsz"
         crossorigin="anonymous">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO"
         crossorigin="anonymous">
 
-    <title>Request Details | Good Company</title>
+    <title>Revise Form | Good Company</title>
 </head>
 
 <body>
@@ -25,15 +25,23 @@
             <div id="navbar-container" class="container">
                 <!--Bar Kiri-->
                 <ul id="nav-bar-left">
-                    <li><a href="scm.html"><i class="fas fa-desktop"></i> Dashboard</i></a></li>
+                    <li><a href="employee.html"><i class="fas fa-desktop"></i> Dashboard</i></a></li>
                     <li><a href="#"> <i class="far fa-bell"></i> Notification</i></a></li>
                 </ul>
                 <!--Logo-->
-                <p><a id="nav-bar-middle" class="navbar-brand text-white" href="scm.html">Good Company</a></p>
+                <p><a id="nav-bar-middle" class="navbar-brand text-white" href="employee.html">Good Company</a></p>
 
                 <!--Bar kanan-->
                 <div id="dropdown" class="dropdown">
-                    
+                    <!-- <div class="dropdown__user">
+                        <img class="dropbtn" href="#" src="assets/user32.png" alt="orang" />
+                        <a id="profile-name" href="profile.html"> John Pantau</a>
+                        <div class="dropdown-content">
+                            <a href="edit.html"><i class="fas fa-cogs"></i> Setting and Privacy</a>
+                            <a href="#"><i class="far fa-question-circle"></i> Help Center</a>
+                            <a href="Login.html" id="logout-button"><i class="fas fa-power-off"></i> Log Out</a>
+                        </div>
+                    </div> -->
                 </div>
             </div>
         </nav>
@@ -44,9 +52,9 @@
         <div id="loading">
             <div class="loader"></div>
         </div>
-        <form onsubmit="event.preventDefault();" method="POST">
-            <div class="container">
-                <h2 id="welcome" class="text-center">General Material Purchase Request Details</h2>
+        <div>
+            <div id="get-revise-data" class="container">
+                <h2 id="welcome" class="text-center">General Material Purchase Revise</h2>
 
                 <fieldset id="requester_info">
                     <legend><i class="far fa-id-card"></i> Request Information</legend>
@@ -54,53 +62,62 @@
                     <!-- Bagian Kiri -->
                     <div id="all" class="row">
                         <div id="left" class="col-md-6">
-                            <!-- <label class="col-md-4" for="fullname">Fullname</label>
-                            <span id="fullname" name="fullname">John Pantau</span>
+                            <label class="col-md-4" for="fullname">Fullname</label>
+                            <span id="fullname" name="fullname"></span>
                             <p></p>
                             <label class="col-md-4" for="email">Email</label>
-                            <span id="email" name="email">johnpantau@gmail.com</span>
+                            <span id="email" name="email"></span>
                             <p></p>
-                            <label class="col-md-4" for="position">Postion</label>
-                            <span id="position" name="position">Programmer</span>
+                            <label class="col-md-4" for="position">Position</label>
+                            <span id="position" name="position"></span>
                             <p></p>
                             <label class="col-md-4" for="id">ID Number</label>
-                            <span id="id_employee" name="id_employee">821732131</span>
+                            <span id="id_employee" name="id_employee"></span>
                             <p></p>
                             <label class="col-md-4" for="company">Company</label>
-                            <span id="company" name="company">Good Company</span>
+                            <span id="company" name="company"></span>
                             <p></p>
                             <label class="col-md-4" for="plant">Plant</label>
-                            <span id="plant" name="plant">MSOP</span>
-                            <p></p> -->
+                            <span id="plant" name="plant"></span>
+                            <p></p>
                         </div>
 
-                        <!-- Bagian Kanan -->
-                        <div id="right" class="col-md-6">
-                            <!-- <label class="col-md-4" for="payroll">Payroll Number</label>
-                            <span id="payroll" name="payroll">198721</span>
+                    <!-- Bagian Kanan -->
+                    <div id="right" class="col-md-6">
+                            <label class="col-md-4" for="payroll">Payroll Number</label>
+                            <span id="payroll" name="payroll"></span>
                             <p></p>
                             <label class="col-md-4" for="budget_type">Budget Type</label>
-                            <span id="budget_type" name="budget_type" />
-                            Maintenance Order
-                            </span>
+                            <select id="budget_type" name="budget_type" />
+                                <option selected>Project</option>
+                                <option>Maintenance Order</option>
+                            </select>
                             <p></p>
                             <label class="col-md-4" for="currency">Currency</label>
-                            <span id="currency" name="currency" />
-                            Rupiah
-                            </span>
+                            <select id="currency" name="currency" />
+                                <option selected>USD</option>
+                                <option>IDR</option>
+                                <option>EUR</option>
+                                <option>YEN</option>
+                            </select>
                             <p></p>
                             <label class="col-md-4" for="location">Receiving Location</label>
-                            <span id="location" name="location" />
-                            Bandung
-                            </span>
+                            <select id="location" name="location" />
+                                <option selected>Jakarta</option>
+                                <option>Bandung</option>
+                                <option>Cikarang</option>
+                                <option>Surabaya</option>
+                            </select>
                             <p></p>
                             <label class="col-md-4" for="budget_source">Budget Source</label>
-                            <span id="budget_source" name="budget_source" />
-                            Cost Center
-                            </span>
+                            <select id="budget_source" name="budget_source" />
+                                <option selected>Cost center</option>
+                                <option>Foreign loans</option>
+                                <option>Others</option>
+                            </select>
                             <p></p>
                             <label class="col-md-4" for="expected_date">Expected Date</label>
-                            <span id="expected_date" name="expected_date" >11/30/2018</span>  -->
+                            <input type="date" id="expected_date" name="expected_date" />
                         </div>
                     </div>
                 </fieldset>
@@ -110,17 +127,62 @@
 
                     <div id="all" class="row">
                         <div class="col-md-12">
-                            <label class="col-md-2" for="justification">Justification</label>
-                            <span id="justification" name="justification"></span>
+                            <label class="col-md-2" id="justification-label"  for="justification">Justification</label>
+                            <textarea cols="76" rows="3" id="justification" name="justification"></textarea>
                         </div>
                     </div>
                 </fieldset>
 
                 <fieldset id="item">
                     <legend><i class="fas fa-warehouse"></i> Item</legend>
+
+                    <div id="all" class="row">
+                        <div id="left" class="col-md-12">
+                            <label class="col-md-2" for="material">Material</label>
+                            <select id="materials" name="materials" />
+                            <option id="default" selected>Choose...</option>
+                            <!--<option>001 - Computer pheriperals</option>
+                                    <option>002 - Electrical equipment and part</option>
+                                    <option>003 - Office stationery and tools</option>
+                                    <option>004 - Transportation equipment and part</option>
+                                    <option>005 - Heavy equipment and part</option> -->
+                            </select>
+                            <p></p>
+                            <label class="col-md-2" for="description">Description</label>
+                            <input type="text" class="col-md-8" id="description" name="description" />
+                            <p></p>
+                            <label class="col-md-2" for="quantity">Quantity</label>
+                            <input type="number" id="quantity" name="quantity" />
+                            <p></p>
+                            <label class="col-md-2" for="unit_measurement">Unit Measurement</label>
+                            <select id="unit_measurement" name="unit_measurement" />
+                            <option selected>Piece</option>
+                            <option>Meter</option>
+                            <option>Set</option>
+                            <option>Ton</option>
+                            <option>Kilogram</option>
+                            </select>
+                            <p></p>
+                            <label class="col-md-2" for="price">Estimate Price</label>
+                            <span>$</span>
+                            <input type="text" id="price" name="price" />
+                            <span>.00</span>
+                            <p></p>
+                            
+                        </div>
+                    </div>
                 </fieldset>
 
-                <table id="table_item" class="table table-bordered table-hover container">
+                <div id="button" class="row">
+                    <div class="col-md-0 offset-5">
+                        <button type="submit" onclick="addItemToTabel()" class="btn btn-primary">Add</button>
+                    </div>
+                    <div class="col-md-0">
+                        <button type="submit" onclick="reset()" class="btn btn-primary">Reset</button>
+                    </div>
+                </div>
+
+                <table class="table table-bordered table-hover container">
                     <thead class="thead">
                         <tr>
                             <th scope="col" class="col-md-1">No.</th>
@@ -130,50 +192,26 @@
                             <th scope="col" class="col-md-1">Qty</th>
                             <th scope="col" class="col-md-1">Unit</th>
                             <th scope="col" class="col-md-1">Sub Total</th>
-                            <!-- <th scope="col" class="col-md-1"id="table-action">Action</th> -->
+                            <th scope="col" class="col-md-1" id="table-action">Action</th>
                             <!-- <th scope="col">Action</th> -->
                         </tr>
                     </thead>
-                    <tbody>
-                        <tr>
-                            <!-- <th scope="row">1</th>
-                            <td id="tableDataItemDetail" >Electrical equipment</td>
-                            <td id="tableDataDescription"> Kabel roll 3M</td>
-                            <td id="tableDataEstimatedPrice">50</td>
-                            <td id="tableDataQuantity">5</td>
-                            <td id="tableDataUnit">Piece</td>
-                            <td id="tableDataSubTotal">250</td> -->
-                        </tr>
+                    <tbody id="table_item">
+                        
                     </tbody>
                 </table>
-
-                <!-- Kolom komentar -->
-                <fieldset id="comment">
-                    <legend><i class="far fa-comment"></i></i> Comment</legend>
-                </fieldset>
-                <div id="comment-section">
-
-                    <!-- <form>
-                        <div id="all" class="row">
-                            <div class="col-md-1">
-                                <img src="assets/user.png" />
-                            </div>
-                            <div class="col-md-11">
-                                <textarea rows="4" id="comment-box" placeholder="Add a comment"></textarea>
-                            </div>
-                        </div>
-                    </form> -->
-                </div>
-
-                <div id="button" class="row">
+                <div class="row">
                     <div class="col-md-0 offset-5">
-                        <button id="approved-button" type="submit" onclick="sendResponseSCM(this)" class="btn btn-primary">Approved</button>
+                        <button id="send_req" type="submit" onclick="sendRevise(this)" class="btn btn-primary">Send Request</button>
                     </div>
                     <div id="loading" class="col-md-0 hide">
                         <button id="button_load" type="submit" class="btn btn-primary"><i class="fa fa-circle-o-notch fa-spin"></i> Loading</button>
                     </div>
                 </div>
 
+                
+                <!-- Loader  -->
+                
                 <!-- Riwayat Komentar -->
                 <fieldset id="comment_history">
                     <legend><i class="fas fa-history"></i> Comment History</legend>
@@ -187,10 +225,9 @@
                             <th scope="col" class="col-md-1">Activity</th>
                             <th scope="col" class="col-md-2">Time</th>
                             <th scope="col" class="col-md-5">Comment</th>
-                            <!-- <th scope="col">Action</th> -->
-                        </tr>
+                        </tr> 
                     </thead>
-                    <tbody>
+                    <tbody id="table_comment">
                         <!-- <tr>
                             <td id="tableDataParticipant" scope="row">Oka Aryanta</td>
                             <td id="tableDataPosition" >Supply Chain Management</td>
@@ -200,9 +237,8 @@
                         </tr> -->
                     </tbody>
                 </table>
-
             </div>
-        </form>
+        </div>
     </section>
 
     <!-- Optional JavaScript -->
@@ -213,13 +249,15 @@
         crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy"
         crossorigin="anonymous"></script>
-    <link rel="stylesheet" type="text/css" media="screen" href="css/manager.css" />
+    <link rel="stylesheet" type="text/css" media="screen" href="css/formReq.css" />
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="/main.js"></script>
     <script>
-    getProfile()
-    commentProfile()
-    responseRequest()
+        getMaterial()
+        // getRequestInfo()
+        getProfile()
+        showReviseData()
     </script>
 </body>
+
 </html>

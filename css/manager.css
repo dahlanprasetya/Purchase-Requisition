@@ -59,7 +59,6 @@ header nav {
 }
 
 /* Bar-Kanan */
-
 #dropdown img {
     width: 43px;
     height: 43px;
@@ -142,29 +141,6 @@ section {
     padding: 12px 12px 0px 12px;
 }
 
-input {
-    border-radius: 3px;
-    border: 1px solid lightslategrey;
-    padding-left: 4px;
-}
-
-select {
-    border-radius: 3px;
-    border: 1px solid lightslategrey;
-}
-
-option {
-    border-radius: 3px;
-}
-
-textarea {
-    border-radius: 3px;
-    border: 1px solid lightslategrey;
-}
-
-#material_picture {
-    border: 0px;
-}
 /* Header Info */
 
 #header_info legend {
@@ -174,20 +150,11 @@ textarea {
     border-radius: 3px;
 }
 
-#justification-label {
-    margin: 0px;
-}
-
-#justification {
-    margin-bottom: 8px;
-}
-
 #header_info #all {
-    padding: 12px 0px 0px 0px;
+    padding: 0px 0px 0px 0px;
 }
 
 #header_info label {
-    top: -80px;
     padding-left: 30px
 } 
 
@@ -204,6 +171,10 @@ thead {
     border-radius: 3px;
 }
 
+.table th, .table td{
+    padding: 4px;
+}
+
 #item #all {
     padding: 12px 0px 0px 0px;
 }
@@ -216,66 +187,118 @@ thead {
     padding: 0px;
 }
 
-.table th, .table td{
-    padding: 4px;
-}
-
-#table-action {
-    text-align: center;
-}
-
-#edit-button {
-    border-radius: 10px;
-    border: 2px solid transparent;
-    background-color: orange; 
-    color: white;
-    width: 50px;
-    height: 30px;
-}
-
-#edit-button:hover {
-    background-color: skyblue;
-}
-
-#delete-button {
-    border-radius: 10px;
-    border: 2px solid transparent;
-    background-color: red; 
-    color: white;
-    width: 50px;
-    height: 30px;
-}
-
-#delete-button:hover {
-    background-color: skyblue;
-}
-
-
 /* button item */
 
 #button button {
-  margin: 10px;
+    margin-right: 10px;
+    margin-top: 10px;
+    margin-bottom: 10px;
 }
 
-/* button send req */
+/* Komentar */
 
-#send_req, #button_load {
-    margin: 10px 0px 10px 20px;
+#comment legend{
+    background-color: lightslategrey;
+    color: white;
+    padding: 0px 12px 0px 12px;
+    border-radius: 3px;
+}
+
+#comment-section {
+    background-color: whitesmoke;
+}
+
+#comment-section img {
+    width: 50px;
+    height: 50px;
+    margin-top: 20px;
+    margin-left: 20px;
+    border-radius: 50%;
+}
+
+#comment-box {
+    box-sizing: border-box;
+    background-color: white;
+    color: black;
+    width: 95%;
+    margin: 20px 0px 5px 10px;
+    border-radius: 5px;
+    border: 2px solid lightslategrey;
+    padding: 6px;
+}
+
+#approved-button:hover {
+    background-color: orange;
+}
+
+#approved-button {
+    padding-left: 30px;
+    padding-right: 30px;
+    margin-left: 20px;
 }
 
 #button_load {
-    width: 125px;
+    padding-left: 30px;
+    padding-right: 30px;
+    margin-left: 20px;
 }
 
 .hide {
     display: none;
 }
 
-/* comment history */
-#comment_history legend {
+
+/* Comment History */
+#comment_history legend{
     background-color: lightslategrey;
     color: white;
+    margin-top: 12px;
     padding: 0px 12px 0px 12px;
     border-radius: 3px;
 }
+
+#table_comment_history {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+#tableDataComment {
+    text-align: left;
+}
+
+/* Loading Page */
+#loading {
+    position: fixed;
+    top: 0px;
+    left: 0px;
+    width: 100%;
+    height: 100%;
+    background-color: #ffffff;
+    display: none;
+}
+
+.loader {
+    border: 16px solid lightslategrey;
+    border-radius: 50%;
+    border-top: 16px solid skyblue;
+    width: 120px;
+    height: 120px;
+    -webkit-animation: spin 2s linear infinite; /* Safari */
+    animation: spin 2s linear infinite;
+    position: absolute;
+    top: 40%;
+    left: 45%;
+    /* background-color: white; */
+}
+
+@-webkit-keyframes spin {
+0% { -webkit-transform: rotate(0deg); }
+100% { -webkit-transform: rotate(360deg); }
+}
+
+@keyframes spin {
+0% { transform: rotate(0deg); }
+100% { transform: rotate(360deg); }
+}
+
 

@@ -549,7 +549,6 @@ def getTaskList():
     r = requests.get(url,headers={
         "Content-Type": "application/json","Authorization": "Bearer %s" %userDB.token
     })
-    # print("ini r.text",r.text)
     result = json.loads(r.text)
     result_length = len(result["data"])
     print("panjang result", result_length)
@@ -654,6 +653,12 @@ def getAccRequest():
         arr_accrequest = []
         request_json = json.dumps(arr_accrequest)
         return request_json,404
+
+# @app.route('/sendRevise',methods=["PUT"])
+# def sendRevise():
+#     if request.method == 'PUT':
+#         request_data = request.get_json()
+
 
 
 # def acc

@@ -140,7 +140,14 @@ header nav {
     color: white;
 }
 
-/* List Approval */
+/* Approval list */
+
+#revise-list {
+    border-top: 2px solid gray;
+    margin-top: 30px;
+    padding-top: 20px;
+}
+
 thead {
     background-color: lightslategrey;
     color: white;
