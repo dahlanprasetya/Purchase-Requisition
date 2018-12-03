@@ -8,12 +8,12 @@ body {
 header {
     box-sizing: border-box;
     border-radius: 2px;
-    background-color: lightslategrey;
+    background-color: #1f618d;
     /* border-bottom: 1px solid white; */
 }
 
 header nav {
-    background-color: lightslategrey;
+    background-color: #1f618d;
 }
 
 #navbar-container {
@@ -41,7 +41,7 @@ header nav {
 }
 
 #nav-bar-left i {
-    color: skyblue;
+    color: #ffca28;
 }
 
 /* Bar-Tengah */
@@ -76,7 +76,7 @@ header nav {
 
 
 #dropdown i {
-    color: skyblue;
+    color: #ffca28;
 }
 
 #profile-name {
@@ -92,7 +92,7 @@ header nav {
 .dropdown-content {
     display: none;
     position: absolute;
-    background-color: skyblue;
+    background-color: #ffca28;
     min-width: 200px;
     box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
     z-index: 1;
@@ -108,13 +108,13 @@ header nav {
 }
 
 /* Change color of dropdown links on hover */
-.dropdown-content a:hover {background-color: lightslategrey;}
+.dropdown-content a:hover {background-color: #1f618d;}
 
 /* Show the dropdown menu on hover */
 .dropdown__user:hover .dropdown-content {display: block;}
 
 /* Change the background color of the dropdown button when the dropdown content is shown */
-.dropdown:hover .dropbtn {background-color: lightslategrey;}
+.dropdown:hover .dropbtn {background-color: #1f618d;}
 
 /********** 
 **Section***
@@ -131,7 +131,7 @@ section {
 /* Requester Info */
 
 #requester_info legend {
-    background-color: lightslategrey;
+    background-color: #1f618d;
     color: white;
     padding: 0px 12px 0px 12px;
     border-radius: 3px;
@@ -144,7 +144,7 @@ section {
 /* Header Info */
 
 #header_info legend {
-    background-color: lightslategrey;
+    background-color: #1f618d;
     color: white;
     padding: 0px 12px 0px 12px;
     border-radius: 3px;
@@ -164,12 +164,12 @@ section {
 
 /* Item */
 thead {
-    background-color: gray;
+    background-color: orange;
     color: white;
 }
 
 #item legend {
-    background-color: lightslategrey;
+    background-color: #1f618d;
     color: white;
     padding: 0px 12px 0px 12px;
     border-radius: 3px;
@@ -198,7 +198,7 @@ thead {
 
 /* Comment History */
 #comment_history legend{
-    background-color: lightslategrey;
+    background-color: #1f618d;
     color: white;
     padding: 0px 12px 0px 12px;
     border-radius: 3px;
@@ -231,9 +231,9 @@ thead {
 }
 
 .loader {
-    border: 16px solid lightslategrey;
+    border: 16px solid #1f618d;
     border-radius: 50%;
-    border-top: 16px solid skyblue;
+    border-top: 16px solid #ffca28;
     width: 120px;
     height: 120px;
     -webkit-animation: spin 2s linear infinite; /* Safari */
