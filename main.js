@@ -250,6 +250,7 @@ function getTaskRevise(){
 function getAccRequest(){
   $.ajax({
     method: 'GET',
+    url: "http://localhost:9000/getAccRequest",
     beforeSend: function (req) {
       req.setRequestHeader('Authorization', getCookie('token'))
       $('#loading').show()
@@ -487,8 +488,8 @@ function getRequestDetails() {
             var tanggal = str.split("T")
             var res1 = tanggal[1].substr(0,5)
             var tes = tanggal[0] + " " +res1
+            var comment = data.comment.split("=")[0]
             if(data.position == "SCM"){
-              var comment = data.comment.split("=")[0]
               check = data.comment.split("=")[1] 
               if(check == "Yes"){
                 var activity = "Approved"
@@ -513,9 +514,9 @@ function getRequestDetails() {
               <tr>
                   <td id="comment-fullname" scope="col" class="col-md-2">${data.user}</td>
                   <td id="comment-position" scope="col" class="col-md-2">${data.position}</td>
-                  <td id="comment-activity" scope="col" class="col-md-1">approved</td>
+                  <td id="comment-activity" scope="col" class="col-md-1">Approved</td>
                   <td id="comment-time" scope="col" class="col-md-2">${tes}</td>
-                  <td id="comment-content" scope="col" class="col-md-5">${data.comment}</td>
+                  <td id="comment-content" scope="col" class="col-md-5">${comment}</td>
               </tr>`)
             }
           })
@@ -725,8 +726,8 @@ function responseRequest() {
             var tanggal = str.split("T")
             var res1 = tanggal[1].substr(0,5)
             var tes = tanggal[0] + " " +res1
+            var comment = data.comment.split("=")[0]
             if(data.position == "SCM"){
-              var comment = data.comment.split("=")[0]
               if(data.comment.split("=")[1] == "Yes"){
                 var activity = "Approved"
               }
@@ -747,9 +748,9 @@ function responseRequest() {
               <tr>
                   <td id="comment-fullname" scope="col" class="col-md-2">${data.user}</td>
                   <td id="comment-position" scope="col" class="col-md-2">${data.position}</td>
-                  <td id="comment-activity" scope="col" class="col-md-1">approved</td>
+                  <td id="comment-activity" scope="col" class="col-md-1">Approved</td>
                   <td id="comment-time" scope="col" class="col-md-2">${tes}</td>
-                  <td id="comment-content" scope="col" class="col-md-5">${data.comment}</td>
+                  <td id="comment-content" scope="col" class="col-md-5">${comment}</td>
               </tr>`)
             }
           })
