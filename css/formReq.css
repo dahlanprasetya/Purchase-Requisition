@@ -271,6 +271,13 @@ thead {
     display: none;
 }
 
+/* comment history */
+#comment_history legend {
+    background-color: lightslategrey;
+    color: white;
+    padding: 0px 12px 0px 12px;
+    border-radius: 3px;
+}
 
 /* Comment History */
 #comment_history legend{
