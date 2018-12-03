@@ -4,6 +4,7 @@ from flask_restful import marshal,fields
 import datetime
 from flask_cors import CORS, cross_origin
 import os
+import smtplib
 import jwt
 import requests
 from requests.utils import quote
@@ -699,7 +700,33 @@ def sendRevise():
         sent_task(req_comment,user_token,process_id,task_name)
         return "Success",201
 
+def sendEmail(email_requester, id_request):
+    TO = email_requester
+    SUBJECT = 'Status Request Number '+str(id_request)
+    TEXT = 'Here is a message from python.'
 
+    # Gmail Sign In
+    gmail_sender = os.getenv("EMAIL_ADDRESS")
+    gmail_passwd = os.getenv("EMAIL_KEY")
+
+    server = smtplib.SMTP('smtp.gmail.com', 587)
+    server.ehlo()
+    server.starttls()
+    server.login(gmail_sender, gmail_passwd)
+
+    BODY = '\r\n'.join(['To: %s' % TO,
+                        'From: %s' % gmail_sender,
+                        'Subject: %s' % SUBJECT,
+                        '', TEXT])
+
+    try:
+        server.sendmail(gmail_sender, [TO], BODY)
+        print ('email sent')
+    except:
+        print ('error sending mail')
+
+    server.quit()
+    return "Success",201
 
 # def acc
 if __name__ == '__main__':
