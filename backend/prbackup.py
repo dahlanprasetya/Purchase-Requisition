@@ -4,10 +4,12 @@ from flask_restful import marshal,fields
 import datetime
 from flask_cors import CORS, cross_origin
 import os
-import smtplib
 import jwt
 import requests
 from requests.utils import quote
+import smtplib
+import random, string
+import base64
 
 
 app = Flask(__name__)
@@ -444,7 +446,6 @@ def get_comment_history():
 @app.route('/responseRequest',methods=["POST"])
 def responseRequest():
     if request.method == 'POST':
-
         request_data = request.get_json()
         comment = request_data["comment"]
         decoded = jwt.decode(request.headers["Authorization"], jwtSecretKey, algorithm='HS256')
@@ -542,6 +543,8 @@ def responseRequest():
                     result = json.loads(r.text)
                     requestDB.acc_owner = 1
                     db.session.commit()
+                    requesterDB = Employee.query.filter_by(id=requestDB.person_id).first()
+                    sendEmail(requesterDB.email,requestDB.id)
 
         recursive()
         return "OK"
@@ -727,6 +730,66 @@ def sendEmail(email_requester, id_request):
 
     server.quit()
     return "Success",201
+
+def sendEmailChangePass(email_requester, new_password):
+    TO = email_requester
+    SUBJECT = 'New Password'
+    TEXT = 'This is your new password : '+new_password+'\nAfter log in it is recommended to change your password immediately.'
+
+    # Gmail Sign In
+    gmail_sender = os.getenv("EMAIL_ADDRESS")
+    gmail_passwd = os.getenv("EMAIL_KEY")
+
+    server = smtplib.SMTP('smtp.gmail.com', 587)
+    server.ehlo()
+    server.starttls()
+    server.login(gmail_sender, gmail_passwd)
+
+    BODY = '\r\n'.join(['To: %s' % TO,
+                        'From: %s' % gmail_sender,
+                        'Subject: %s' % SUBJECT,
+                        '', TEXT])
+
+    try:
+        server.sendmail(gmail_sender, [TO], BODY)
+        print ('email sent')
+    except:
+        print ('error sending mail')
+
+    server.quit()
+    return "Success",201
+
+def randomword():
+   letters = string.ascii_lowercase
+   return ''.join(random.choice(letters) for i in range(8))
+
+def stringToBase64(s):
+    return base64.b64encode(s.encode('utf-8'))
+
+def base64ToString(b):
+    return base64.b64decode(b).decode('utf-8')
+
+@app.route('/forgotPassword', methods=["PUT"])
+def forgotPassword():
+    if request.method == 'PUT':
+        request_data = request.get_json()
+        email = request_data["email"]
+        user = Employee.query.filter_by(email=email).first()
+        if user:
+            tmp_pass_str = randomword()
+            tmp_pass_encode = str(stringToBase64(tmp_pass_str))
+            length = len(tmp_pass_encode) -1
+            print(tmp_pass_str,tmp_pass_encode)
+            tmp_pass_encode = tmp_pass_encode[2:length]
+            print(tmp_pass_encode)
+            user.password = str(tmp_pass_encode)
+            db.session.commit()
+            sendEmailChangePass(email,tmp_pass_str)
+            return "Success",201
+
+        else:
+            return "User not found",404
+
 
 # def acc
 if __name__ == '__main__':
