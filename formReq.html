@@ -38,6 +38,11 @@
             </div>
         </nav>
     </header>
+    
+    <!-- loading -->
+    <div id="loading">
+        <div class="loader"></div>
+    </div>
 
     <!-- Form Request -->
     <section>
@@ -98,10 +103,10 @@
 
                 <div id="button" class="row">
                     <div class="col-md-0 offset-5">
-                        <button type="submit" onclick="addItemToTabel()" class="btn btn-primary">Add</button>
+                        <button id="add-button" type="submit" onclick="addItemToTabel()" class="btn btn-primary">Add</button>
                     </div>
                     <div class="col-md-0">
-                        <button type="submit" onclick="reset()" class="btn btn-primary">Reset</button>
+                        <button id="reset-button" type="submit" onclick="reset()" class="btn btn-primary">Reset</button>
                     </div>
                 </div>
 
@@ -125,9 +130,9 @@
                 </table>
                 <div class="row">
                     <div class="col-md-0 offset-5">
-                        <button id="send_req" type="submit" onclick="sendAllData(this)" class="btn btn-primary">Send Request</button>
+                        <button id="send_req" type="submit" onclick="sendAllData()" class="btn btn-primary">Send Request</button>
                     </div>
-                    <div id="loading" class="col-md-0 hide">
+                    <div id="loading-button" class="col-md-0 hide">
                         <button id="button_load" type="submit" class="btn btn-primary"><i class="fa fa-circle-o-notch fa-spin"></i> Loading</button>
                     </div>
                 </div>
@@ -150,9 +155,9 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="/main.js"></script>
     <script>
-        getMaterial()
-        getRequestInfo()
-        getProfile()
+    getMaterial()
+    getRequestInfo()
+    getProfile()
     </script>
 </body>
 

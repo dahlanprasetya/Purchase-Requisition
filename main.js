@@ -1,5 +1,4 @@
-
-//   untuk cookienya ///////////////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////Fungsi membuat cookie////////////////////////////////////////////////////////////////////////////////
 function getCookie(cname) {
   var name = cname + "=";
   var decodedCookie = decodeURIComponent(document.cookie);
@@ -16,7 +15,7 @@ function getCookie(cname) {
   return "";
 }
 
-// Menghapus Cookie///////////////////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////Menghapus Cookie///////////////////////////////////////////////////////////////////////////////
 function removeCookie() {
   document.cookie = 'token=;expires=Thu, 01 Jan 1970 00:00:01 GMT;';
   document.cookie = 'position=;expires=Thu, 01 Jan 1970 00:00:01 GMT;';
@@ -24,7 +23,7 @@ function removeCookie() {
   window.location = '/login.html';
 }
 
-// Mengatur dashboard location ///////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////// Mengatur dashboard location///////////////////////////////////////////////////////////////////////////////
 function home() {
   var a = getCookie('requester')
   a == "true" ? window.location = "/employee.html" : window.location = "/scm.html"
@@ -35,7 +34,7 @@ function comment() {
   a == "3" ? window.location = "/comment.html" : window.location = "/manager.html"
 }
 
-// Login ke dalam home ///////////////////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////// Login ke dalam home /////////////////////////////////////////////////////////////////////////////
 function login() {
   $.ajax({
     method: "POST",
@@ -71,7 +70,7 @@ function login() {
   })
 }
 
-// Menampilkan request dari requester
+//////////////////////////Menampilkan request dari requester/////////////////////////////////////////////////////
 function getUserRequest(){
   $.ajax({
     method: 'GET',
@@ -95,16 +94,16 @@ function getUserRequest(){
     </tr>
         `)
       })
-      $('#loading').hide()
+      // $('#loading').hide()
     },
     error: function (err) {
       console.log(err)
-      $('#loading').hide()
+      // $('#loading').hide()
     }
   })
 }
 
-// Memunculkan data ke home ///////////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////// Memunculkan data ke navbar home ////////////////////////////////////////////////////////////////////////////
 function getProfile() {
   $.ajax({
     method: 'GET',
@@ -132,14 +131,15 @@ function getProfile() {
   })
 }
 
-// Mengambil nama employee //////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////Mengambil nama employee ///////////////////////////////////////////////////////////////////
 function welcome() {
   $.ajax({
     method: 'GET',
     url: "http://localhost:9000/getProfile",
     beforeSend: function (req) {
       req.setRequestHeader('Content-Type', 'application/json'),
-        req.setRequestHeader('Authorization', getCookie('token'))
+      req.setRequestHeader('Authorization', getCookie('token'))
+      $('loading').show()
     },
     success: function (res) {
       data = JSON.parse(res)
@@ -147,6 +147,30 @@ function welcome() {
       document.getElementById('home').insertAdjacentHTML("afterbegin", `<p class="lead text-center display-4">Hello, ${data.fullname}</p>
       <p class="lead text-center mb-5 display-4">Make a form request now ?</p>
       <button onclick="window.location = '/formReq.html'" type="button" class="btn btn-lg col-2 offset-5">Request </button>`)
+      // $('loading').hide()
+    },
+    error: function (err) {
+      console.log(err)
+      // $('loading').hide()
+    }
+  })
+}
+
+function welcomeBoss() {
+  $.ajax({
+    method: 'GET',
+    url: "http://localhost:9000/getProfile",
+    beforeSend: function (req) {
+      req.setRequestHeader('Content-Type', 'application/json'),
+      req.setRequestHeader('Authorization', getCookie('token'))
+      $('loading').show()
+    },
+    success: function (res) {
+      data = JSON.parse(res)
+      // console.log(data)
+      document.getElementById('home').insertAdjacentHTML("afterbegin", `<p class="lead text-center display-4">Hello ${data.position}, ${data.fullname}</p>
+      <p class="lead text-center mb-5 display-4">Have a nice day <img src="assets/smiling-emoticon-square-face.png"/></p>
+      `)
     },
     error: function (err) {
       console.log(err)
@@ -154,7 +178,8 @@ function welcome() {
   })
 }
 
-// mengambil task list //////////////////////////////////////////////////////////////////////////////////////////////////////// 
+
+///////////////////////////////Mengambil isi task list/////////////////////////////////////////////////////////////////////////// 
 function getTaskList(){
   $.ajax({
     method: 'GET',
@@ -187,7 +212,7 @@ function getTaskList(){
     }
   })
 }
-// mengambil request yang harus direvisi
+///////////////////////////// Mengambil request yang harus direvisi////////////////////////////////////////////////
 function getTaskRevise(){
   $.ajax({
     method: 'GET',
@@ -220,14 +245,14 @@ function getTaskRevise(){
     }
   })
 }
-// mencari request yg sudah di acc oleh owner////////////////////////////////////////////////////////////////////////////
+//////////////////////////Mencari request yg sudah di acc oleh owner////////////////////////////////////////////////////
 
 function getAccRequest(){
   $.ajax({
     method: 'GET',
-    url: "http://localhost:9000/getAccRequest",
     beforeSend: function (req) {
       req.setRequestHeader('Authorization', getCookie('token'))
+      $('#loading').show()
     },
     success: function (res) {
       JSON.parse(res).forEach(function (data) {
@@ -245,14 +270,16 @@ function getAccRequest(){
         </tr>
         `)
       })
+      $('#loading').hide()
     },
     error: function (err) {
       console.log(err)
+      $('#loading').hide()
     }
   })
 }
 
-// loading function ///////////////////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////Function Loading///////////////////////////////////////////////////////////////////////////
 function loading(button) {
 
   console.log(button)
@@ -261,7 +288,91 @@ function loading(button) {
   // document.getElementById("loading").style.display = "none";
 }
 
-// menampilkan detail request berdasarkan id ///////////////////////////////////////////////////////////////////////////////////////////////////////////
+function getRequestInfo() {
+  $.ajax({
+    method: 'GET',
+    url: "http://localhost:9000/getProfile",
+    beforeSend: function (req) {
+      req.setRequestHeader('Content-Type', 'application/json'),
+      req.setRequestHeader('Authorization', getCookie('token'))
+      $('#loading').show()
+    },
+    success: function (res) {
+      data = JSON.parse(res)
+      // console.log(data)
+      document.getElementById('requester_info').insertAdjacentHTML("afterbegin", `<legend><i class="far fa-id-card"></i> Request Information</legend>
+
+      <!-- Bagian Kiri -->
+      <div id="all" class="row">
+          <div id="left" class="col-md-6">
+              <label class="col-md-4" for="fullname">Fullname</label>
+              <span id="fullname" name="fullname">${data.fullname}</span>
+              <p></p>
+              <label class="col-md-4" for="email">Email</label>
+              <span id="email" name="email">${data.email}</span>
+              <p></p>
+              <label class="col-md-4" for="position">Postion</label>
+              <span id="position" name="position">${data.position}</span>
+              <p></p>
+              <label class="col-md-4" for="id">ID Number</label>
+              <span id="id_employee" name="id_employee">${data.id}</span>
+              <p></p>
+              <label class="col-md-4" for="company">Company</label>
+              <span id="company" name="company">${data.company}</span>
+              <p></p>
+              <label class="col-md-4" for="plant">Plant</label>
+              <span id="plant" name="plant">${data.plant}</span>
+              <p></p>
+          </div>
+
+          <!-- Bagian Kanan -->
+          <div id="right" class="col-md-6">
+              <label class="col-md-4" for="payroll">Payroll Number</label>
+              <span id="payroll" name="payroll">${data.payroll}</span>
+              <p></p>
+              <label class="col-md-4" for="budget_type">Budget Type</label>
+              <select id="budget_type" name="budget_type" />
+                  <option selected>Project</option>
+                  <option>Maintenance Order</option>
+              </select>
+              <p></p>
+              <label class="col-md-4" for="currency">Currency</label>
+              <select id="currency" name="currency" />
+                  <option selected>USD</option>
+                  <option>IDR</option>
+                  <option>EUR</option>
+                  <option>YEN</option>
+              </select>
+              <p></p>
+              <label class="col-md-4" for="location">Receiving Location</label>
+              <select id="location" name="location" />
+                  <option selected>Jakarta</option>
+                  <option>Bandung</option>
+                  <option>Cikarang</option>
+                  <option>Surabaya</option>
+              </select>
+              <p></p>
+              <label class="col-md-4" for="budget_source">Budget Source</label>
+              <select id="budget_source" name="budget_source" />
+                  <option selected>Cost center</option>
+                  <option>Foreign loans</option>
+                  <option>Others</option>
+              </select>
+              <p></p>
+              <label class="col-md-4" for="expected_date">Expected Date</label>
+              <input type="date" id="expected_date" name="expected_date" />
+          </div>
+      </div>`)
+      $('#loading').hide()
+    },
+    error: function (err) {
+      console.log(err)
+      $('#loading').hide()
+    }
+  })
+}
+
+////////////////////////////// Menampilkan detail request berdasarkan id ///////////////////////////////////////////////////////////////////////////////
 function getRequestDetails() {
   var id = window.location.href.split("=")[1];
   $.ajax({
@@ -417,7 +528,7 @@ function getRequestDetails() {
     })
 }
 
-// Memunculkan data sebelumnya untuk direvisi ///////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////Memunculkan data sebelumnya untuk direvisi //////////////////////////////////////////////////////////////////////////////
 function showReviseData() {
   var id = window.location.href.split("=")[1];
   $.ajax({
@@ -519,7 +630,7 @@ function showReviseData() {
       }
     })
 }
-// menampilkan detail request untuk di acc atau ditolak ///////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////// Menampilkan detail request untuk di acc atau ditolak ///////////////////////////////////////////////////////////////////////////////
 function responseRequest() {
   var id = window.location.href.split("=")[1];
   $.ajax({
@@ -581,7 +692,8 @@ function responseRequest() {
         <label class="col-md-4" for="expected_date">Expected Date</label>
         <span id="expected_date" name="expected_date" >${data.request_detail.expected_date}</span> `)
         
-        $('#justification').append(`${data.request_detail.justification}`)
+        $('#justification-div').append(`<label class="col-md-2" for="justification">Justification</label>
+        <span id="justification" name="justification">${data.request_detail.justification}</span>`)
 
         var table_item = $('#table_item tbody'),
             data_table_item = data.items_detail
@@ -641,7 +753,7 @@ function responseRequest() {
               </tr>`)
             }
           })
-          $('#loading').hide()
+        $('#loading').hide()
       },
       error: function (err) {
         console.log(err)
@@ -649,9 +761,9 @@ function responseRequest() {
       }
     })
 }
-function sendResponseSCM(response){
-  // /////////////////////////////////////////////
 
+////////////////////////////// Megirimkan response diterima atau ditolak ///////////////////////////////////////////////////////////////////////////////
+function sendResponseSCM(response){
   var id = window.location.href.split("=")[1];
   $.ajax({
     method: 'POST',
@@ -678,7 +790,7 @@ function sendResponseSCM(response){
   })
 }
 
-// send response dari manager dan owner
+///////////////////////////////Send response dari manager dan owner//////////////////////////////////////////////////
 function sendResponse(){
   var id = window.location.href.split("=")[1];
   $.ajax({
@@ -702,17 +814,17 @@ function sendResponse(){
   })
 }
 
-// function untuk pindah halaman ke detail.html berdasarkan id
+///////////////////////////// Function untuk pindah halaman ke detail.html berdasarkan id//////////////////////////////////////////////////
 function redirectToDetail(id){
   window.location = 'details.html?id=' + id
 }
 
-// function untuk pindah halaman ke formRebvise.html
+/////////////////////////////Function untuk pindah halaman ke formRebvise.html//////////////////////////////////////////////////
 function redirectToRevise(id){
   window.location = 'formRev.html?id=' + id
 }
 
-// funtion pindah halaman comment.html berdasarkan id
+////////////////////////////Funtion pindah halaman comment.html berdasarkan id//////////////////////////////////////////////////
 function redirectToComment(id){
   if (getCookie('position') == "3") {
     window.location = '/comment.html?id=' + id
@@ -721,7 +833,7 @@ function redirectToComment(id){
   }
 }
 
-// memunculkan material pada kolom select di request form /////////////////////////////////////////////////////////////////
+/////////////////////////// Memunculkan material pada kolom select di request form /////////////////////////////////////////////////////////////////
 function getMaterial() {
   $.ajax({
     method: 'GET',
@@ -744,11 +856,11 @@ function getMaterial() {
   })
 }
 
-// Mengirim seluruh isi request form ke database ///////////////////////////////////////////////////////////////////////////////////////////////////////////
-function sendAllData(button) {
+////////////////////////// Mengirim seluruh isi request form ke database ///////////////////////////////////////////////////////////////////////////////////////////////////////////
+function sendAllData() {
   console.log(button)
-  $(button).addClass('hide')
-  $('#loading').removeClass('hide')
+  $('#send_req').hide()
+  $('#loading-button').show()
   // //////////////////////////////// Request ////////////////////////////////////////
 
   // autoComplete
@@ -810,10 +922,11 @@ function sendAllData(button) {
   })
 }
 
+////////////////////////// Mengirim seluruh isi request form yang telah direvisi ke database ///////////////////////////////////////////////////////////////////////////////////////////////////////////
 function sendRevise(button) {
   console.log(button)
-  $(button).addClass('hide')
-  $('#loading').removeClass('hide')
+  $('#send_req').hide()
+  $('#loading-button').show()
   // //////////////////////////////// Request ////////////////////////////////////////
   var id_request = window.location.href.split("=")[1];
   // autoComplete
@@ -877,7 +990,7 @@ function sendRevise(button) {
   })
 }
 
-// Fungsi menambahkan item ke tabel ///////////////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////// Fungsi menambahkan item ke tabel ///////////////////////////////////////////////////////////////////////////////////////////////////////////
 function addItemToTabel() {
   var materials_value = $('#materials').val()
   var description_value = $('#description').val()
@@ -910,7 +1023,7 @@ function addItemToTabel() {
   $('#price').val("")
 }
 
-// fungsi reset ditabel item ///////////////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////Fungsi reset ditabel item ///////////////////////////////////////////////////////////////////////////////////////////////////////////
 function reset () {
   $('#materials').val("Choose...")
   $('#description').val("")
@@ -919,7 +1032,7 @@ function reset () {
   $('#price').val("")
 }
 
-// fungsi delete tabel item ///////////////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////Fungsi delete tabel item ///////////////////////////////////////////////////////////////////////////////////////////////////////////
 function deleteTable(id) {
   $(`tr#${id}`).remove()
   // reset number
@@ -929,7 +1042,7 @@ function deleteTable(id) {
   }
 }
 
-// Memunculkan data ke tabel approval list ///////////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////// Memunculkan data ke tabel approval list ///////////////////////////////////////////////////////////////////////////////////////////////////////////
 function approvalList() {
   $.ajax({
     method: 'GET',
@@ -961,15 +1074,15 @@ function approvalList() {
   })
 }
 
-// Fungsi munculkan data ke comment html ///////////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////// Fungsi munculkan data ke comment html ///////////////////////////////////////////////////////////////////////////////////////////////////////////
 function commentProfile(){
   $.ajax({
     method: 'GET',
     url: "http://localhost:9000/getProfile",
     beforeSend: function (req) {
       req.setRequestHeader('Content-Type', 'application/json'),
-        req.setRequestHeader('Authorization', getCookie('token'))
-        $('#loading').show()
+      req.setRequestHeader('Authorization', getCookie('token'))
+      $('#loading').show()
     },
     success: function (res) {
       data = JSON.parse(res)
@@ -985,16 +1098,16 @@ function commentProfile(){
           </div>
       </div>
   </form>`)
-    $('#loading').hide()
+    // $('#loading').hide()
     },
     error: function (err) {
       console.log(err)
-      $('#loading').show()
+      // $('#loading').hide()
     }
   })
 }
 
-// Fungsi menambahkan comment ke database ///////////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////// Fungsi menambahkan comment Approved ke database ///////////////////////////////////////////////////////////////////////////////////////////////////////////
 function approvedComment(){
   var comment_value = $('#comment-box').val()
   var approved_value = $('#approved-button').text()
@@ -1013,7 +1126,7 @@ function approvedComment(){
   $('#comment-box').val("")
 }
 
-//  ///////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////Fungsi menambahkan Revised comment ke database  ///////////////////////////////////////////////////////////////////////////////////////////////////
 function revisedComment(){
   var comment_value = $('#comment-box').val()
   var revised_value = $('#revised-button').text()
@@ -1032,7 +1145,7 @@ function revisedComment(){
   $('#comment-box').val("")
 }
 
-// Edit Profile ///////////////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////// Edit Password ///////////////////////////////////////////////////////////////////////////////////////////////////////////
 function editPassword(){
   $.ajax({
     method: 'PUT',
@@ -1056,7 +1169,7 @@ function editPassword(){
   })
 }
 
-// Menampilkan Data profile sebelumnya ///////////////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////// Menampilkan Data profile sebelumnya ///////////////////////////////////////////////////////////////////////////////////////////////////////////
 function showEditData() {
   $.ajax({
     method: 'GET',
@@ -1078,7 +1191,7 @@ function showEditData() {
   })
 }
 
-// Edit Password ///////////////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////// Edit Profile ///////////////////////////////////////////////////////////////////////////////////////////////////////////
 function editProfile(){
   $.ajax({
     method: 'PUT',

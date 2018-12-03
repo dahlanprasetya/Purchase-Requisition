@@ -8,12 +8,12 @@ body {
 header {
     box-sizing: border-box;
     border-radius: 2px;
-    background-color: lightslategrey;
+    background-color: #1f618d ;
     /* border-bottom: 1px solid white; */
 }
 
 header nav {
-    background-color: lightslategrey;
+    background-color:    #1f618d ;
 }
 
 #navbar-container {
@@ -41,7 +41,7 @@ header nav {
 }
 
 #nav-bar-left i {
-    color: skyblue;
+    color:  #ffca28 ;
 }
 
 /* Bar-Tengah */
@@ -77,7 +77,7 @@ header nav {
 
 
 #dropdown i {
-    color: skyblue;
+    color:  #ffca28 ;
 }
 
 #profile-name {
@@ -93,7 +93,7 @@ header nav {
 .dropdown-content {
     display: none;
     position: absolute;
-    background-color: skyblue;
+    background-color:  #ffca28 ;
     min-width: 200px;
     box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
     z-index: 1;
@@ -109,13 +109,13 @@ header nav {
 }
 
 /* Change color of dropdown links on hover */
-.dropdown-content a:hover {background-color: lightslategrey;}
+.dropdown-content a:hover {background-color:    #1f618d ;}
 
 /* Show the dropdown menu on hover */
 .dropdown__user:hover .dropdown-content {display: block;}
 
 /* Change the background color of the dropdown button when the dropdown content is shown */
-.dropdown:hover .dropbtn {background-color: lightslategrey;}
+.dropdown:hover .dropbtn {background-color:    #1f618d ;}
 
 /********** 
 **Section***
@@ -123,20 +123,20 @@ header nav {
 
 /* Atas */
 #home {
-    background-color: lightslategrey;
+    background-color:    #1f618d ;
     color: white;
     padding-top: 120px;
 }
 
 #home button {
     border: transparent;
-    background-color: skyblue;
+    background-color:  #ffca28 ;
     color: white;
 }
 
 #home button:hover {
     border: transparent;
-    background-color: cornflowerblue;
+    background-color: orange;
     color: white;
 }
 
@@ -149,7 +149,7 @@ header nav {
 }
 
 thead {
-    background-color: lightslategrey;
+    background-color:    #1f618d ;
     color: white;
 }
 
@@ -160,14 +160,14 @@ thead {
 #see-details-button {
     border-radius: 10px;
     border: 2px solid transparent;
-    background-color: lightslategrey; 
+    background-color: #ffca28  ; 
     color: white;
     width: 100px;
     height: 30px;
 }
 
 #see-details-button:hover {
-    background-color: skyblue;
+    background-color: orange;
 }
 
 
@@ -177,17 +177,17 @@ thead {
 
 footer {
     margin-top: 50px;
-    background-color: lightslategrey;
+    background-color:    #1f618d ;
     color: white;
 }
 
 #icon-ig {
-    color: yellow;
+    color:  #ffca28 ;
     font-size: 30px;
 }
 
 #icon-twitter {
-    color: skyblue;
+    color: skyblue ;
     font-size: 30px;
 }
 
@@ -204,7 +204,9 @@ footer {
     color: white;
 }
 
-/* Loading Page */
+/********** 
+**Loading***
+***********/
 #loading {
     position: fixed;
     top: 0px;
@@ -213,12 +215,13 @@ footer {
     height: 100%;
     background-color: #ffffff;
     display: none;
+    z-index: 1;
 }
 
 .loader {
-    border: 16px solid lightslategrey;
+    border: 16px solid    #1f618d ;
     border-radius: 50%;
-    border-top: 16px solid skyblue;
+    border-top: 16px solid  #ffca28 ;
     width: 120px;
     height: 120px;
     -webkit-animation: spin 2s linear infinite; /* Safari */

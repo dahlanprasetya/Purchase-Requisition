@@ -8,21 +8,19 @@ body {
 }
 
 #welcome {
-    color: white;
+    color:    #ffca28   ;
     text-shadow:
-   -1px -1px 0 #000,  
-    1px -1px 0 #000,
-    -1px 1px 0 #000,
-     1px 1px 0 #000;
+   -1px -1px 0 #1f618d,  
+    1px -1px 0  #1f618d,
+    -1px 1px 0  #1f618d,
+     1px 1px 0  #1f618d;
 }
 
 #login-section {
     margin-top: 30px;
-    /* background-color: #ffffff1a; */
     padding: 20px;
     width: 600px;
-    /* border-top: 2px solid white; */
-    border: 2px solid white;
+    border: 2px solid #1f618d;
     border-radius: 15px;
 }
 
@@ -34,13 +32,9 @@ body {
     margin-top: 10px;
     width: 340px;
     height:35px;
-    color: black;
+    color: #ffca28;
+    background-color: #1f618d;
 }
-
-/* #email:hover {
-    background-color: #ffffff49;
-    color: black;
-} */
 
 #password {
     border-radius: 5px;
@@ -50,12 +44,9 @@ body {
     margin-top: 10px;
     width: 340px;
     height:35px;
-    color: black;
+    color: #ffca28;
+    background-color: #1f618d;
 }
-/* 
-#password:hover {
-    background-color: #ffffff49;
-} */
 
 #checkbox {
     text-align: left;
@@ -63,30 +54,29 @@ body {
 }
 
 .form-check-label {
-    /* background-color: white; */
-    /* margin-top: 20px;     */
     border: 2px solid transparent;
     border-radius: 5px;
     padding-left: 25px;
-    color: white;
-    font-weight: 500;
+    color: #ffca28;
+    text-shadow:
+    -1px -1px 0 #000,  
+    1px -1px 0  #000,
+    -1px 1px 0  #000,
+    1px 1px 0  #000;
 }
 
-/* .form-check-label:hover {
-    background-color: white;
-} */
 
 #login-button {
-    /* margin-top: 10px; */
     border-radius: 10px;
     border: 2px solid transparent;
-    background-color: white; 
-    color: black;
+    background-color: #ffca28; 
+    color: #1f618d;
     width: 100px;
     height: 40px;
 }
 
 #login-button:hover {
-    background-color: lightblue;
-    color: white;
+    background-color: white;
+    color: #ffca28;
+    border: 2px solid #1f618d;
 }
