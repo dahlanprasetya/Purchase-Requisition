@@ -1233,3 +1233,25 @@ function b64DecodeUnicode(str) {
     return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
   }).join(''));
 }
+
+function forgotPassword(){
+  $('#loading').show()
+  $.ajax({
+    method: 'PUT',
+    url: "http://localhost:9000/forgotPassword",
+    beforeSend: function (req) {
+      req.setRequestHeader('Content-Type', 'application/json')
+    },
+    data: JSON.stringify({
+      "email": $('#exampleInputEmail1').val()
+    }),
+    success: function (res) {
+      $('#loading').hide()
+      alert("Success, please check your inbox")
+      window.location = "/login.html"
+    },
+    error: function (err) {
+      alert("Error")
+    }
+  })
+}

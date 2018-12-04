@@ -302,6 +302,7 @@ def submitRequest():
             r = requests.post(os.getenv("BASE_URL_RECORD"), data=json.dumps(record_instance), headers={"Content-Type":"application/json", "Authorization" : "Bearer %s" %user_token})
 
             # result from create record
+            print(r.text)
             result = json.loads(r.text)
             record_id = result['data']['id']
 
@@ -567,7 +568,10 @@ def getTaskList():
     arr_tasklist = []
     for x in range(result_length):
         print("ini process id : ",result["data"][x]["process_id"])
-        requestDB = Request.query.filter_by(process_id=result["data"][x]["process_id"]).first()
+        if task_name == "Employee":
+            requestDB = Request.query.filter_by(process_id=result["data"][x]["process_id"],person_id=userDB.id).first()
+        else:
+            requestDB = Request.query.filter_by(process_id=result["data"][x]["process_id"]).first()
         # print(requestDB)
         if requestDB == None:
             continue
