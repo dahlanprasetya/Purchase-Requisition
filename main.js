@@ -38,7 +38,7 @@ function comment() {
 function login() {
   $.ajax({
     method: "POST",
-    url: "http://localhost:9000/login",
+    url: "http://10.10.100.118:9000/login",
     beforeSend: function (req) {
       req.setRequestHeader('Content-Type', 'application/json')
     },
@@ -74,7 +74,7 @@ function login() {
 function getUserRequest() {
   $.ajax({
     method: 'GET',
-    url: "http://localhost:9000/getUserRequest",
+    url: "http://10.10.100.118:9000/getUserRequest",
     beforeSend: function (req) {
       req.setRequestHeader('Authorization', getCookie('token'))
       $('#loading').show()
@@ -107,7 +107,7 @@ function getUserRequest() {
 function getProfile() {
   $.ajax({
     method: 'GET',
-    url: "http://localhost:9000/getProfile",
+    url: "http://10.10.100.118:9000/getProfile",
     beforeSend: function (req) {
       req.setRequestHeader('Content-Type', 'application/json'),
         req.setRequestHeader('Authorization', getCookie('token'))
@@ -135,7 +135,7 @@ function getProfile() {
 function welcome() {
   $.ajax({
     method: 'GET',
-    url: "http://localhost:9000/getProfile",
+    url: "http://10.10.100.118:9000/getProfile",
     beforeSend: function (req) {
       req.setRequestHeader('Content-Type', 'application/json'),
         req.setRequestHeader('Authorization', getCookie('token'))
@@ -159,7 +159,7 @@ function welcome() {
 function welcomeBoss() {
   $.ajax({
     method: 'GET',
-    url: "http://localhost:9000/getProfile",
+    url: "http://10.10.100.118:9000/getProfile",
     beforeSend: function (req) {
       req.setRequestHeader('Content-Type', 'application/json'),
         req.setRequestHeader('Authorization', getCookie('token'))
@@ -182,7 +182,7 @@ function welcomeBoss() {
 function getTaskList() {
   $.ajax({
     method: 'GET',
-    url: "http://localhost:9000/getTaskList",
+    url: "http://10.10.100.118:9000/getTaskList",
     beforeSend: function (req) {
       req.setRequestHeader('Authorization', getCookie('token'))
       $('#loading').show()
@@ -215,7 +215,7 @@ function getTaskList() {
 function getTaskRevise() {
   $.ajax({
     method: 'GET',
-    url: "http://localhost:9000/getTaskList",
+    url: "http://10.10.100.118:9000/getTaskList",
     beforeSend: function (req) {
       req.setRequestHeader('Authorization', getCookie('token'))
       $('#loading').show()
@@ -249,7 +249,7 @@ function getTaskRevise() {
 function getAccRequest() {
   $.ajax({
     method: 'GET',
-    url: "http://localhost:9000/getAccRequest",
+    url: "http://10.10.100.118:9000/getAccRequest",
     beforeSend: function (req) {
       req.setRequestHeader('Authorization', getCookie('token'))
       $('#loading').show()
@@ -270,11 +270,11 @@ function getAccRequest() {
         </tr>
         `)
       })
-      $('#loading').hide()
+      // $('#loading').hide()
     },
     error: function (err) {
       console.log(err)
-      $('#loading').hide()
+      // $('#loading').hide()
     }
   })
 }
@@ -291,7 +291,7 @@ function loading(button) {
 function getRequestInfo() {
   $.ajax({
     method: 'GET',
-    url: "http://localhost:9000/getProfile",
+    url: "http://10.10.100.118:9000/getProfile",
     beforeSend: function (req) {
       req.setRequestHeader('Content-Type', 'application/json'),
         req.setRequestHeader('Authorization', getCookie('token'))
@@ -377,7 +377,7 @@ function getRequestDetails() {
   var id = window.location.href.split("=")[1];
   $.ajax({
     method: 'POST',
-    url: "http://localhost:9000/getRequestDetails",
+    url: "http://10.10.100.118:9000/getRequestDetails",
     beforeSend: function (req) {
       req.setRequestHeader('Content-Type', 'application/json'),
         req.setRequestHeader('Authorization', getCookie('token'))
@@ -533,7 +533,7 @@ function showReviseData() {
   var id = window.location.href.split("=")[1];
   $.ajax({
     method: 'POST',
-    url: "http://localhost:9000/getRequestDetails",
+    url: "http://10.10.100.118:9000/getRequestDetails",
     beforeSend: function (req) {
       req.setRequestHeader('Content-Type', 'application/json'),
         req.setRequestHeader('Authorization', getCookie('token'))
@@ -635,7 +635,7 @@ function responseRequest() {
   var id = window.location.href.split("=")[1];
   $.ajax({
     method: 'POST',
-    url: "http://localhost:9000/getRequestDetails",
+    url: "http://10.10.100.118:9000/getRequestDetails",
     beforeSend: function (req) {
       req.setRequestHeader('Content-Type', 'application/json'),
         req.setRequestHeader('Authorization', getCookie('token'))
@@ -767,7 +767,7 @@ function sendResponseSCM(response) {
   var id = window.location.href.split("=")[1];
   $.ajax({
     method: 'POST',
-    url: "http://localhost:9000/responseRequest",
+    url: "http://10.10.100.118:9000/responseRequest",
     beforeSend: function (req) {
       req.setRequestHeader('Content-Type', 'application/json'),
         req.setRequestHeader('Authorization', getCookie('token'))
@@ -795,7 +795,7 @@ function sendResponse() {
   var id = window.location.href.split("=")[1];
   $.ajax({
     method: 'POST',
-    url: "http://localhost:9000/responseRequest",
+    url: "http://10.10.100.118:9000/responseRequest",
     beforeSend: function (req) {
       req.setRequestHeader('Content-Type', 'application/json'),
         req.setRequestHeader('Authorization', getCookie('token'))
@@ -837,7 +837,7 @@ function redirectToComment(id) {
 function getMaterial() {
   $.ajax({
     method: 'GET',
-    url: "http://localhost:9000/getAllMaterial",
+    url: "http://10.10.100.118:9000/getAllMaterial",
     beforeSend: function (req) {
       req.setRequestHeader('Content-Type', 'application/json'),
         req.setRequestHeader('Authorization', getCookie('token'))
@@ -902,7 +902,7 @@ function sendAllData() {
   // /////////////////////////////// Kirim pake Ajax //////////////////////////////////////
   $.ajax({
     method: 'POST',
-    url: 'http://localhost:9000/submitrequest',
+    url: 'http://10.10.100.118:9000/submitrequest',
     beforeSend: function (req) {
       req.setRequestHeader('Content-Type', 'application/json')
       req.setRequestHeader('Authorization', getCookie('token'))
@@ -970,7 +970,7 @@ function sendRevise(button) {
   // /////////////////////////////// Kirim pake Ajax //////////////////////////////////////
   $.ajax({
     method: 'PUT',
-    url: 'http://localhost:9000/sendRevise',
+    url: 'http://10.10.100.118:9000/sendRevise',
     beforeSend: function (req) {
       req.setRequestHeader('Content-Type', 'application/json')
       req.setRequestHeader('Authorization', getCookie('token'))
@@ -1046,7 +1046,7 @@ function deleteTable(id) {
 function approvalList() {
   $.ajax({
     method: 'GET',
-    url: "http://localhost:9000/getAllMaterial",
+    url: "http://10.10.100.118:9000/getAllMaterial",
     beforeSend: function (req) {
       req.setRequestHeader('Content-Type', 'application/json'),
         req.setRequestHeader('Authorization', getCookie('token'))
@@ -1078,7 +1078,7 @@ function approvalList() {
 function commentProfile() {
   $.ajax({
     method: 'GET',
-    url: "http://localhost:9000/getProfile",
+    url: "http://10.10.100.118:9000/getProfile",
     beforeSend: function (req) {
       req.setRequestHeader('Content-Type', 'application/json'),
         req.setRequestHeader('Authorization', getCookie('token'))
@@ -1149,7 +1149,7 @@ function revisedComment() {
 function editPassword() {
   $.ajax({
     method: 'PUT',
-    url: "http://localhost:9000/editPassword",
+    url: "http://10.10.100.118:9000/editPassword",
     beforeSend: function (req) {
       req.setRequestHeader('Content-Type', 'application/json'),
         req.setRequestHeader('Authorization', getCookie('token'))
@@ -1173,7 +1173,7 @@ function editPassword() {
 function showEditData() {
   $.ajax({
     method: 'GET',
-    url: "http://localhost:9000/showEditData",
+    url: "http://10.10.100.118:9000/showEditData",
     beforeSend: function (req) {
       req.setRequestHeader('Content-Type', 'application/json'),
         req.setRequestHeader('Authorization', getCookie('token'))
@@ -1195,7 +1195,7 @@ function showEditData() {
 function editProfile() {
   $.ajax({
     method: 'PUT',
-    url: "http://localhost:9000/editProfile",
+    url: "http://10.10.100.118:9000/editProfile",
     beforeSend: function (req) {
       req.setRequestHeader('Content-Type', 'application/json'),
         req.setRequestHeader('Authorization', getCookie('token'))
@@ -1238,7 +1238,7 @@ function forgotPassword(){
   $('#loading').show()
   $.ajax({
     method: 'PUT',
-    url: "http://localhost:9000/forgotPassword",
+    url: "http://10.10.100.118:9000/forgotPassword",
     beforeSend: function (req) {
       req.setRequestHeader('Content-Type', 'application/json')
     },
@@ -1254,4 +1254,9 @@ function forgotPassword(){
       alert("Error")
     }
   })
+}
+
+function changeIntFormat(number){
+  new_number = new Intl.NumberFormat().format(number)
+  return new_number
 }
