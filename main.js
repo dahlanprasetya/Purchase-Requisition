@@ -163,7 +163,7 @@ function welcomeBoss() {
     beforeSend: function (req) {
       req.setRequestHeader('Content-Type', 'application/json'),
         req.setRequestHeader('Authorization', getCookie('token'))
-      $('loading').show()
+      $('#loading').show()
     },
     success: function (res) {
       data = JSON.parse(res)
@@ -270,11 +270,11 @@ function getAccRequest() {
         </tr>
         `)
       })
-      $('#loading').hide()
+      // $('#loading').hide()
     },
     error: function (err) {
       console.log(err)
-      $('#loading').hide()
+      // $('#loading').hide()
     }
   })
 }
@@ -1098,11 +1098,9 @@ function commentProfile() {
           </div>
       </div>
   </form>`)
-      // $('#loading').hide()
     },
     error: function (err) {
       console.log(err)
-      // $('#loading').hide()
     }
   })
 }
