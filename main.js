@@ -638,7 +638,7 @@ function responseRequest() {
     url: "http://localhost:9000/getRequestDetails",
     beforeSend: function (req) {
       req.setRequestHeader('Content-Type', 'application/json'),
-        req.setRequestHeader('Authorization', getCookie('token'))
+      req.setRequestHeader('Authorization', getCookie('token'))
       $('#loading').show()
     },
     data: JSON.stringify({
@@ -786,6 +786,9 @@ function sendResponseSCM(response) {
     },
     error: function (err) {
       alert(err)
+      $('#loading-button').addClass('hide')
+      $("#approved-button").show()
+      $("#revised-button").show ()
     }
   })
 }
@@ -918,6 +921,8 @@ function sendAllData() {
     error: function (err) {
       console.log(err)
       alert('Data sent failed')
+      $('#loading-button').hide()
+      $('#send_req').show()
     }
   })
 }
@@ -1230,4 +1235,28 @@ function b64DecodeUnicode(str) {
   return decodeURIComponent(atob(str).split('').map(function (c) {
     return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
   }).join(''));
+}
+
+function forgotPassword(){
+  $.ajax({
+    method: 'PUT',
+    url: "http://localhost:9000/forgotPassword",
+    beforeSend: function (req) {
+      req.setRequestHeader('Content-Type', 'application/json')
+      $('#submit-button').hide()
+      $('#loading-button').removeClass('hide')
+    },
+    data: JSON.stringify({
+      "email": $('#exampleInputEmail1').val()
+    }),
+    success: function (res) {  
+      alert("Success, please check your inbox")
+      window.location = "/login.html"
+    },
+    error: function (err) {
+      alert("Error")
+      $('#loading-button').addClass('hide')
+      $('#submit-button').show()
+    }
+  })
 }
