@@ -1260,3 +1260,8 @@ function forgotPassword(){
     }
   })
 }
+
+function changeIntFormat(number){
+  new_number = new Intl.NumberFormat().format(number)
+  return new_number
+}
