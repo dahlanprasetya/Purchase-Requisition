@@ -10,6 +10,11 @@ from requests.utils import quote
 import smtplib
 import random, string
 import base64
+from smtplib import SMTP 
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
+from email.message import Message
+from jinja2 import Environment 
 
 
 app = Flask(__name__)
@@ -67,8 +72,6 @@ class Items(db.Model):
     estimate_price = db.Column(db.Integer())
     total = db.Column(db.Integer())
     request_id =  db.Column(db.Integer,db.ForeignKey('request.id'))
-
-
 
 
 @app.route('/')
@@ -545,7 +548,7 @@ def responseRequest():
                     requestDB.acc_owner = 1
                     db.session.commit()
                     requesterDB = Employee.query.filter_by(id=requestDB.person_id).first()
-                    sendEmail(requesterDB.email,requestDB.id)
+                    sendEmail(requesterDB.email,requestDB)
 
         recursive()
         return "OK"
@@ -707,60 +710,637 @@ def sendRevise():
         sent_task(req_comment,user_token,process_id,task_name)
         return "Success",201
 
-def sendEmail(email_requester, id_request):
-    TO = email_requester
-    SUBJECT = 'Status Request Number '+str(id_request)
-    TEXT = 'Here is a message from python.'
+def sendEmail(email_requester, requestDB):
+    host = "smtp.gmail.com"
+    port = 587
+    username = os.getenv("EMAIL_ADDRESS")
+    password = os.getenv("EMAIL_KEY")
+    from_email = username
+    to_list = email_requester
 
-    # Gmail Sign In
-    gmail_sender = os.getenv("EMAIL_ADDRESS")
-    gmail_passwd = os.getenv("EMAIL_KEY")
+    email_conn = smtplib.SMTP(host, port)
+    email_conn.ehlo()
+    email_conn.starttls()
+    email_conn.login(username, password)
+    the_msg = MIMEMultipart("alternative")
+    the_msg['Subject'] = "Request Approved"
+    the_msg['From'] = from_email
+    html_txt = """\
+    <html>
+    <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Approved Request Email</title>
+    <style type="text/css" media="screen">
 
-    server = smtplib.SMTP('smtp.gmail.com', 587)
-    server.ehlo()
-    server.starttls()
-    server.login(gmail_sender, gmail_passwd)
+        /* Force Hotmail to display emails at full width */
+        .ExternalClass {
+        display: block !important;
+        width: 100%;
+        }
 
-    BODY = '\r\n'.join(['To: %s' % TO,
-                        'From: %s' % gmail_sender,
-                        'Subject: %s' % SUBJECT,
-                        '', TEXT])
+        /* Force Hotmail to display normal line spacing */
+        .ExternalClass,
+        .ExternalClass p,
+        .ExternalClass span,
+        .ExternalClass font,
+        .ExternalClass td,
+        .ExternalClass div {
+        line-height: 100%;
+        }
 
-    try:
-        server.sendmail(gmail_sender, [TO], BODY)
-        print ('email sent')
-    except:
-        print ('error sending mail')
+        body,
+        p,
+        h1,
+        h2,
+        h3,
+        h4,
+        h5,
+        h6 {
+        margin: 0;
+        padding: 0;
+        }
 
-    server.quit()
+        body,
+        p,
+        td {
+        font-family: Arial, Helvetica, sans-serif;
+        font-size: 15px;
+        color: #333333;
+        line-height: 1.5em;
+        }
+
+        h1 {
+        font-size: 24px;
+        font-weight: normal;
+        line-height: 24px;
+        }
+
+        body,
+        p {
+        margin-bottom: 0;
+        -webkit-text-size-adjust: none;
+        -ms-text-size-adjust: none;
+        }
+
+        img {
+        line-height: 100%;
+        outline: none;
+        text-decoration: none;
+        -ms-interpolation-mode: bicubic;
+        }
+
+        a img {
+        border: none;
+        }
+
+        .background {
+        background-color: #333333;
+        }
+
+        table.background {
+        margin: 0;
+        padding: 0;
+        width: 100% !important;
+        }
+
+        .block-img {
+        display: block;
+        line-height: 0;
+        }
+
+        a {
+        color: white;
+        text-decoration: none;
+        }
+
+        a,
+        a:link {
+        color: #2A5DB0;
+        text-decoration: underline;
+        }
+
+        table td {
+        border-collapse: collapse;
+        }
+
+        td {
+        vertical-align: top;
+        text-align: left;
+        }
+
+        .wrap {
+        width: 600px;
+        }
+
+        .wrap-cell {
+        padding-top: 30px;
+        padding-bottom: 30px;
+        }
+
+        .header-cell,
+        .body-cell,
+        .footer-cell {
+        padding-left: 20px;
+        padding-right: 20px;
+        }
+
+        .header-cell {
+        background-color: #eeeeee;
+        font-size: 24px;
+        color: #ffffff;
+        }
+
+        .body-cell {
+        background-color: #ffffff;
+        padding-top: 30px;
+        padding-bottom: 34px;
+        }
+
+        .footer-cell {
+        background-color: #eeeeee;
+        text-align: center;
+        font-size: 13px;
+        padding-top: 30px;
+        padding-bottom: 30px;
+        }
+
+        .card {
+        width: 400px;
+        margin: 0 auto;
+        }
+
+        .data-heading {
+        text-align: right;
+        padding: 10px;
+        background-color: #ffffff;
+        font-weight: bold;
+        }
+
+        .data-value {
+        text-align: left;
+        padding: 10px;
+        background-color: #ffffff;
+        }
+
+        .force-full-width {
+        width: 100% !important;
+        }
+
+    </style>
+    <style type="text/css" media="only screen and (max-width: 600px)">
+        @media only screen and (max-width: 600px) {
+        body[class*="background"],
+        table[class*="background"],
+        td[class*="background"] {
+            background: #eeeeee !important;
+        }
+
+        table[class="card"] {
+            width: auto !important;
+        }
+
+        td[class="data-heading"],
+        td[class="data-value"] {
+            display: block !important;
+        }
+
+        td[class="data-heading"] {
+            text-align: left !important;
+            padding: 10px 10px 0;
+        }
+
+        table[class="wrap"] {
+            width: 100% !important;
+        }
+
+        td[class="wrap-cell"] {
+            padding-top: 0 !important;
+            padding-bottom: 0 !important;
+        }
+        }
+    </style>
+    </head>
+
+    <body leftmargin="0" marginwidth="0" topmargin="0" marginheight="0" offset="0" bgcolor="" class="background">
+    <table align="center" border="0" cellpadding="0" cellspacing="0" height="100%" width="100%" class="background">
+        <tr>
+        <td align="center" valign="top" width="100%" class="background">
+            <center>
+            <table cellpadding="0" cellspacing="0" width="600" class="wrap">
+                <tr>
+                <td valign="top" class="wrap-cell" style="padding-top:30px; padding-bottom:30px;">
+                    <table cellpadding="0" cellspacing="0" class="force-full-width">
+                    <tr>
+                        <td style="text-align: center;" height="60" valign="top" class="header-cell" >
+                            <img width="55" height="55" src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/e0/SNice.svg/1200px-SNice.svg.png" alt="Good Company" style="margin-top: 8px; ">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td valign="top" class="body-cell">
+                        <table cellpadding="0" cellspacing="0" width="100%" bgcolor="#ffffff">
+                            <tr>
+                            <td valign="top" style="padding-bottom:20px; background-color:#ffffff;">
+                            <b>Hi {{name}},</b><br \><br \>
+                            <b>Congratulation!</b><br \>
+                            We would like you to know that your request has been approved. To check any further please <a href="#">click here</a> to login.
+                            </td>
+                            </tr>
+                            <tr>
+                            <td>
+                                <table cellspacing="0" cellpadding="0" width="100%" bgcolor="#ffffff">
+                                <tr>
+                                <td align="center" style="padding:20px 0;">
+                                    <center>
+                                    <table cellspacing="0" cellpadding="0" class="card">
+                                        <tr>
+                                        <td style="background-color:#1f618d; text-align:center; padding:10px; color:white; ">
+                                            Request Details
+                                        </td>
+                                        </tr>
+                                        <tr>
+                                        <td style="border:1px solid #1f618d;">
+                                            <table cellspacing="0" cellpadding="20" width="100%">
+                                            <tr>
+                                                <td>
+                                                <table cellpadding="0" cellspacing="0" width="100%" bgcolor="#ffffff">
+                                                    <tr>
+                                                    <td width="150" class="data-heading">
+                                                        Request ID:
+                                                    </td>
+                                                    <td class="data-value">
+                                                        {{request_id}}
+                                                    </td>
+                                                    </tr>
+                                                    <tr>
+                                                    <td width="150" class="data-heading">
+                                                        Record ID:
+                                                    </td>
+                                                    <td class="data-value">
+                                                        {{record_id}}
+                                                    </td>
+                                                    </tr>
+                                                    <tr>
+                                                    <td width="150" class="data-heading">
+                                                        Process ID:
+                                                    </td>
+                                                    <td class="data-value">
+                                                        {{process_id}}
+                                                    </td>
+                                                    </tr>
+                                                    <tr>
+                                                    <td width="150" class="data-heading">
+                                                        Budget Type:
+                                                    </td>
+                                                    <td class="data-value">
+                                                        {{budget_type}}
+                                                    </td>
+                                                    </tr>
+                                                    <tr>
+                                                    <td width="150" class="data-heading">
+                                                        Justification:
+                                                    </td>
+                                                    <td class="data-value">
+                                                        {{justification}}
+                                                    </td>
+                                                    </tr>    
+                                                </table>
+                                                </td>
+                                            </tr>
+                                            </table>
+                                        </td>
+                                        </tr>
+                                    </table>
+                                    </center>
+                                </td>
+                                </tr>
+                            </table>
+                            </td>
+                            </tr>
+                            <tr>
+                            <td style="padding-top:20px;background-color:#ffffff;">
+                                Have a nice day!<br>
+                                Administator Good Company
+                            </td>
+                            </tr>
+                        </table>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td valign="top" class="footer-cell">
+                        Good Company<br>
+                        </td>
+                    </tr>
+                    </table>
+                </td>
+                </tr>
+            </table>
+            </center>
+        </td>
+        </tr>
+    </table>
+
+    </body>
+    </html>
+    """
+    userDB = Employee.query.filter_by(id=requestDB.person_id).first()
+    part_2 = MIMEText(Environment().from_string(html_txt).render(
+            name=userDB.fullname, request_id=requestDB.id, record_id=requestDB.record_id, process_id=requestDB.process_id, budget_type=requestDB.budget_type, justification=requestDB.justification
+        ), 'html')
+    the_msg.attach(part_2)
+    email_conn.sendmail(from_email, to_list, the_msg.as_string())
+    email_conn.quit()
     return "Success",201
 
-def sendEmailChangePass(email_requester, new_password):
-    TO = email_requester
-    SUBJECT = 'New Password'
-    TEXT = 'This is your new password : '+new_password+'\nAfter log in it is recommended to change your password immediately.'
+def sendEmailChangePass(email_requester, new_password,user_fullname):
+    host = "smtp.gmail.com"
+    port = 587
+    username = os.getenv("EMAIL_ADDRESS")
+    password = os.getenv("EMAIL_KEY")
+    from_email = username
+    to_list = email_requester
 
-    # Gmail Sign In
-    gmail_sender = os.getenv("EMAIL_ADDRESS")
-    gmail_passwd = os.getenv("EMAIL_KEY")
+    email_conn = smtplib.SMTP(host, port)
+    email_conn.ehlo()
+    email_conn.starttls()
+    email_conn.login(username, password)
+    the_msg = MIMEMultipart("alternative")
+    the_msg['Subject'] = "Reset Password Request"
+    the_msg['From'] = from_email
+    html_txt = """\
+    <html>
+    <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Forgot Password Email</title>
+    <style type="text/css" media="screen">
 
-    server = smtplib.SMTP('smtp.gmail.com', 587)
-    server.ehlo()
-    server.starttls()
-    server.login(gmail_sender, gmail_passwd)
+        /* Force Hotmail to display emails at full width */
+        .ExternalClass {
+        display: block !important;
+        width: 100%;
+        }
 
-    BODY = '\r\n'.join(['To: %s' % TO,
-                        'From: %s' % gmail_sender,
-                        'Subject: %s' % SUBJECT,
-                        '', TEXT])
+        /* Force Hotmail to display normal line spacing */
+        .ExternalClass,
+        .ExternalClass p,
+        .ExternalClass span,
+        .ExternalClass font,
+        .ExternalClass td,
+        .ExternalClass div {
+        line-height: 100%;
+        }
 
-    try:
-        server.sendmail(gmail_sender, [TO], BODY)
-        print ('email sent')
-    except:
-        print ('error sending mail')
+        body,
+        p,
+        h1,
+        h2,
+        h3,
+        h4,
+        h5,
+        h6 {
+        margin: 0;
+        padding: 0;
+        }
 
-    server.quit()
+        body,
+        p,
+        td {
+        font-family: Arial, Helvetica, sans-serif;
+        font-size: 15px;
+        color: #333333;
+        line-height: 1.5em;
+        }
+
+        h1 {
+        font-size: 24px;
+        font-weight: normal;
+        line-height: 24px;
+        }
+
+        body,
+        p {
+        margin-bottom: 0;
+        -webkit-text-size-adjust: none;
+        -ms-text-size-adjust: none;
+        }
+
+        img {
+        outline: none;
+        text-decoration: none;
+        -ms-interpolation-mode: bicubic;
+        }
+
+        a img {
+        border: none;
+        }
+
+        .background {
+        background-color: #333333;
+        }
+
+        table.background {
+        margin: 0;
+        padding: 0;
+        width: 100% !important;
+        }
+
+        .block-img {
+        display: block;
+        line-height: 0;
+        }
+
+        a {
+        color: white;
+        text-decoration: none;
+        }
+
+        a,
+        a:link {
+        color: #2A5DB0;
+        text-decoration: underline;
+        }
+
+        table td {
+        border-collapse: collapse;
+        }
+
+        td {
+        vertical-align: top;
+        text-align: left;
+        }
+
+        .wrap {
+        width: 600px;
+        }
+
+        .wrap-cell {
+        padding-top: 30px;
+        padding-bottom: 30px;
+        }
+
+        .header-cell,
+        .body-cell,
+        .footer-cell {
+        padding-left: 20px;
+        padding-right: 20px;
+        }
+
+        .header-cell {
+        background-color: #eeeeee;
+        font-size: 24px;
+        color: #ffffff;
+        }
+
+        .body-cell {
+        background-color: #ffffff;
+        padding-top: 30px;
+        padding-bottom: 34px;
+        }
+
+        .footer-cell {
+        background-color: #eeeeee;
+        text-align: center;
+        font-size: 13px;
+        padding-top: 30px;
+        padding-bottom: 30px;
+        }
+
+        .card {
+        width: 400px;
+        margin: 0 auto;
+        }
+
+        .data-heading {
+        text-align: right;
+        padding: 10px;
+        background-color: #ffffff;
+        font-weight: bold;
+        }
+
+        .data-value {
+        text-align: left;
+        padding: 10px;
+        background-color: #ffffff;
+        }
+
+        .force-full-width {
+        width: 100% !important;
+        }
+
+    </style>
+    <style type="text/css" media="only screen and (max-width: 600px)">
+        @media only screen and (max-width: 600px) {
+        body[class*="background"],
+        table[class*="background"],
+        td[class*="background"] {
+            background: #eeeeee !important;
+        }
+
+        table[class="card"] {
+            width: auto !important;
+        }
+
+        td[class="data-heading"],
+        td[class="data-value"] {
+            display: block !important;
+        }
+
+        td[class="data-heading"] {
+            text-align: left !important;
+            padding: 10px 10px 0;
+        }
+
+        table[class="wrap"] {
+            width: 100% !important;
+        }
+
+        td[class="wrap-cell"] {
+            padding-top: 0 !important;
+            padding-bottom: 0 !important;
+        }
+        }
+    </style>
+    </head>
+
+    <body leftmargin="0" marginwidth="0" topmargin="0" marginheight="0" offset="0" bgcolor="" class="background">
+    <table align="center" border="0" cellpadding="0" cellspacing="0" height="100%" width="100%" class="background">
+        <tr>
+        <td align="center" valign="top" width="100%" class="background">
+            <center>
+            <table cellpadding="0" cellspacing="0" width="600" class="wrap">
+                <tr>
+                <td valign="top" class="wrap-cell" style="padding-top:30px; padding-bottom:30px;">
+                    <table cellpadding="0" cellspacing="0" class="force-full-width">
+                    <tr>
+                    <td style="text-align: center;" height="60" valign="top" class="header-cell" >
+                        <img width="55" height="55" src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/e0/SNice.svg/1200px-SNice.svg.png" alt="Good Company" style="margin-top: 3px; ">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td valign="top" class="body-cell">
+
+                        <table cellpadding="0" cellspacing="0" width="100%" bgcolor="#ffffff">
+                            <tr>
+                            <td valign="top" style="padding-bottom:15px; background-color:#ffffff;">
+                                <h1>Reset Password Request</h1>
+                            </td>
+                            </tr>
+                            <tr>
+                            <td valign="top" style="padding-bottom:20px; background-color:#ffffff;">
+                                <b>Hello {{name}} </b>, <br>
+                                We recently received a request to reset your account password. Here is your new password : <b>{{new_password}}</b> <br \>
+                                We suggest you to log in with this password and change it on your profile.
+                            </td>
+                            </tr>
+                            <tr>
+                            <td>
+                                <table cellspacing="0" cellpadding="0" width="100%" bgcolor="#ffffff">
+                                <tr>
+                                    <td style="width:180px;background: #ffca28;">
+                                    <div>
+                                            <a href="localhost:8000/login.html"
+                                    style="background-color: #ffca28;color:#1f618d;display:inline-block;font-family:sans-serif;font-size:18px;line-height:40px;text-align:center;text-decoration:none;width:180px;-webkit-text-size-adjust:none;">Log In Now!</a>
+                                        </div>
+                                    </td>
+                                    <td width="360" style="background-color:#ffffff; font-size:0; line-height:0;"></td>
+                                </tr>
+                                </table>
+                            </td>
+                            </tr>
+                            <tr>
+                            <td style="padding-top:20px;background-color:#ffffff;">
+                                Regards,<br>
+                                Administrator Good Company
+                            </td>
+                            </tr>
+                        </table>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td valign="top" class="footer-cell">
+                        Good Company
+                        </td>
+                    </tr>
+                    </table>
+                </td>
+                </tr>
+            </table>
+            </center>
+        </td>
+        </tr>
+    </table>
+
+    </body>
+    </html>
+    """
+
+    part_2 = MIMEText(Environment().from_string(html_txt).render(
+            name=user_fullname, new_password=new_password
+        ), 'html')
+    the_msg.attach(part_2)
+    email_conn.sendmail(from_email, to_list, the_msg.as_string())
+    email_conn.quit()
     return "Success",201
 
 def randomword():
@@ -779,6 +1359,7 @@ def forgotPassword():
         request_data = request.get_json()
         email = request_data["email"]
         user = Employee.query.filter_by(email=email).first()
+        user_fullname = user.fullname
         if user:
             tmp_pass_str = randomword()
             tmp_pass_encode = str(stringToBase64(tmp_pass_str))
@@ -788,7 +1369,7 @@ def forgotPassword():
             print(tmp_pass_encode)
             user.password = str(tmp_pass_encode)
             db.session.commit()
-            sendEmailChangePass(email,tmp_pass_str)
+            sendEmailChangePass(email,tmp_pass_str,user_fullname)
             return "Success",201
 
         else:
