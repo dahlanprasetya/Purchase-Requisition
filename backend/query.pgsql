@@ -50,8 +50,8 @@ INSERT INTO public.material(code,name) values ('MG-1013','Tools');
 UPDATE employee set token = 'RmPvmg1lNpBqXzJW1cSKuCEhuvS9pe3__Kebc-lZpcM.PC9hsLq4vwvvyGOongpCyJIioh-bK7ycogjp3HwHEhY' where id=4;
 UPDATE employee set token = '7SRxLYTCWbkoNRxbAqCcwFF2xcP-f9xE2niSP2u8DZ0.HTzvB_BcEbXjYa6kTFvhCMtEveqVlQ6L_PK551ae5O0' where id=3;
 UPDATE employee set token = 'RIaC4iaC1euFq84KRBOjTBuDK-dCjqYw8GaJ7lIiz-I.87uvFkDfUwWczfk2XxWEl80vykGozpRYnAAhdeYrSHI' where id=2;
-UPDATE employee set token = 'ev3pjPWAum4CeswvIkw9pO-6KqVIfMyulG6Fu_o36WA.hHrLmRjWiUv3EcHHY9CoWLY2dgVOdobnhye_abm5--4' where id=1;
-UPDATE employee set token = 'ev3pjPWAum4CeswvIkw9pO-6KqVIfMyulG6Fu_o36WA.hHrLmRjWiUv3EcHHY9CoWLY2dgVOdobnhye_abm5--4' where id=5;
+UPDATE employee set token = 'o0WLNi57kQWOQxbrRNzhXnC-qaSWMLujsXD9NSb2MJk.CHHujgLzL2cyufs7Va-NbfrMeBNtHPhGhqoMSB4cd08' where id=1;
+UPDATE employee set token = 'o0WLNi57kQWOQxbrRNzhXnC-qaSWMLujsXD9NSb2MJk.CHHujgLzL2cyufs7Va-NbfrMeBNtHPhGhqoMSB4cd08' where id=5;
 
 -- UPDATE employee set password = 'c2VibGFrOTk=' where id=4;
 -- UPDATE employee set password = 'c2VibGFrOTk=' where id=3;

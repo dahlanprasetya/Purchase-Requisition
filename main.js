@@ -74,7 +74,7 @@ function login() {
 function getUserRequest() {
   $.ajax({
     method: 'GET',
-    url: "http://localhost:9000/getUserRequest",
+    url: "http://localhost:9000/get-user-request",
     beforeSend: function (req) {
       req.setRequestHeader('Authorization', getCookie('token'))
       $('#loading').show()
@@ -107,7 +107,7 @@ function getUserRequest() {
 function getProfile() {
   $.ajax({
     method: 'GET',
-    url: "http://localhost:9000/getProfile",
+    url: "http://localhost:9000/get-profile",
     beforeSend: function (req) {
       req.setRequestHeader('Content-Type', 'application/json')
       req.setRequestHeader('Authorization', getCookie('token'))
@@ -135,7 +135,7 @@ function getProfile() {
 function welcome() {
   $.ajax({
     method: 'GET',
-    url: "http://localhost:9000/getProfile",
+    url: "http://localhost:9000/get-profile",
     beforeSend: function (req) {
       req.setRequestHeader('Content-Type', 'application/json')
       req.setRequestHeader('Authorization', getCookie('token'))
@@ -159,7 +159,7 @@ function welcome() {
 function welcomeBoss() {
   $.ajax({
     method: 'GET',
-    url: "http://localhost:9000/getProfile",
+    url: "http://localhost:9000/get-profile",
     beforeSend: function (req) {
       req.setRequestHeader('Content-Type', 'application/json')
       req.setRequestHeader('Authorization', getCookie('token'))
@@ -182,7 +182,7 @@ function welcomeBoss() {
 function getTaskList() {
   $.ajax({
     method: 'GET',
-    url: "http://localhost:9000/getTaskList",
+    url: "http://localhost:9000/get-tasklist",
     beforeSend: function (req) {
       req.setRequestHeader('Authorization', getCookie('token'))
       $('#loading').show()
@@ -215,7 +215,7 @@ function getTaskList() {
 function getTaskRevise() {
   $.ajax({
     method: 'GET',
-    url: "http://localhost:9000/getTaskList",
+    url: "http://localhost:9000/get-tasklist",
     beforeSend: function (req) {
       req.setRequestHeader('Authorization', getCookie('token'))
       $('#loading').show()
@@ -249,7 +249,7 @@ function getTaskRevise() {
 function getAccRequest() {
   $.ajax({
     method: 'GET',
-    url: "http://localhost:9000/getAccRequest",
+    url: "http://localhost:9000/get-acc-request",
     beforeSend: function (req) {
       req.setRequestHeader('Authorization', getCookie('token'))
       $('#loading').show()
@@ -291,7 +291,7 @@ function loading(button) {
 function getRequestInfo() {
   $.ajax({
     method: 'GET',
-    url: "http://localhost:9000/getProfile",
+    url: "http://localhost:9000/get-profile",
     beforeSend: function (req) {
       req.setRequestHeader('Content-Type', 'application/json')
       req.setRequestHeader('Authorization', getCookie('token'))
@@ -377,7 +377,7 @@ function getRequestDetails() {
   var id = window.location.href.split("=")[1];
   $.ajax({
     method: 'POST',
-    url: "http://localhost:9000/getRequestDetails",
+    url: "http://localhost:9000/get-request-detail",
     beforeSend: function (req) {
       req.setRequestHeader('Content-Type', 'application/json')
       req.setRequestHeader('Authorization', getCookie('token'))
@@ -388,6 +388,7 @@ function getRequestDetails() {
     }),
     success: function (res) {
       // window.location = "/details.html";
+      console.log(res)
       data = JSON.parse(res)
       document.getElementById('get-data-request').insertAdjacentHTML("afterbegin", `<h2 id="welcome" class="text-center">General Material Purchase Request Details</h2>
         <fieldset id="requester_info">
@@ -533,7 +534,7 @@ function showReviseData() {
   var id = window.location.href.split("=")[1];
   $.ajax({
     method: 'POST',
-    url: "http://localhost:9000/getRequestDetails",
+    url: "http://localhost:9000/get-request-detail",
     beforeSend: function (req) {
       req.setRequestHeader('Content-Type', 'application/json')
       req.setRequestHeader('Authorization', getCookie('token'))
@@ -567,7 +568,7 @@ function showReviseData() {
       data_table_item.forEach(data => {
         a++
         table_item.append(`
-              <tr id="${row.length + 1}">
+              <tr id="${a}">
               <th scope="row">${a}</th>
               <td id="tableDataItemDetail" >${data['material_name']}</td>
               <td id="tableDataDescription">${data['description']}</td>
@@ -577,7 +578,7 @@ function showReviseData() {
               <td id="tableDataSubTotal">${data['total']}</td>
               <form action="">
                   <td id="table-action">
-                      <button formaction="#" onclick=deleteTable(${row.length + 1}) type="submit" id="delete-button"><i class="far fa-trash-alt"></i></button>
+                      <button formaction="#" onclick=deleteTable(${a}) type="submit" id="delete-button"><i class="far fa-trash-alt"></i></button>
                   </td>
               </form>
           </tr>
@@ -635,7 +636,7 @@ function responseRequest() {
   var id = window.location.href.split("=")[1];
   $.ajax({
     method: 'POST',
-    url: "http://localhost:9000/getRequestDetails",
+    url: "http://localhost:9000/get-request-detail",
     beforeSend: function (req) {
       req.setRequestHeader('Content-Type', 'application/json')
       req.setRequestHeader('Authorization', getCookie('token'))
@@ -767,7 +768,7 @@ function sendResponseSCM(response) {
   var id = window.location.href.split("=")[1];
   $.ajax({
     method: 'POST',
-    url: "http://localhost:9000/responseRequest",
+    url: "http://localhost:9000/response-request",
     beforeSend: function (req) {
       req.setRequestHeader('Content-Type', 'application/json')
       req.setRequestHeader('Authorization', getCookie('token'))
@@ -798,7 +799,7 @@ function sendResponse() {
   var id = window.location.href.split("=")[1];
   $.ajax({
     method: 'POST',
-    url: "http://localhost:9000/responseRequest",
+    url: "http://localhost:9000/response-request",
     beforeSend: function (req) {
       req.setRequestHeader('Content-Type', 'application/json')
       req.setRequestHeader('Authorization', getCookie('token'))
@@ -840,7 +841,7 @@ function redirectToComment(id) {
 function getMaterial() {
   $.ajax({
     method: 'GET',
-    url: "http://localhost:9000/getAllMaterial",
+    url: "http://localhost:9000/get-all-material",
     beforeSend: function (req) {
       req.setRequestHeader('Content-Type', 'application/json')
       req.setRequestHeader('Authorization', getCookie('token'))
@@ -905,7 +906,7 @@ function sendAllData() {
   // /////////////////////////////// Kirim pake Ajax //////////////////////////////////////
   $.ajax({
     method: 'POST',
-    url: 'http://localhost:9000/submitrequest',
+    url: 'http://localhost:9000/submit-request',
     beforeSend: function (req) {
       req.setRequestHeader('Content-Type', 'application/json')
       req.setRequestHeader('Authorization', getCookie('token'))
@@ -975,7 +976,7 @@ function sendRevise(button) {
   // /////////////////////////////// Kirim pake Ajax //////////////////////////////////////
   $.ajax({
     method: 'PUT',
-    url: 'http://localhost:9000/sendRevise',
+    url: 'http://localhost:9000/send-revise',
     beforeSend: function (req) {
       req.setRequestHeader('Content-Type', 'application/json')
       req.setRequestHeader('Authorization', getCookie('token'))
@@ -1047,43 +1048,11 @@ function deleteTable(id) {
   }
 }
 
-///////////////////////////// Memunculkan data ke tabel approval list ///////////////////////////////////////////////////////////////////////////////////////////////////////////
-function approvalList() {
-  $.ajax({
-    method: 'GET',
-    url: "http://localhost:9000/getAllMaterial",
-    beforeSend: function (req) {
-      req.setRequestHeader('Content-Type', 'application/json')
-      req.setRequestHeader('Authorization', getCookie('token'))
-    },
-    success: function (res) {
-      JSON.parse(res).forEach(function (data) {
-        data = JSON.parse(res)
-        // console.log(data)
-        document.getElementById('materials').insertAdjacentHTML("beforeend", `
-        <tr>
-                <td scope="row">32132131</td>
-                <td>Mark</td>
-                <td>Astra</td>
-                <td>Approved by Manager</td>
-                <form action="">
-                    <td id="table-action"><button formaction="/details.html" type="submit" id="see-details-button">See details</button></td>
-                </form>
-            </tr>
-        `)
-      })
-    },
-    error: function (err) {
-      console.log(err)
-    }
-  })
-}
-
 ///////////////////////////// Fungsi munculkan data ke comment html ///////////////////////////////////////////////////////////////////////////////////////////////////////////
 function commentProfile() {
   $.ajax({
     method: 'GET',
-    url: "http://localhost:9000/getProfile",
+    url: "http://localhost:9000/get-profile",
     beforeSend: function (req) {
       req.setRequestHeader('Content-Type', 'application/json')
       req.setRequestHeader('Authorization', getCookie('token'))
@@ -1110,49 +1079,11 @@ function commentProfile() {
   })
 }
 
-///////////////////////////// Fungsi menambahkan comment Approved ke database ///////////////////////////////////////////////////////////////////////////////////////////////////////////
-function approvedComment() {
-  var comment_value = $('#comment-box').val()
-  var approved_value = $('#approved-button').text()
-
-  // jQuery
-  var table = $('#table_comment_history.table tbody'),
-    row = table.find('tr')
-  $('#table_comment_history.table tbody').prepend(
-    `<tr>
-    <td id="tableDataParticipant" scope="${row}">Oka Aryanta</td>
-    <td id="tableDataPosition" >Supply Chain Management</td>
-    <td id="tableDataActivity">${approved_value}</td>
-    <td id="tableDataStart">5 Nov 2018 09:20</td>
-    <td id="tableDataComment">${comment_value}</td>
-</tr>`)
-  $('#comment-box').val("")
-}
-
-///////////////////////////////Fungsi menambahkan Revised comment ke database  ///////////////////////////////////////////////////////////////////////////////////////////////////
-function revisedComment() {
-  var comment_value = $('#comment-box').val()
-  var revised_value = $('#revised-button').text()
-
-  // jQuery
-  var table = $('#table_comment_history.table tbody'),
-    row = table.find('tr')
-  $('#table_comment_history.table tbody').prepend(
-    `<tr>
-    <td id="tableDataParticipant" scope="row">Oka Aryanta</td>
-    <td id="tableDataPosition" >Supply Chain Management</td>
-    <td id="tableDataActivity">${revised_value}</td>
-    <td id="tableDataStart">5 Nov 2018 09:20</td>
-    <td id="tableDataComment">${comment_value}</td>
-</tr>`)
-  $('#comment-box').val("")
-}
-
 /////////////////////////////// Edit Password ///////////////////////////////////////////////////////////////////////////////////////////////////////////
 function editPassword() {
   $.ajax({
     method: 'PUT',
-    url: "http://localhost:9000/editPassword",
+    url: "http://localhost:9000/edit-password",
     beforeSend: function (req) {
       req.setRequestHeader('Content-Type', 'application/json')
       req.setRequestHeader('Authorization', getCookie('token'))
@@ -1176,7 +1107,7 @@ function editPassword() {
 function showEditData() {
   $.ajax({
     method: 'GET',
-    url: "http://localhost:9000/showEditData",
+    url: "http://localhost:9000/show-edit-data",
     beforeSend: function (req) {
       req.setRequestHeader('Content-Type', 'application/json')
       req.setRequestHeader('Authorization', getCookie('token'))
@@ -1198,7 +1129,7 @@ function showEditData() {
 function editProfile() {
   $.ajax({
     method: 'PUT',
-    url: "http://localhost:9000/editProfile",
+    url: "http://localhost:9000/edit-profile",
     beforeSend: function (req) {
       req.setRequestHeader('Content-Type', 'application/json')
       req.setRequestHeader('Authorization', getCookie('token'))
@@ -1236,11 +1167,11 @@ function b64DecodeUnicode(str) {
     return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
   }).join(''));
 }
-
+// function untuk mengganti password dengan password random sementara
 function forgotPassword() {
   $.ajax({
     method: 'PUT',
-    url: "http://localhost:9000/forgotPassword",
+    url: "http://localhost:9000/forgot-password",
     beforeSend: function (req) {
       req.setRequestHeader('Content-Type', 'application/json')
       $('#submit-button').hide()
@@ -1260,7 +1191,7 @@ function forgotPassword() {
     }
   })
 }
-
+// function untuk cek apakah user telah login atau tidak
 function checkTokenLogin() {
   var token = getCookie('token')
   // console.log(token)
@@ -1269,7 +1200,7 @@ function checkTokenLogin() {
     window.location = '/login.html'
   }
 }
-
+// function untuk cek apakah user yang login dapat mengakses halaman scm atau tidak
 function checkAuthorityToAccessSCMPage() {
   var isRequester = getCookie('requester')
   if (isRequester == 'true') {
@@ -1277,7 +1208,7 @@ function checkAuthorityToAccessSCMPage() {
     window.location = "/employee.html"
   }
 }
-
+// funtion untuk cek apakah user yang login dapat mengakses halaman employee atau tidak
 function checkAuthorityToAccessEmployeePage() {
   var isRequester = getCookie('requester')
   if (isRequester == 'false') {
