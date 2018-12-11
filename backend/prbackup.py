@@ -18,7 +18,7 @@ from jinja2 import Environment
 
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] =  'postgresql://postgres:Sembilantujuh97@localhost:5432/pr_makers'
+app.config['SQLALCHEMY_DATABASE_URI'] =  'postgresql://postgres:kumiskucing@localhost:5432/pr_makers'
 CORS(app, support_credentials=True)
 app.config['SECRET_KEY'] = os.urandom(24)
 db = SQLAlchemy(app)
@@ -37,7 +37,7 @@ class Material(db.Model):
 class Employee(db.Model):
     id = db.Column(db.Integer,primary_key=True)
     fullname = db.Column(db.String())
-    email = db.Column(db.String())
+    email = db.Column(db.String(),unique=True)
     password = db.Column(db.String())
     position = db.Column(db.Integer,db.ForeignKey('position.id'))
     photoprofile = db.Column(db.String())

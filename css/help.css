@@ -194,5 +194,10 @@ footer {
     overflow: hidden;
     background: none !important;
     height: 300px;
-    width: 1349px;
+    width: 100% !important;
+}
+
+@media (min-width: 1200px)
+.gmap_canvas {
+    max-width: 1349px;
 }

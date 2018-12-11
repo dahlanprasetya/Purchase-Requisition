@@ -31,7 +31,7 @@ function home() {
 
 function changePageBoss() {
   var isRequester = getCookie('position') //Position 1: owner, 2: manager, 3:scm, 4:employee
-  isRequester == "3" ? window.location = "/comment.html" : window.location = "/manager.html" 
+  isRequester == "3" ? window.location = "/comment.html" : window.location = "/manager.html"
 }
 
 //////////////////////////////// Login ke dalam home /////////////////////////////////////////////////////////////////////////////
@@ -120,7 +120,7 @@ function getProfile() {
       <a id="profile-name" href="profile.html"> ${data.fullname}</a>
       <div class="dropdown-content">
           <a href="edit.html"><i class="fas fa-cogs"></i> Setting and Privacy</a>
-          <a href="#"><i class="far fa-question-circle"></i> Help Center</a>
+          <a href="help.html"><i class="far fa-question-circle"></i> Help Center</a>
           <a onclick="removeCookie()" href="login.html" id="logout-button"><i class="fas fa-power-off"></i> Log Out</a>
       </div>
   </div>`)
@@ -788,7 +788,7 @@ function sendResponseSCM(response) {
       alert(err)
       $('#loading-button').addClass('hide')
       $("#approved-button").show()
-      $("#revised-button").show ()
+      $("#revised-button").show()
     }
   })
 }
@@ -1237,7 +1237,7 @@ function b64DecodeUnicode(str) {
   }).join(''));
 }
 
-function forgotPassword(){
+function forgotPassword() {
   $.ajax({
     method: 'PUT',
     url: "http://localhost:9000/forgotPassword",
@@ -1249,7 +1249,7 @@ function forgotPassword(){
     data: JSON.stringify({
       "email": $('#exampleInputEmail1').val()
     }),
-    success: function (res) {  
+    success: function (res) {
       alert("Success, please check your inbox")
       window.location = "/login.html"
     },
@@ -1261,7 +1261,32 @@ function forgotPassword(){
   })
 }
 
-function changeIntFormat(number){
+function checkTokenLogin() {
+  var token = getCookie('token')
+  // console.log(token)
+  if (token == "") {
+    alert('Please Login')
+    window.location = '/login.html'
+  }
+}
+
+function checkAuthorityToAccessSCMPage() {
+  var isRequester = getCookie('requester')
+  if (isRequester == 'true') {
+    alert('Can not to access this page')
+    window.location = "/employee.html"
+  }
+}
+
+function checkAuthorityToAccessEmployeePage() {
+  var isRequester = getCookie('requester')
+  if (isRequester == 'false') {
+    alert('Can not to access this page')
+    window.location = "/scm.html"
+  }
+}
+
+function changeIntFormat(number) {
   new_number = new Intl.NumberFormat().format(number)
   return new_number
 }
