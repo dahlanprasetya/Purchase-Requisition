@@ -25,13 +25,13 @@ function removeCookie() {
 
 ////////////////////////////// Mengatur dashboard location///////////////////////////////////////////////////////////////////////////////
 function home() {
-  var a = getCookie('requester')
-  a == "true" ? window.location = "/employee.html" : window.location = "/scm.html"
+  var isRequester = getCookie('requester')
+  isRequester == "true" ? window.location = "/employee.html" : window.location = "/scm.html"
 }
 
-function comment() {
-  var a = getCookie('position')
-  a == "3" ? window.location = "/comment.html" : window.location = "/manager.html"
+function changePageBoss() {
+  var isRequester = getCookie('position') //Position 1: owner, 2: manager, 3:scm, 4:employee
+  isRequester == "3" ? window.location = "/comment.html" : window.location = "/manager.html" 
 }
 
 //////////////////////////////// Login ke dalam home /////////////////////////////////////////////////////////////////////////////
@@ -109,8 +109,8 @@ function getProfile() {
     method: 'GET',
     url: "http://localhost:9000/getProfile",
     beforeSend: function (req) {
-      req.setRequestHeader('Content-Type', 'application/json'),
-        req.setRequestHeader('Authorization', getCookie('token'))
+      req.setRequestHeader('Content-Type', 'application/json')
+      req.setRequestHeader('Authorization', getCookie('token'))
     },
     success: function (res) {
       data = JSON.parse(res)
@@ -137,8 +137,8 @@ function welcome() {
     method: 'GET',
     url: "http://localhost:9000/getProfile",
     beforeSend: function (req) {
-      req.setRequestHeader('Content-Type', 'application/json'),
-        req.setRequestHeader('Authorization', getCookie('token'))
+      req.setRequestHeader('Content-Type', 'application/json')
+      req.setRequestHeader('Authorization', getCookie('token'))
       $('loading').show()
     },
     success: function (res) {
@@ -161,8 +161,8 @@ function welcomeBoss() {
     method: 'GET',
     url: "http://localhost:9000/getProfile",
     beforeSend: function (req) {
-      req.setRequestHeader('Content-Type', 'application/json'),
-        req.setRequestHeader('Authorization', getCookie('token'))
+      req.setRequestHeader('Content-Type', 'application/json')
+      req.setRequestHeader('Authorization', getCookie('token'))
       $('#loading').show()
     },
     success: function (res) {
@@ -293,8 +293,8 @@ function getRequestInfo() {
     method: 'GET',
     url: "http://localhost:9000/getProfile",
     beforeSend: function (req) {
-      req.setRequestHeader('Content-Type', 'application/json'),
-        req.setRequestHeader('Authorization', getCookie('token'))
+      req.setRequestHeader('Content-Type', 'application/json')
+      req.setRequestHeader('Authorization', getCookie('token'))
       $('#loading').show()
     },
     success: function (res) {
@@ -379,8 +379,8 @@ function getRequestDetails() {
     method: 'POST',
     url: "http://localhost:9000/getRequestDetails",
     beforeSend: function (req) {
-      req.setRequestHeader('Content-Type', 'application/json'),
-        req.setRequestHeader('Authorization', getCookie('token'))
+      req.setRequestHeader('Content-Type', 'application/json')
+      req.setRequestHeader('Authorization', getCookie('token'))
       $('#loading').show()
     },
     data: JSON.stringify({
@@ -535,8 +535,8 @@ function showReviseData() {
     method: 'POST',
     url: "http://localhost:9000/getRequestDetails",
     beforeSend: function (req) {
-      req.setRequestHeader('Content-Type', 'application/json'),
-        req.setRequestHeader('Authorization', getCookie('token'))
+      req.setRequestHeader('Content-Type', 'application/json')
+      req.setRequestHeader('Authorization', getCookie('token'))
       $('#loading').show()
     },
     data: JSON.stringify({
@@ -637,7 +637,7 @@ function responseRequest() {
     method: 'POST',
     url: "http://localhost:9000/getRequestDetails",
     beforeSend: function (req) {
-      req.setRequestHeader('Content-Type', 'application/json'),
+      req.setRequestHeader('Content-Type', 'application/json')
       req.setRequestHeader('Authorization', getCookie('token'))
       $('#loading').show()
     },
@@ -769,8 +769,8 @@ function sendResponseSCM(response) {
     method: 'POST',
     url: "http://localhost:9000/responseRequest",
     beforeSend: function (req) {
-      req.setRequestHeader('Content-Type', 'application/json'),
-        req.setRequestHeader('Authorization', getCookie('token'))
+      req.setRequestHeader('Content-Type', 'application/json')
+      req.setRequestHeader('Authorization', getCookie('token'))
       $('#loading-button').removeClass('hide')
       $("#approved-button").hide()
       $("#revised-button").hide()
@@ -800,8 +800,8 @@ function sendResponse() {
     method: 'POST',
     url: "http://localhost:9000/responseRequest",
     beforeSend: function (req) {
-      req.setRequestHeader('Content-Type', 'application/json'),
-        req.setRequestHeader('Authorization', getCookie('token'))
+      req.setRequestHeader('Content-Type', 'application/json')
+      req.setRequestHeader('Authorization', getCookie('token'))
     },
     data: JSON.stringify({
       "request_id": id,
@@ -842,8 +842,8 @@ function getMaterial() {
     method: 'GET',
     url: "http://localhost:9000/getAllMaterial",
     beforeSend: function (req) {
-      req.setRequestHeader('Content-Type', 'application/json'),
-        req.setRequestHeader('Authorization', getCookie('token'))
+      req.setRequestHeader('Content-Type', 'application/json')
+      req.setRequestHeader('Authorization', getCookie('token'))
     },
     success: function (res) {
       JSON.parse(res).forEach(function (data) {
@@ -1053,8 +1053,8 @@ function approvalList() {
     method: 'GET',
     url: "http://localhost:9000/getAllMaterial",
     beforeSend: function (req) {
-      req.setRequestHeader('Content-Type', 'application/json'),
-        req.setRequestHeader('Authorization', getCookie('token'))
+      req.setRequestHeader('Content-Type', 'application/json')
+      req.setRequestHeader('Authorization', getCookie('token'))
     },
     success: function (res) {
       JSON.parse(res).forEach(function (data) {
@@ -1085,8 +1085,8 @@ function commentProfile() {
     method: 'GET',
     url: "http://localhost:9000/getProfile",
     beforeSend: function (req) {
-      req.setRequestHeader('Content-Type', 'application/json'),
-        req.setRequestHeader('Authorization', getCookie('token'))
+      req.setRequestHeader('Content-Type', 'application/json')
+      req.setRequestHeader('Authorization', getCookie('token'))
       $('#loading').show()
     },
     success: function (res) {
@@ -1154,8 +1154,8 @@ function editPassword() {
     method: 'PUT',
     url: "http://localhost:9000/editPassword",
     beforeSend: function (req) {
-      req.setRequestHeader('Content-Type', 'application/json'),
-        req.setRequestHeader('Authorization', getCookie('token'))
+      req.setRequestHeader('Content-Type', 'application/json')
+      req.setRequestHeader('Authorization', getCookie('token'))
     },
     data: JSON.stringify({
       "current_password": b64EncodeUnicode(document.getElementById('current_password').value),
@@ -1178,8 +1178,8 @@ function showEditData() {
     method: 'GET',
     url: "http://localhost:9000/showEditData",
     beforeSend: function (req) {
-      req.setRequestHeader('Content-Type', 'application/json'),
-        req.setRequestHeader('Authorization', getCookie('token'))
+      req.setRequestHeader('Content-Type', 'application/json')
+      req.setRequestHeader('Authorization', getCookie('token'))
     },
     success: function (res) {
       data = JSON.parse(res)
@@ -1200,8 +1200,8 @@ function editProfile() {
     method: 'PUT',
     url: "http://localhost:9000/editProfile",
     beforeSend: function (req) {
-      req.setRequestHeader('Content-Type', 'application/json'),
-        req.setRequestHeader('Authorization', getCookie('token'))
+      req.setRequestHeader('Content-Type', 'application/json')
+      req.setRequestHeader('Authorization', getCookie('token'))
     },
     data: JSON.stringify({
       "fullname": document.getElementById('fullname').value,
