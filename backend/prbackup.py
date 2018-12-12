@@ -1,6 +1,6 @@
-from flask import Flask,request,json,session, make_response, render_template
+from flask import Flask, request, json, session, make_response, render_template
 from flask_sqlalchemy import SQLAlchemy
-from flask_restful import marshal,fields
+from flask_restful import marshal, fields
 import datetime
 from flask_cors import CORS, cross_origin
 import os
@@ -8,47 +8,51 @@ import jwt
 import requests
 from requests.utils import quote
 import smtplib
-import random, string
+import random
+import string
 import base64
-from smtplib import SMTP 
+from smtplib import SMTP
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from email.message import Message
-from jinja2 import Environment 
+from jinja2 import Environment
 
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] =  'postgresql://postgres:Sembilantujuh97@localhost:5432/pr_makers'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:kumiskucing@localhost:5432/pr_makers'
 CORS(app, support_credentials=True)
 app.config['SECRET_KEY'] = os.urandom(24)
 db = SQLAlchemy(app)
 jwtSecretKey = "goodcompany"
 
-    
+
 class Position(db.Model):
-    id = db.Column(db.Integer,primary_key=True)
-    name =  db.Column(db.String())
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String())
+
 
 class Material(db.Model):
-    id = db.Column(db.Integer,primary_key=True)
+    id = db.Column(db.Integer, primary_key=True)
     code = db.Column(db.String())
     name = db.Column(db.String())
 
+
 class Employee(db.Model):
-    id = db.Column(db.Integer,primary_key=True)
+    id = db.Column(db.Integer, primary_key=True)
     fullname = db.Column(db.String())
-    email = db.Column(db.String())
+    email = db.Column(db.String(), unique=True)
     password = db.Column(db.String())
-    position = db.Column(db.Integer,db.ForeignKey('position.id'))
+    position = db.Column(db.Integer, db.ForeignKey('position.id'))
     photoprofile = db.Column(db.String())
     payroll_number = db.Column(db.Integer())
     token = db.Column(db.String())
     company = db.Column(db.String())
     plant = db.Column(db.String())
 
+
 class Request(db.Model):
-    id = db.Column(db.Integer,primary_key=True)
-    person_id = db.Column(db.Integer,db.ForeignKey('employee.id'))
+    id = db.Column(db.Integer, primary_key=True)
+    person_id = db.Column(db.Integer, db.ForeignKey('employee.id'))
     budget_type = db.Column(db.String())
     currency = db.Column(db.String())
     expected_date = db.Column(db.String())
@@ -62,8 +66,9 @@ class Request(db.Model):
     process_id = db.Column(db.String())
     items = db.relationship('Items', backref='owner')
 
+
 class Items(db.Model):
-    id = db.Column(db.Integer,primary_key=True)
+    id = db.Column(db.Integer, primary_key=True)
     material_name = db.Column(db.String())
     quantity = db.Column(db.Integer())
     unit_measurement = db.Column(db.String())
@@ -71,166 +76,178 @@ class Items(db.Model):
     description = db.Column(db.String())
     estimate_price = db.Column(db.Integer())
     total = db.Column(db.Integer())
-    request_id =  db.Column(db.Integer,db.ForeignKey('request.id'))
+    request_id = db.Column(db.Integer, db.ForeignKey('request.id'))
 
 
 @app.route('/')
 def get():
-    return "test",201
+    return "test", 201
 
-@app.route('/login',methods=['POST'])
+# fungsi untuk login ke web
+@app.route('/login', methods=['POST'])
 def login():
-    request_data = request.get_json()
-    req_email = request_data.get('email')
-    req_password = request_data.get('password')
-    dataUser = Employee.query.filter_by(email=req_email, password=req_password).first()
-    if dataUser :
+    requestData = request.get_json()
+    reqEmail = requestData.get('email')
+    reqPassword = requestData.get('password')
+    dataUser = Employee.query.filter_by(
+        email=reqEmail, password=reqPassword).first()
+    if dataUser:
         payload = {
             "id": dataUser.id,
             "secretcode": "kumiskucing"
         }
-        encoded = jwt.encode(payload, jwtSecretKey, algorithm='HS256').decode('utf-8')
-        json_format = {
-        "token" : encoded,
-        "position" : dataUser.position
+        encoded = jwt.encode(payload, jwtSecretKey,
+                             algorithm='HS256').decode('utf-8')
+        jsonFormat = {
+            "token": encoded,
+            "position": dataUser.position
         }
-        user_json = json.dumps(json_format)
+        userJson = json.dumps(jsonFormat)
 
-        return user_json, 200
+        return userJson, 200
     else:
         return 'gagal', 404
 
-@app.route('/getUserRequest')
+# fungsi untuk menampilkan semua request dari user employee yang login
+@app.route('/get-user-request')
 def getUserRequest():
-    decoded = jwt.decode(request.headers["Authorization"], jwtSecretKey, algorithm='HS256')
+    decoded = jwt.decode(
+        request.headers["Authorization"], jwtSecretKey, algorithm='HS256')
     requests = Request.query.filter_by(person_id=decoded["id"])
-    request_arr = []
+    requestArray = []
     for req in requests:
         userDB = Employee.query.filter_by(id=decoded["id"]).first()
-        if req.acc_scm == 1 and req.acc_manager == 1 and req.acc_owner==1:
-            json_format = {
+        if req.acc_scm == 1 and req.acc_manager == 1 and req.acc_owner == 1:
+            jsonFormat = {
                 "id": req.id,
                 "person_name": userDB.fullname,
                 "company": userDB.company,
                 "status": "Approved by Owner"
             }
         elif req.acc_scm == 1 and req.acc_manager == 1:
-            json_format = {
+            jsonFormat = {
                 "id": req.id,
                 "person_name": userDB.fullname,
                 "company": userDB.company,
                 "status": "Approved by Manager"
             }
         elif req.acc_scm == 1:
-            json_format = {
+            jsonFormat = {
                 "id": req.id,
                 "person_name": userDB.fullname,
                 "company": userDB.company,
                 "status": "Approved by SCM"
             }
         else:
-            json_format = {
+            jsonFormat = {
                 "id": req.id,
                 "person_name": userDB.fullname,
                 "company": userDB.company,
                 "status": "Not yet approved"
             }
-        request_arr.append(json_format)
-    request_json = json.dumps(request_arr)
-    return request_json,201
+        requestArray.append(jsonFormat)
+    requestJson = json.dumps(requestArray)
+    return requestJson, 201
 
-@app.route('/getProfile')
+# fungsi untuk menampilkan detail profile dari user yang login
+@app.route('/get-profile')
 def getProfile():
-    decoded = jwt.decode(request.headers["Authorization"], jwtSecretKey, algorithm='HS256')
+    decoded = jwt.decode(
+        request.headers["Authorization"], jwtSecretKey, algorithm='HS256')
     userDB = Employee.query.filter_by(id=decoded["id"]).first()
-    if userDB:        
-        postition_name = Position.query.filter_by(id=userDB.position).first()
-        json_format = {
-            "fullname" : userDB.fullname,
-            "email" : userDB.email,
-            "position" :  postition_name.name,
-            "photoprofile" : userDB.photoprofile,
+    if userDB:
+        postitionName = Position.query.filter_by(id=userDB.position).first()
+        jsonFormat = {
+            "fullname": userDB.fullname,
+            "email": userDB.email,
+            "position":  postitionName.name,
+            "photoprofile": userDB.photoprofile,
             "payroll": userDB.payroll_number,
             "company": userDB.company,
             "plant": userDB.plant,
-            "id" : userDB.id
+            "id": userDB.id
         }
-        profile_json = json.dumps(json_format) 
-        return profile_json, 201
+        profileJson = json.dumps(jsonFormat)
+        return profileJson, 201
     else:
-        return "gagal",404
+        return "gagal", 404
 
-@app.route('/getAllMaterial')
+# fungsi untuk menampilkan semua material yang terdapat dalam db
+@app.route('/get-all-material')
 def getAllMaterial():
     materials = Material.query.all()
-    arr_material = []
+    arrayMaterial = []
     for material in materials:
-        json_format = {
-            "code" : material.code,
-            "name" : material.name,
-            "id_material" : material.id
+        jsonFormat = {
+            "code": material.code,
+            "name": material.name,
+            "id_material": material.id
         }
-        arr_material.append(json_format)
-    material_json = json.dumps(arr_material)
-    return material_json,201
+        arrayMaterial.append(jsonFormat)
+    materialJson = json.dumps(arrayMaterial)
+    return materialJson, 201
 
-@app.route('/getPosition')
+# fungsi untuk menampilkan semua posisi / role dalam db
+@app.route('/get-position')
 def getPosition():
     positions = Position.query.all()
-    position_arr = []
+    positionArray = []
     for position in positions:
-        json_format = {
+        jsonFormat = {
             "id": position.id,
             "name": position.name
         }
-        position_arr.append(json_format)
-    position_json = json.dumps(position_arr)
-    return position_json,201
+        positionArray.append(jsonFormat)
+    positionJson = json.dumps(positionArray)
+    return positionJson, 201
 
-@app.route('/getRequestDetails', methods=['POST'])
+# menampilkan detail lengkap dari request tertentu
+@app.route('/get-request-detail', methods=['POST'])
 def getRequest():
     if request.method == 'POST':
-        request_data = request.get_json()
+        requestData = request.get_json()
         decoded = jwt.decode(request.headers["Authorization"], jwtSecretKey, algorithm='HS256')
-        requestDB = Request.query.filter_by(id=request_data["id"]).first()
-        requester_detail = Employee.query.filter_by(id=requestDB.person_id).first()
-        position = Position.query.filter_by(id=requester_detail.position).first()
-        req_items = Items.query.filter_by(request_id=requestDB.id)
-        arr_items = []
-        for item in req_items:
-            item_json = {
-                "material_name" : item.material_name,
-                "description" : item.description,
-                "estimate_price" : item.estimate_price,
-                "quantity" : item.quantity,
-                "unit_measurement" : item.unit_measurement,
-                "total" : item.total
+        requestDB = Request.query.filter_by(id=requestData["id"]).first()
+        requesterDetail = Employee.query.filter_by(
+            id=requestDB.person_id).first()
+        position = Position.query.filter_by(
+            id=requesterDetail.position).first()
+        reqItems = Items.query.filter_by(request_id=requestDB.id)
+        arrItems = []
+        for item in reqItems:
+            itemJson = {
+                "material_name": item.material_name,
+                "description": item.description,
+                "estimate_price": item.estimate_price,
+                "quantity": item.quantity,
+                "unit_measurement": item.unit_measurement,
+                "total": item.total
             }
-            arr_items.append(item_json)
+            arrItems.append(itemJson)
 
-        r = requests.get(os.getenv('BASE_URL_RECORD') +"/"+requestDB.record_id+"/stageview", headers={"Content-Type": "application/json", "Authorization":"Bearer %s" % requester_detail.token})
+        r = requests.get(os.getenv('BASE_URL_RECORD') + "/"+requestDB.record_id+"/stageview", headers={
+                         "Content-Type": "application/json", "Authorization": "Bearer %s" % requesterDetail.token})
         result = json.loads(r.text)
-        # result = json.dumps(result)
-        # print("ini result", result)
-        # return result,201
-        result_length = len(result["data"])
-        # return str(result_length),201
+
+        resultLength = len(result["data"])
+        # return str(resultLength),201
         counter = 4
-        arr_comment = []
-        while counter <= result_length-1:
+        arrayComment = []
+        while counter <= resultLength-1:
             print(counter)
-            task_name = result["data"][counter]["object"]["display_name"]
-            if task_name != "Employee":
-                user_position = Position.query.filter_by(name=task_name).first()
-                userDB = Employee.query.filter_by(position=user_position.id).first()
-                comment_json = {
-                    "comment" : result["data"][counter]["target"]["content"],
-                    "date" : result["data"][counter]["published"],
+            taskName = result["data"][counter]["object"]["display_name"]
+            if taskName != "Employee":
+                userPosition = Position.query.filter_by(name=taskName).first()
+                userDB = Employee.query.filter_by(
+                    position=userPosition.id).first()
+                commentJson = {
+                    "comment": result["data"][counter]["target"]["content"],
+                    "date": result["data"][counter]["published"],
                     "user": userDB.fullname,
-                    "position" : user_position.name
+                    "position": userPosition.name
                 }
-                arr_comment.append(comment_json)
-                print(arr_comment)
+                arrayComment.append(commentJson)
+                print(arrayComment)
                 if result["data"][counter]["object"]["display_name"] == "Owner" and result["data"][counter]["name"] == "Task completed":
                     break
                 counter += 2
@@ -238,100 +255,98 @@ def getRequest():
                 print("masuk ke else")
                 counter += 2
                 continue
-        
-        # json_format = {
-        #     "comment" : arr_comment
-        # }
-        # req_json = json.dumps(json_format)
-        # return req_json,201
 
-        json_format = {
-            "requester_detail" : {
-                "fullname" : requester_detail.fullname,
-                "email" : requester_detail.email,
-                "position" : position.name,
-                "id_number" : requester_detail.id,
-                "company" : requester_detail.company,
-                "plant": requester_detail.plant,
-                "payroll" : requester_detail.payroll_number
+        jsonFormat = {
+            "requester_detail": {
+                "fullname": requesterDetail.fullname,
+                "email": requesterDetail.email,
+                "position": position.name,
+                "id_number": requesterDetail.id,
+                "company": requesterDetail.company,
+                "plant": requesterDetail.plant,
+                "payroll": requesterDetail.payroll_number
             },
-            "request_detail":{
+            "request_detail": {
                 "budget_type": requestDB.budget_type,
-                "currency" : requestDB.currency,
-                "location" : requestDB.location,
+                "currency": requestDB.currency,
+                "location": requestDB.location,
                 "budget_source": requestDB.budget_source,
-                "expected_date" : requestDB.expected_date,
-                "justification" : requestDB.justification
+                "expected_date": requestDB.expected_date,
+                "justification": requestDB.justification
             },
-            "items_detail": arr_items,
-            "comment_history" : arr_comment
+            "items_detail": arrItems,
+            "comment_history": arrayComment
         }
-        req_json = json.dumps(json_format)
-        return req_json, 201
+        reqJson = json.dumps(jsonFormat)
+        return reqJson, 201
 
-def addMaterial(request,req_item):
-    data_db = Items(
-        material_name = req_item['tableDataItemDetail'],
-        quantity = req_item['tableDataQuantity'],
-        unit_measurement = req_item['tableDataUnit'],
-        description = req_item['tableDataDescription'],
-        estimate_price = req_item['tableDataEstimatedPrice'],
-        total = req_item['tableDataSubTotal'],
-        owner = request
+# menambahkan material ke dalam db
+def addMaterial(request, reqItem):
+    dataDB = Items(
+        material_name=reqItem['tableDataItemDetail'],
+        quantity=reqItem['tableDataQuantity'],
+        unit_measurement=reqItem['tableDataUnit'],
+        description=reqItem['tableDataDescription'],
+        estimate_price=reqItem['tableDataEstimatedPrice'],
+        total=reqItem['tableDataSubTotal'],
+        owner=request
     )
-    db.session.add(data_db)
+    db.session.add(dataDB)
     db.session.commit()
     db.session.flush()
-    return data_db.id
-# =====================================================================
+    return dataDB.id
 
-@app.route('/submitrequest',methods=['POST'])
-def submitRequest():
-    decoded = jwt.decode(request.headers["Authorization"], jwtSecretKey, algorithm='HS256')
+# submit request dari requester ke scm
+@app.route('/submit-request', methods=['POST'])
+def submitRequestByRequester():
+    decoded = jwt.decode(
+        request.headers["Authorization"], jwtSecretKey, algorithm='HS256')
     userDB = Employee.query.filter_by(id=decoded["id"]).first()
     if request.method == 'POST':
-        req_email = userDB.email
-        req_comment = "test"
+        reqEmail = userDB.email
+        reqComment = "test"
         if userDB:
-            user_token = userDB.token
+            userToken = userDB.token
             # data template untuk create record
-            record_instance = {
+            recordInstance = {
                 "data": {
                     "definition": {
                         "id": os.getenv('DEFINITION_ID')
                     }
                 }
             }
-            r = requests.post(os.getenv("BASE_URL_RECORD"), data=json.dumps(record_instance), headers={"Content-Type":"application/json", "Authorization" : "Bearer %s" %user_token})
+            r = requests.post(os.getenv("BASE_URL_RECORD"), data=json.dumps(recordInstance), headers={
+                              "Content-Type": "application/json", "Authorization": "Bearer %s" % userToken})
 
             # result from create record
             print(r.text)
             result = json.loads(r.text)
-            record_id = result['data']['id']
+            recordId = result['data']['id']
 
-            #submit si flow pake record id dan token
-            submit_request_result = submit_request(record_id,user_token,'requester_pr@makersinstitute.id')
-            process_id = submit_request_result['data']['process_id']
+            # submit si flow pake record id dan token
+            submitRequestResult = submitRequest(
+                recordId, userToken, 'requester_pr@makersinstitute.id')
+            processId = submitRequestResult['data']['process_id']
 
             # gerakin flow dari requester ke manager
             position = Position.query.filter_by(id=userDB.position).first()
-            task_name = position.name
-            # return task_name,201
-            sent_task(req_comment,user_token,process_id,task_name)
+            taskName = position.name
+            # return taskName,201
+            sendTask(reqComment, userToken, processId, taskName)
 
             # submit ke DB
-            data_db = submit_to_database(record_id,process_id,userDB.id)
+            dataDB = submitToDatabase(recordId, processId, userDB.id)
 
             # return berupa id dan status
             # return 'ok',201
-            return data_db,201
+            return dataDB, 201
         else:
-            return "token not found",404
+            return "token not found", 404
 
-# fungsi untuk submit record dan gerakin flow ke requester
-def submit_request(record_id,user_token,email_requester):
+# fungsi lanjutan dari submitRequestByRequester
+def submitRequest(recordId, userToken, email_requester):
     # data template untuk submit record
-    record_instance = {
+    recordInstance = {
         "data": {
             "form_data": {
                 "pVRequester": email_requester,
@@ -342,25 +357,26 @@ def submit_request(record_id,user_token,email_requester):
             "comment": "Initiated"
         }
     }
-    request_data = json.dumps(record_instance)
+    requestData = json.dumps(recordInstance)
 
     # submit ke nextflow untuk dapetin process_id tiap pesanan masuk/flow
-    r = requests.post(os.getenv('BASE_URL_RECORD') +"/"+record_id+"/submit",data=request_data, headers={"Content-Type": "application/json", "Authorization":"Bearer %s" % user_token})
+    r = requests.post(os.getenv('BASE_URL_RECORD') + "/"+recordId+"/submit", data=requestData,
+                      headers={"Content-Type": "application/json", "Authorization": "Bearer %s" % userToken})
 
     result = json.loads(r.text)
     # print("INI RESULT SUBMIT RECORD", result)
     return result
 
-# fungsi untuk gerakin flow dari requester ke manager
-def sent_task(req_comment,user_token,process_id,task_name):
+# kirim request yang telah di submit ke SCM
+def sendTask(reqComment, userToken, processId, taskName):
 
     def recursive():
         # get task id and pVApprover name
-        query = "folder=app:task:all&filter[name]=%s&filter[state]=active&filter[definition_id]=%s&filter[process_id]=%s" % (task_name,
-            os.getenv("DEFINITION_ID"),process_id)
+        query = "folder=app:task:all&filter[name]=%s&filter[state]=active&filter[definition_id]=%s&filter[process_id]=%s" % (taskName,
+                                                                                                                             os.getenv("DEFINITION_ID"), processId)
         url = os.getenv("BASE_URL_TASK")+"?"+quote(query, safe="&=")
-        r = requests.get(url,headers={
-            "Content-Type": "application/json","Authorization": "Bearer %s" %user_token
+        r = requests.get(url, headers={
+            "Content-Type": "application/json", "Authorization": "Bearer %s" % userToken
         })
         print(r.text)
 
@@ -369,101 +385,109 @@ def sent_task(req_comment,user_token,process_id,task_name):
         if result['data'] is None or len(result['data']) == 0:
             recursive()
         else:
-            #get manager email dan task id
+            # get manager email dan task id
             email = result['data'][0]['form_data']['pVSCM']
-            task_id = result['data'][0]['id']
+            taskId = result['data'][0]['id']
 
             # gerakin flow ke manager dari requester
-            submit_data = {
+            submitData = {
                 "data": {
                     "form_data": {
                         'pVSCM': email
                     },
-                    "comment": req_comment
+                    "comment": reqComment
                 }
             }
-            r = requests.post(os.getenv('BASE_URL_TASK') +"/"+task_id+"/submit",data=json.dumps(submit_data), headers={"Content-Type": "application/json", "Authorization":"Bearer %s" % user_token})
+            r = requests.post(os.getenv('BASE_URL_TASK') + "/"+taskId+"/submit", data=json.dumps(submitData),
+                              headers={"Content-Type": "application/json", "Authorization": "Bearer %s" % userToken})
             result = json.loads(r.text)
 
     recursive()
     return "OK"
 
-# submit data ke DB
-def submit_to_database(record_id,process_id,employee_id):
-    request_json = request.get_json()
+# save detail request ke DB
+def submitToDatabase(recordId, processId, employeeId):
+    requestJson = request.get_json()
     # buat data template ke DB
-    data_db = Request(
-        person_id = employee_id,
-        budget_type= request_json['request_data']['budget_type'],
-        currency= request_json['request_data']['currency'],
-        expected_date= request_json['request_data']['expected_date'],
-        location= request_json['request_data']['location'],
-        budget_source= request_json['request_data']['budget_source'],
-        justification= request_json['request_data']['justification'],
-        process_id = process_id,
-        record_id = record_id,
-        acc_scm = 0,
-        acc_manager = 0,
-        acc_owner = 0
+    dataDB = Request(
+        person_id=employeeId,
+        budget_type=requestJson['request_data']['budget_type'],
+        currency=requestJson['request_data']['currency'],
+        expected_date=requestJson['request_data']['expected_date'],
+        location=requestJson['request_data']['location'],
+        budget_source=requestJson['request_data']['budget_source'],
+        justification=requestJson['request_data']['justification'],
+        process_id=processId,
+        record_id=recordId,
+        acc_scm=0,
+        acc_manager=0,
+        acc_owner=0
     )
-    db.session.add(data_db)
+    db.session.add(dataDB)
     db.session.commit()
-    db.session.flush() # fungsinya ketika data telah dimasukan kita mau pakai lagi datanya
-    req_item = request_json['array_item']
-    request_data = Request.query.filter_by(id=data_db.id).first()
-    if request_data is not None:
-        for item in req_item:
-            addMaterial(request_data, item)
+    db.session.flush()  # fungsinya ketika data telah dimasukan kita mau pakai lagi datanya
+    reqItem = requestJson['array_item']
+    requestData = Request.query.filter_by(id=dataDB.id).first()
+    if requestData is not None:
+        for item in reqItem:
+            addMaterial(requestData, item)
 
-    if data_db.id:
-        return str(data_db.id)
+    if dataDB.id:
+        return str(dataDB.id)
     else:
         return None
 
-def get_tasklist(task_name,process_id,user_token):
-    query = "folder=app:task:all&filter[name]=%s&filter[state]=active&filter[definition_id]=%s&filter[process_id]=%s" % (task_name,
-            os.getenv("DEFINITION_ID"),process_id)
+# mendapatkan tasklist dari user yang login
+def getTasklist(taskName, processId, userToken):
+    query = "folder=app:task:all&filter[name]=%s&filter[state]=active&filter[definition_id]=%s&filter[process_id]=%s" % (taskName,
+                                                                                                                         os.getenv("DEFINITION_ID"), processId)
     url = os.getenv("BASE_URL_TASK")+"?"+quote(query, safe="&=")
-    r = requests.get(url,headers={
-        "Content-Type": "application/json","Authorization": "Bearer %s" %user_token
+    r = requests.get(url, headers={
+        "Content-Type": "application/json", "Authorization": "Bearer %s" % userToken
     })
     print(r.text)
     result = json.loads(r.text)
-    return result,201
+    return result, 201
 
-@app.route('/getComment')
-def get_comment_history():
-    request_data = request.get_json()
-    decoded = jwt.decode(request.headers["Authorization"], jwtSecretKey, algorithm='HS256')
+# mendapatkan commnet dari request tertentu
+@app.route('/get-comment')
+def getCommentHistory():
+    requestData = request.get_json()
+    decoded = jwt.decode(
+        request.headers["Authorization"], jwtSecretKey, algorithm='HS256')
     userDB = Employee.query.filter_by(id=decoded["id"]).first()
     if request.method == 'GET':
         if userDB:
-            user_token = userDB.token
-    url = os.getenv("BASE_URL_RECORD")+"/"+request_data["record_id"]+"/stageview"
-    r = requests.get(url,headers={
-        "Content-Type": "application/json","Authorization": "Bearer %s" %user_token
+            userToken = userDB.token
+    url = os.getenv("BASE_URL_RECORD")+"/"+requestData["recordId"]+"/stageview"
+    r = requests.get(url, headers={
+        "Content-Type": "application/json", "Authorization": "Bearer %s" % userToken
     })
     result = json.loads(r.text)
     result = json.dumps(result)
-    return result,201
+    return result, 201
 
-@app.route('/responseRequest',methods=["POST"])
+# fungsi untuk menerima response untuk request dan melanjutkan flow sesuai response
+@app.route('/response-request', methods=["POST"])
 def responseRequest():
     if request.method == 'POST':
-        request_data = request.get_json()
-        comment = request_data["comment"]
-        decoded = jwt.decode(request.headers["Authorization"], jwtSecretKey, algorithm='HS256')
+        requestData = request.get_json()
+        comment = requestData["comment"]
+        decoded = jwt.decode(
+            request.headers["Authorization"], jwtSecretKey, algorithm='HS256')
         userDB = Employee.query.filter_by(id=decoded["id"]).first()
-        user_token = userDB.token
-        user_position = Position.query.filter_by(id=userDB.position).first()
-        requestDB = Request.query.filter_by(id=request_data["request_id"]).first()
+        userToken = userDB.token
+        userPosition = Position.query.filter_by(id=userDB.position).first()
+        requestDB = Request.query.filter_by(
+            id=requestData["request_id"]).first()
+
         def recursive():
             # get task id and pVApprover name
-            query = "folder=app:task:all&filter[name]=%s&filter[state]=active&filter[definition_id]=%s&filter[process_id]=%s" % (user_position.name,
-                os.getenv("DEFINITION_ID"),requestDB.process_id)
+            query = "folder=app:task:all&filter[name]=%s&filter[state]=active&filter[definition_id]=%s&filter[process_id]=%s" % (userPosition.name,
+                                                                                                                                 os.getenv("DEFINITION_ID"), requestDB.process_id)
             url = os.getenv("BASE_URL_TASK")+"?"+quote(query, safe="&=")
-            r = requests.get(url,headers={
-                "Content-Type": "application/json","Authorization": "Bearer %s" %user_token
+            r = requests.get(url, headers={
+                "Content-Type": "application/json", "Authorization": "Bearer %s" % userToken
             })
             print(r.text)
 
@@ -472,17 +496,17 @@ def responseRequest():
             if result['data'] is None or len(result['data']) == 0:
                 recursive()
             else:
-                #get manager email dan task id
-                if user_position.name == 'SCM':
-                    if request_data["response"] == "Yes":
+                # get manager email dan task id
+                if userPosition.name == 'SCM':
+                    if requestData["response"] == "Yes":
                         print("scm yes")
-                        print("ini result",result)
+                        print("ini result", result)
                         email = result['data'][0]['form_data']['pVManager']
-                        task_id = result['data'][0]['id']
-                        print(task_id)
+                        taskId = result['data'][0]['id']
+                        print(taskId)
 
                         # gerakin flow ke manager dari requester
-                        submit_data = {
+                        submitData = {
                             "data": {
                                 "form_data": {
                                     "pVManager": "manager_pr@makersinstitute.id",
@@ -491,17 +515,18 @@ def responseRequest():
                                 "comment": comment
                             }
                         }
-                        r = requests.post(os.getenv('BASE_URL_TASK') +"/"+task_id+"/submit",data=json.dumps(submit_data), headers={"Content-Type": "application/json", "Authorization":"Bearer %s" % user_token})
+                        r = requests.post(os.getenv('BASE_URL_TASK') + "/"+taskId+"/submit", data=json.dumps(
+                            submitData), headers={"Content-Type": "application/json", "Authorization": "Bearer %s" % userToken})
                         result = json.loads(r.text)
                         requestDB.acc_scm = 1
                         db.session.commit()
                     else:
                         print("scm no")
                         email = result['data'][0]['form_data']['pVRequester']
-                        task_id = result['data'][0]['id']
+                        taskId = result['data'][0]['id']
 
                         # gerakin flow ke manager dari requester
-                        submit_data = {
+                        submitData = {
                             "data": {
                                 "form_data": {
                                     "pVRequester": "requester_pr@makersinstitute.id",
@@ -510,16 +535,17 @@ def responseRequest():
                                 "comment": comment
                             }
                         }
-                        r = requests.post(os.getenv('BASE_URL_TASK') +"/"+task_id+"/submit",data=json.dumps(submit_data), headers={"Content-Type": "application/json", "Authorization":"Bearer %s" % user_token})
+                        r = requests.post(os.getenv('BASE_URL_TASK') + "/"+taskId+"/submit", data=json.dumps(
+                            submitData), headers={"Content-Type": "application/json", "Authorization": "Bearer %s" % userToken})
                         result = json.loads(r.text)
-                
-                elif user_position.name == 'Manager':
+
+                elif userPosition.name == 'Manager':
                     print("manager")
                     email = result['data'][0]['form_data']['pVOwner']
-                    task_id = result['data'][0]['id']
+                    taskId = result['data'][0]['id']
 
                     # gerakin flow ke manager dari requester
-                    submit_data = {
+                    submitData = {
                         "data": {
                             "form_data": {
                                 "pVOwner": "owner_pr@makersinstitute.id"
@@ -527,189 +553,208 @@ def responseRequest():
                             "comment": comment
                         }
                     }
-                    r = requests.post(os.getenv('BASE_URL_TASK') +"/"+task_id+"/submit",data=json.dumps(submit_data), headers={"Content-Type": "application/json", "Authorization":"Bearer %s" % user_token})
+                    r = requests.post(os.getenv('BASE_URL_TASK') + "/"+taskId+"/submit", data=json.dumps(
+                        submitData), headers={"Content-Type": "application/json", "Authorization": "Bearer %s" % userToken})
                     result = json.loads(r.text)
                     requestDB.acc_manager = 1
                     db.session.commit()
-                
+
                 else:
                     print("owner")
-                    task_id = result['data'][0]['id']
+                    taskId = result['data'][0]['id']
 
-                    submit_data = {
+                    submitData = {
                         "data": {
                             "form_data": {
                             },
                             "comment": comment
                         }
                     }
-                    r = requests.post(os.getenv('BASE_URL_TASK') +"/"+task_id+"/submit",data=json.dumps(submit_data), headers={"Content-Type": "application/json", "Authorization":"Bearer %s" % user_token})
+                    r = requests.post(os.getenv('BASE_URL_TASK') + "/"+taskId+"/submit", data=json.dumps(
+                        submitData), headers={"Content-Type": "application/json", "Authorization": "Bearer %s" % userToken})
                     result = json.loads(r.text)
                     requestDB.acc_owner = 1
                     db.session.commit()
-                    requesterDB = Employee.query.filter_by(id=requestDB.person_id).first()
-                    sendEmail(requesterDB.email,requestDB)
+                    requesterDB = Employee.query.filter_by(
+                        id=requestDB.person_id).first()
+                    sendEmail(requesterDB.email, requestDB)
 
         recursive()
         return "OK"
 
-@app.route('/getTaskList')
+# fungsi untuk mendapatkan tasklist dari user yang login
+@app.route('/get-tasklist')
 def getTaskList():
-    decoded = jwt.decode(request.headers["Authorization"], jwtSecretKey, algorithm='HS256')
+    decoded = jwt.decode(
+        request.headers["Authorization"], jwtSecretKey, algorithm='HS256')
     userDB = Employee.query.filter_by(id=decoded["id"]).first()
-    task_name = Position.query.filter_by(id=userDB.position).first()
-    task_name = task_name.name
-    query = "folder=app:task:all&filter[name]=%s&filter[state]=active&filter[definition_id]=%s" % (task_name,
-        os.getenv("DEFINITION_ID"))
+    taskName = Position.query.filter_by(id=userDB.position).first()
+    taskName = taskName.name
+    query = "folder=app:task:all&filter[name]=%s&filter[state]=active&filter[definition_id]=%s" % (taskName,
+                                                                                                   os.getenv("DEFINITION_ID"))
     url = os.getenv("BASE_URL_TASK")+"?"+quote(query, safe="&=")
-    r = requests.get(url,headers={
-        "Content-Type": "application/json","Authorization": "Bearer %s" %userDB.token
+    r = requests.get(url, headers={
+        "Content-Type": "application/json", "Authorization": "Bearer %s" % userDB.token
     })
     result = json.loads(r.text)
-    result_length = len(result["data"])
-    print("panjang result", result_length)
-    arr_tasklist = []
-    for x in range(result_length):
-        print("ini process id : ",result["data"][x]["process_id"])
-        if task_name == "Employee":
-            requestDB = Request.query.filter_by(process_id=result["data"][x]["process_id"],person_id=userDB.id).first()
+    resultLength = len(result["data"])
+    print("panjang result", resultLength)
+    arrTasklist = []
+    for x in range(resultLength):
+        print("ini process id : ", result["data"][x]["process_id"])
+        if taskName == "Employee":
+            requestDB = Request.query.filter_by(
+                process_id=result["data"][x]["process_id"], person_id=userDB.id).first()
         else:
-            requestDB = Request.query.filter_by(process_id=result["data"][x]["process_id"]).first()
+            requestDB = Request.query.filter_by(
+                process_id=result["data"][x]["process_id"]).first()
         # print(requestDB)
         if requestDB == None:
             continue
         else:
-            requesterDB = Employee.query.filter_by(id=requestDB.person_id).first()
-            if task_name == "Employee" or task_name =="SCM":
+            requesterDB = Employee.query.filter_by(
+                id=requestDB.person_id).first()
+            if taskName == "Employee" or taskName == "SCM":
                 status = "Not yet approved"
-            elif task_name == "Manager":
+            elif taskName == "Manager":
                 status = "Approved by SCM"
-            else : 
-                status = "Approved by Manager"    
-            format_json = {
-                "id" : requestDB.id,
-                "fullname" : requesterDB.fullname,
-                "company" : requesterDB.company,
-                "status" : status
+            else:
+                status = "Approved by Manager"
+            formatJson = {
+                "id": requestDB.id,
+                "fullname": requesterDB.fullname,
+                "company": requesterDB.company,
+                "status": status
             }
-            arr_tasklist.append(format_json)
-    request_json = json.dumps(arr_tasklist)
-    return request_json,201
+            arrTasklist.append(formatJson)
+    requestJson = json.dumps(arrTasklist)
+    return requestJson, 201
 
-@app.route('/showEditData', methods= ["GET"])
+
+@app.route('/show-edit-data', methods=["GET"])
 def showEditData():
-    decoded = jwt.decode(request.headers["Authorization"], jwtSecretKey, algorithm='HS256')
+    decoded = jwt.decode(
+        request.headers["Authorization"], jwtSecretKey, algorithm='HS256')
     userDB = Employee.query.filter_by(id=decoded["id"]).first()
-    if userDB:        
-        json_format = {
-            "fullname" : userDB.fullname,
-            "email" : userDB.email,
-            "photoprofile" : userDB.photoprofile,
+    if userDB:
+        jsonFormat = {
+            "fullname": userDB.fullname,
+            "email": userDB.email,
+            "photoprofile": userDB.photoprofile,
         }
-        profile_json = json.dumps(json_format) 
-        return profile_json, 201
+        profileJson = json.dumps(jsonFormat)
+        return profileJson, 201
 
-@app.route('/editProfile', methods= ["PUT"])
+# fungsi untuk edit profile dari user yang login
+@app.route('/edit-profile', methods=["PUT"])
 def editProfile():
-    decoded = jwt.decode(request.headers["Authorization"], jwtSecretKey, algorithm='HS256')
+    decoded = jwt.decode(
+        request.headers["Authorization"], jwtSecretKey, algorithm='HS256')
     userDB = Employee.query.filter_by(id=decoded["id"]).first()
 
-    if request.method == "PUT":      
-        #new data
-        req_data = request.get_json()
-        fullname = req_data.get('fullname')
-        email = req_data.get('email')
-        photo_profile = req_data.get('profile_picture')
+    if request.method == "PUT":
+        # new data
+        reqData = request.get_json()
+        fullname = reqData.get('fullname')
+        email = reqData.get('email')
+        photoProfile = reqData.get('profile_picture')
 
         userDB.fullname = fullname
         userDB.email = email
-        userDB.photo_profile = photo_profile
+        userDB.photo_profile = photoProfile
 
         db.session.commit()
 
         return 'Data successfully edited', 200
 
-@app.route('/editPassword', methods = ["PUT"])
+# edit password dari user yang login
+@app.route('/edit-password', methods=["PUT"])
 def editPassword():
-    decoded = jwt.decode(request.headers["Authorization"], jwtSecretKey, algorithm='HS256')
+    decoded = jwt.decode(
+        request.headers["Authorization"], jwtSecretKey, algorithm='HS256')
     userDB = Employee.query.filter_by(id=decoded["id"]).first()
 
-    req_data = request.get_json()
-    req_current_password = req_data.get('current_password')
-    req_new_password = req_data.get('new_password')
-    req_verify_password = req_data.get('verify_password')
+    reqData = request.get_json()
+    reqCurrentPassword = reqData.get('current_password')
+    reqNewPassword = reqData.get('new_password')
+    reqVerifyPassword = reqData.get('verify_password')
 
     if request.method == "PUT":
-        if userDB is not None and userDB.password == req_current_password:
-            if req_new_password == req_verify_password:
-                userDB.password = req_new_password
+        if userDB is not None and userDB.password == reqCurrentPassword:
+            if reqNewPassword == reqVerifyPassword:
+                userDB.password = reqNewPassword
                 db.session.commit()
-                return "Password successfully changed ",200
+                return "Password successfully changed ", 200
         else:
-            return "New password and validate password not match ",400
+            return "New password and validate password not match ", 400
     else:
-        return "Current password is wrong",400
+        return "Current password is wrong", 400
 
-    
-@app.route('/getAccRequest')
+# fungsi untuk menampilkan request yang telah di acc oleh scm, manager , owner
+@app.route('/get-acc-request')
 def getAccRequest():
-    requestDB = Request.query.filter_by(acc_scm=1,acc_manager=1,acc_owner=1)
+    requestDB = Request.query.filter_by(acc_scm=1, acc_manager=1, acc_owner=1)
     if requestDB:
         print("ini request db", requestDB)
-        arr_accrequest = []
-        for acc_request in requestDB:
-            userDB = Employee.query.filter_by(id=acc_request.person_id).first()
-            format_json = {
-                "id":acc_request.id,
+        arrAccRequest = []
+        for accRequest in requestDB:
+            userDB = Employee.query.filter_by(id=accRequest.person_id).first()
+            formatJson = {
+                "id": accRequest.id,
                 "fullname": userDB.fullname,
-                "company":userDB.company,
-                "status":"Approved by Owner"
+                "company": userDB.company,
+                "status": "Approved by Owner"
             }
-            arr_accrequest.append(format_json)
-        request_json = json.dumps(arr_accrequest)
-        return request_json,201
+            arrAccRequest.append(formatJson)
+        requestJson = json.dumps(arrAccRequest)
+        return requestJson, 201
     else:
-        arr_accrequest = []
-        request_json = json.dumps(arr_accrequest)
-        return request_json,404
+        arrAccRequest = []
+        requestJson = json.dumps(arrAccRequest)
+        return requestJson, 404
 
-
-@app.route('/sendRevise',methods=["PUT"])
+# fungsi untuk mengirimkan request yang telah di revisi
+@app.route('/send-revise', methods=["PUT"])
 def sendRevise():
     if request.method == 'PUT':
-        decoded = jwt.decode(request.headers["Authorization"], jwtSecretKey, algorithm='HS256')
+        decoded = jwt.decode(
+            request.headers["Authorization"], jwtSecretKey, algorithm='HS256')
         userDB = Employee.query.filter_by(id=decoded["id"]).first()
         position = Position.query.filter_by(id=userDB.position).first()
-        request_data = request.get_json()
-        print("ini request data",request_data)
-        idRequest = request_data["id_request"]
+        requestData = request.get_json()
+
+        print("ini request data", requestData)
+        idRequest = requestData["id_request"]
         requestDB = Request.query.filter_by(id=idRequest).first()
-        requestDB.budget_source = request_data["request_data"]["budget_source"]
-        requestDB.budget_type = request_data["request_data"]["budget_type"]
-        requestDB.currency = request_data["request_data"]["currency"]
-        requestDB.expected_date = request_data["request_data"]["expected_date"]
-        requestDB.justification = request_data["request_data"]["justification"]
-        requestDB.location = request_data["request_data"]["location"]
+
+        requestDB.budget_source = requestData["request_data"]["budget_source"]
+        requestDB.budget_type = requestData["request_data"]["budget_type"]
+        requestDB.currency = requestData["request_data"]["currency"]
+        requestDB.expected_date = requestData["request_data"]["expected_date"]
+        requestDB.justification = requestData["request_data"]["justification"]
+        requestDB.location = requestData["request_data"]["location"]
         db.session.commit()
+
         items = Items.query.filter_by(request_id=idRequest)
         for item in items:
             db.session.delete(item)
             db.session.commit()
-        
-        req_item = request_data['array_item']
+
+        reqItem = requestData['array_item']
         requestDB = Request.query.filter_by(id=idRequest).first()
-        if request_data is not None:
-            for item in req_item:
+        if requestData is not None:
+            for item in reqItem:
                 addMaterial(requestDB, item)
-        
-        req_comment = ""
-        user_token = userDB.token
-        process_id = requestDB.process_id
-        task_name = position.name
 
-        sent_task(req_comment,user_token,process_id,task_name)
-        return "Success",201
+        reqComment = ""
+        userToken = userDB.token
+        processId = requestDB.process_id
+        taskName = position.name
 
+        sendTask(reqComment, userToken, processId, taskName)
+        return "Success", 201
+
+# fungsi untuk mengirimkan email setelah request di acc oleh owner
 def sendEmail(email_requester, requestDB):
     host = "smtp.gmail.com"
     port = 587
@@ -977,7 +1022,7 @@ def sendEmail(email_requester, requestDB):
                                                         Record ID:
                                                     </td>
                                                     <td class="data-value">
-                                                        {{record_id}}
+                                                        {{recordId}}
                                                     </td>
                                                     </tr>
                                                     <tr>
@@ -1045,14 +1090,15 @@ def sendEmail(email_requester, requestDB):
     """
     userDB = Employee.query.filter_by(id=requestDB.person_id).first()
     part_2 = MIMEText(Environment().from_string(html_txt).render(
-            name=userDB.fullname, request_id=requestDB.id, record_id=requestDB.record_id, process_id=requestDB.process_id, budget_type=requestDB.budget_type, justification=requestDB.justification
-        ), 'html')
+        name=userDB.fullname, request_id=requestDB.id, recordId=requestDB.record_id, process_id=requestDB.process_id, budget_type=requestDB.budget_type, justification=requestDB.justification
+    ), 'html')
     the_msg.attach(part_2)
     email_conn.sendmail(from_email, to_list, the_msg.as_string())
     email_conn.quit()
-    return "Success",201
+    return "Success", 201
 
-def sendEmailChangePass(email_requester, new_password,user_fullname):
+# fungsi untuk mengirimkan password sementara melalui email (forgot password)
+def sendEmailChangePass(email_requester, new_password, userFullname):
     host = "smtp.gmail.com"
     port = 587
     username = os.getenv("EMAIL_ADDRESS")
@@ -1336,46 +1382,51 @@ def sendEmailChangePass(email_requester, new_password,user_fullname):
     """
 
     part_2 = MIMEText(Environment().from_string(html_txt).render(
-            name=user_fullname, new_password=new_password
-        ), 'html')
+        name=userFullname, new_password=new_password
+    ), 'html')
     the_msg.attach(part_2)
     email_conn.sendmail(from_email, to_list, the_msg.as_string())
     email_conn.quit()
-    return "Success",201
+    return "Success", 201
 
+# fungsi untuk merandom string sebagai password sementara
 def randomword():
-   letters = string.ascii_lowercase
-   return ''.join(random.choice(letters) for i in range(8))
+    letters = string.ascii_lowercase
+    return ''.join(random.choice(letters) for i in range(8))
 
+# fungsi untuk enkripsi string kedalam base64
 def stringToBase64(s):
     return base64.b64encode(s.encode('utf-8'))
 
+# ubah base64 ke string
 def base64ToString(b):
     return base64.b64decode(b).decode('utf-8')
 
-@app.route('/forgotPassword', methods=["PUT"])
+# fungsi untuk forgot password
+@app.route('/forgot-password', methods=["PUT"])
 def forgotPassword():
     if request.method == 'PUT':
-        request_data = request.get_json()
-        email = request_data["email"]
+        requestData = request.get_json()
+        email = requestData["email"]
         user = Employee.query.filter_by(email=email).first()
-        user_fullname = user.fullname
+        userFullname = user.fullname
         if user:
-            tmp_pass_str = randomword()
-            tmp_pass_encode = str(stringToBase64(tmp_pass_str))
-            length = len(tmp_pass_encode) -1
-            print(tmp_pass_str,tmp_pass_encode)
-            tmp_pass_encode = tmp_pass_encode[2:length]
-            print(tmp_pass_encode)
-            user.password = str(tmp_pass_encode)
+            tmpPassStr = randomword()
+            tmpPassEncode = str(stringToBase64(tmpPassStr))
+            length = len(tmpPassEncode) - 1
+            print(tmpPassStr, tmpPassEncode)
+            tmpPassEncode = tmpPassEncode[2:length]
+            print(tmpPassEncode)
+            user.password = str(tmpPassEncode)
             db.session.commit()
-            sendEmailChangePass(email,tmp_pass_str,user_fullname)
-            return "Success",201
+            sendEmailChangePass(email, tmpPassStr, userFullname)
+            return "Success", 201
 
         else:
-            return "User not found",404
+            return "User not found", 404
 
 
 # def acc
 if __name__ == '__main__':
-    app.run(debug=os.getenv("DEBUG"), host=os.getenv("HOST"), port=os.getenv("PORT"))
+    app.run(debug=os.getenv("DEBUG"), host=os.getenv(
+        "HOST"), port=os.getenv("PORT"))

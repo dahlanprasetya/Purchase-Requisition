@@ -37,7 +37,7 @@ class Material(db.Model):
 class Employee(db.Model):
     id = db.Column(db.Integer,primary_key=True)
     fullname = db.Column(db.String())
-    email = db.Column(db.String())
+    email = db.Column(db.String(),unique=True)
     password = db.Column(db.String())
     position = db.Column(db.Integer,db.ForeignKey('position.id'))
     photoprofile = db.Column(db.String())
@@ -650,6 +650,7 @@ def editPassword():
     else:
         return "Current password is wrong",400
 
+    
 @app.route('/getAccRequest')
 def getAccRequest():
     requestDB = Request.query.filter_by(acc_scm=1,acc_manager=1,acc_owner=1)
@@ -671,6 +672,7 @@ def getAccRequest():
         arr_accrequest = []
         request_json = json.dumps(arr_accrequest)
         return request_json,404
+
 
 @app.route('/sendRevise',methods=["PUT"])
 def sendRevise():

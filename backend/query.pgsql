@@ -47,10 +47,11 @@ INSERT INTO public.material(code,name) values ('MG-1013','Tools');
 -- INSERT INTO public.request(person_id,plant,budget_type,currency,expected_date, location, budget_source, justification, acc_scm, acc_manager, acc_owner,material,description,quatity,unit_measurement,record_id,process_id) values
 -- (4,'thisIsPlant','thisIsBudget','thisIsCurrency','08/02/1996','Bandung','thisIsBudgetSource','thisIsJustification',0,0,0,27,'thisIsDescription',12,'thisIsUnitMeasurenment','thisIsRecordId','thisIsProcessId');
 
--- UPDATE employee set token = 'bVba2uuQAqwPe77-kvyNwUPb6Ab8-NWvmzPCFFIbH-Q.CWBzB0eEOdnWeZZOVOtbPNyi33TLVPBKGyE0VWKLIQM' where id=4;
--- UPDATE employee set token = '300lxXNPTsRBbolPlCnv3JQPyrT0M5WhS202HhHcpjE.xhdkL7R_83rBq7UQTDfxyepP8tSumgJgZdUvPtqOzO8' where id=3;
--- UPDATE employee set token = 'cucFlgpukUJ5Wl2UGLq22yGBDyeZWYgdPhhb8mcZKSw.pEveDPIlnvdGq_uLRypv1ufu-93XqnTFrVAawd0UM_Q' where id=2;
--- UPDATE employee set token = 'QJW6h1tISjYqGmxM91s_kIKeUvDzu26asyzem2Unqm8.EMHXC5ZHMEOZnrGNmew6aBxqGNZH0DS3cqB87Fr0a_M' where id=1;
+UPDATE employee set token = 'RmPvmg1lNpBqXzJW1cSKuCEhuvS9pe3__Kebc-lZpcM.PC9hsLq4vwvvyGOongpCyJIioh-bK7ycogjp3HwHEhY' where id=4;
+UPDATE employee set token = '7SRxLYTCWbkoNRxbAqCcwFF2xcP-f9xE2niSP2u8DZ0.HTzvB_BcEbXjYa6kTFvhCMtEveqVlQ6L_PK551ae5O0' where id=3;
+UPDATE employee set token = 'RIaC4iaC1euFq84KRBOjTBuDK-dCjqYw8GaJ7lIiz-I.87uvFkDfUwWczfk2XxWEl80vykGozpRYnAAhdeYrSHI' where id=2;
+UPDATE employee set token = 'o0WLNi57kQWOQxbrRNzhXnC-qaSWMLujsXD9NSb2MJk.CHHujgLzL2cyufs7Va-NbfrMeBNtHPhGhqoMSB4cd08' where id=1;
+UPDATE employee set token = 'o0WLNi57kQWOQxbrRNzhXnC-qaSWMLujsXD9NSb2MJk.CHHujgLzL2cyufs7Va-NbfrMeBNtHPhGhqoMSB4cd08' where id=5;
 
 -- UPDATE employee set password = 'c2VibGFrOTk=' where id=4;
 -- UPDATE employee set password = 'c2VibGFrOTk=' where id=3;
